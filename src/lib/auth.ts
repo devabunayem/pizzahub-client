@@ -3,9 +3,10 @@ import { mongodbAdapter } from 'better-auth/adapters/mongodb';
 import { jwt } from 'better-auth/plugins';
 import { MongoClient } from 'mongodb';
 
-const uri =
-  process.env.MONGODB_URI ||
-  'mongodb+srv://abunayemprogrammer_db_user:Mllknw6QNgQA2yfX@cluster0.qjqm5dx.mongodb.net/pizzahub?retryWrites=true&w=majority&appName=Cluster0';
+const uri = process.env.MONGODB_URI || '';
+if (!uri && process.env.NODE_ENV === 'production') {
+  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+}
 
 let client: MongoClient;
 
@@ -27,9 +28,7 @@ const db = client.db(process.env.DB_NAME || 'pizzahub');
 
 export const auth = betterAuth({
   database: mongodbAdapter(db),
-  secret:
-    process.env.BETTER_AUTH_SECRET ||
-    'pizzahub_jwt_super_secret_production_key_2026_secure_token_9876543210',
+  secret: process.env.BETTER_AUTH_SECRET || 'dev_secret_only_for_local_development_placeholder_key',
   baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
   emailAndPassword: {
     enabled: true,
