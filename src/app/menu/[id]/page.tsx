@@ -15,8 +15,8 @@ import {
   Send,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import toast from 'react-hot-toast';
+import { ItemDetailSkeleton } from '@/components/ui/Skeleton';
+import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -66,7 +66,7 @@ export default function ItemDetailsPage() {
   }, [id]);
 
   if (authLoading || (loading && !errorMsg)) {
-    return <LoadingSpinner fullScreen message="Loading pizza details..." />;
+    return <ItemDetailSkeleton />;
   }
 
   if (errorMsg || !item) {

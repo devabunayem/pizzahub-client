@@ -13,8 +13,8 @@ import {
   User,
 } from 'lucide-react';
 import { formatPrice, formatDate } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import toast from 'react-hot-toast';
+import { OrderListSkeleton } from '@/components/ui/Skeleton';
+import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -73,7 +73,7 @@ export default function VendorOrdersPage() {
   };
 
   if (loading) {
-    return <LoadingSpinner message="Retrieving incoming orders..." />;
+    return <OrderListSkeleton count={4} />;
   }
 
   const filteredOrders =

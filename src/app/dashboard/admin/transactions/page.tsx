@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Receipt, CheckCircle2, Clock, Store, Mail, DollarSign, ShieldAlert } from 'lucide-react';
 import { formatPrice, formatDate } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import toast from 'react-hot-toast';
+import { TableSkeleton } from '@/components/ui/Skeleton';
+import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -38,7 +38,7 @@ export default function AdminTransactionsPage() {
   }, [token]);
 
   if (loading) {
-    return <LoadingSpinner message="Auditing platform transactions..." />;
+    return <TableSkeleton rows={6} columns={6} />;
   }
 
   const totalRevenue = transactions

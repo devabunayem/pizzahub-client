@@ -17,9 +17,9 @@ import {
   ChevronUp,
 } from 'lucide-react';
 import { formatPrice, formatDate } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { OrderListSkeleton } from '@/components/ui/Skeleton';
 import { StatusTimeline } from '@/components/ui/StatusTimeline';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -75,7 +75,7 @@ export default function CustomerOrdersPage() {
   };
 
   if (loading) {
-    return <LoadingSpinner message="Retrieving your orders..." />;
+    return <OrderListSkeleton count={4} />;
   }
 
   return (

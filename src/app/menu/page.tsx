@@ -11,7 +11,7 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { MenuGridSkeleton } from '@/components/ui/Skeleton';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -173,7 +173,7 @@ export default function BrowseMenuPage() {
 
       {/* Grid */}
       {loading ? (
-        <LoadingSpinner message="Loading menu items..." />
+        <MenuGridSkeleton count={8} />
       ) : items.length === 0 ? (
         <div className="text-center py-16 bg-white dark:bg-[#19191b] rounded-xl border border-black/[0.06] dark:border-white/[0.08] space-y-3">
           <p className="text-sm font-medium text-stone-800 dark:text-stone-200">

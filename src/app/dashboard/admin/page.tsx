@@ -14,7 +14,7 @@ import {
   Receipt,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { DashboardOverviewSkeleton } from '@/components/ui/Skeleton';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -46,7 +46,7 @@ export default function AdminOverviewPage() {
   }, [token]);
 
   if (loading) {
-    return <LoadingSpinner message="Loading platform overview metrics..." />;
+    return <DashboardOverviewSkeleton />;
   }
 
   const statCards = [

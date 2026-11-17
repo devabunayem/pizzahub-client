@@ -15,8 +15,8 @@ import {
   Clock,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import toast from 'react-hot-toast';
+import { TableSkeleton } from '@/components/ui/Skeleton';
+import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -107,7 +107,7 @@ export default function AdminManageMenuPage() {
   };
 
   if (loading) {
-    return <LoadingSpinner message="Retrieving submitted pizzas for moderation..." />;
+    return <TableSkeleton rows={6} columns={5} />;
   }
 
   return (
