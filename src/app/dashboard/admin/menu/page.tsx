@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { TableSkeleton } from '@/components/ui/Skeleton';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -26,6 +27,17 @@ export default function AdminManageMenuPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    itemId: string;
+    name: string;
+    loading: boolean;
+  }>({
+    isOpen: false,
+    itemId: '',
+    name: '',
+    loading: false,
+  });
 
   const fetchItems = async () => {
     try {
@@ -84,12 +96,13 @@ export default function AdminManageMenuPage() {
     }
   };
 
-  const handleDelete = async (itemId: string, name: string) => {
-    if (!window.confirm(`Are you sure you want to permanently delete "${name}"?`)) return;
+  const confirmDelete = async () => {
+    if (!deleteModal.itemId) return;
 
+    setDeleteModal((prev) => ({ ...prev, loading: true }));
     const toastId = toast.loading('Deleting menu item...');
     try {
-      const res = await fetch(`${API_BASE}/menu/${itemId}`, {
+      const res = await fetch(`${API_BASE}/menu/${deleteModal.itemId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -97,12 +110,15 @@ export default function AdminManageMenuPage() {
       const data = await res.json();
       if (data.success) {
         toast.success('Item deleted successfully.', { id: toastId });
+        setDeleteModal({ isOpen: false, itemId: '', name: '', loading: false });
         fetchItems();
       } else {
         toast.error(data.message || 'Failed to delete item.', { id: toastId });
+        setDeleteModal((prev) => ({ ...prev, loading: false }));
       }
     } catch (err) {
       toast.error('Network error deleting item.', { id: toastId });
+      setDeleteModal((prev) => ({ ...prev, loading: false }));
     }
   };
 
@@ -284,7 +300,14 @@ export default function AdminManageMenuPage() {
                       </Link>
 
                       <button
-                        onClick={() => handleDelete(item._id, item.itemName)}
+                        onClick={() =>
+                          setDeleteModal({
+                            isOpen: true,
+                            itemId: item._id,
+                            name: item.itemName,
+                            loading: false,
+                          })
+                        }
                         className="p-1 rounded-md text-stone-400 hover:text-red-600 inline-flex transition-colors cursor-pointer"
                         title="Delete permanently"
                       >
@@ -298,6 +321,20 @@ export default function AdminManageMenuPage() {
           </div>
         </div>
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        loading={deleteModal.loading}
+        onClose={() =>
+          setDeleteModal({ isOpen: false, itemId: '', name: '', loading: false })
+        }
+        onConfirm={confirmDelete}
+        title="Permanently delete pizza listing"
+        message={`Are you sure you want to permanently remove "${deleteModal.name}" from the platform? This cannot be undone.`}
+        confirmText="Delete permanently"
+        variant="danger"
+      />
     </div>
   );
 }
