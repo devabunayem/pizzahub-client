@@ -62,7 +62,8 @@
 - **Icons:** Lucide React
 - **Animations:** Motion (`motion/react`)
 - **Theme:** `next-themes` (Dark / Light mode)
-- **Notifications:** `react-hot-toast`
+- **Physics Toast Notifications:** `sileo` (Physics-based spring toasts)
+- **Loading State Experience:** Bespoke shimmer wave skeleton loading (`MenuGridSkeleton`, `ItemDetailSkeleton`, `DashboardOverviewSkeleton`, `OrderListSkeleton`, `TableSkeleton`)
 - **Celebration Effects:** `canvas-confetti`
 - **Image Hosting:** ImgBB API
 
