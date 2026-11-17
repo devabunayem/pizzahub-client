@@ -36,6 +36,11 @@ export default function AddMenuItemPage() {
   const [submitting, setSubmitting] = useState(false);
   const [limitReached, setLimitReached] = useState(false);
 
+  const isPremium =
+    user?.subscriptionPlan === 'premium' &&
+    (!user?.subscriptionExpiresAt ||
+      new Date(user.subscriptionExpiresAt) > new Date());
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -130,7 +135,7 @@ export default function AddMenuItemPage() {
         </p>
       </div>
 
-      {user?.subscriptionPlan === 'free' && (
+      {!isPremium && (
         <div className="p-3.5 rounded-lg bg-stone-100 dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.08] text-xs text-stone-600 dark:text-stone-400 flex items-center justify-between">
           <span>Free tier allows up to 3 active menu items.</span>
           <Link

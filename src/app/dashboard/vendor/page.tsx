@@ -59,7 +59,10 @@ export default function VendorOverviewPage() {
   const activeMenuItems = menuItems.filter((i) => i.status === 'approved').length;
   const pendingOrders = orders.filter((o) => o.status === 'pending').length;
   const acceptedOrders = orders.filter((o) => o.status === 'accepted').length;
-  const isPremium = user?.subscriptionPlan === 'premium';
+  const isPremium =
+    user?.subscriptionPlan === 'premium' &&
+    (!user?.subscriptionExpiresAt ||
+      new Date(user.subscriptionExpiresAt) > new Date());
 
   return (
     <div className="space-y-8">
