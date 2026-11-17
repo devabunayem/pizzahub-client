@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { CheckCircle2, Sparkles, ArrowRight, ShieldCheck, Pizza } from 'lucide-react';
+import { CheckCircle2, ArrowRight, ShieldCheck, Pizza } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
@@ -66,44 +66,39 @@ function PaymentSuccessContent() {
   }
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-16 text-center space-y-6">
-      <div className="w-20 h-20 mx-auto rounded-full bg-green-100 dark:bg-green-950/60 text-green-600 dark:text-green-400 flex items-center justify-center shadow-lg animate-bounce">
-        <CheckCircle2 className="w-10 h-10" />
+    <div className="max-w-md mx-auto px-4 py-16 text-center space-y-6">
+      <div className="w-12 h-12 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 flex items-center justify-center">
+        <CheckCircle2 className="w-6 h-6" />
       </div>
 
-      <div className="space-y-2">
-        <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 text-xs font-bold uppercase tracking-wider">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Payment Verified & Confirmed</span>
-        </div>
-        <h1 className="text-3xl font-black text-stone-900 dark:text-white tracking-tight">
-          Welcome to PizzaHub Premium!
+      <div className="space-y-1.5">
+        <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
+          Subscription confirmed
         </h1>
-        <p className="text-sm text-stone-600 dark:text-stone-400 max-w-md mx-auto leading-relaxed">
-          Your payment was securely verified via Stripe. Your restaurant now enjoys unlimited menu
-          items, priority homepage placement, and a verified Premium badge.
+        <p className="text-xs text-stone-500 dark:text-stone-400 max-w-sm mx-auto leading-relaxed">
+          Your payment was verified via Stripe. Premium benefits including unlimited active items and featured placement are now active.
         </p>
       </div>
 
-      <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300 flex items-center justify-center space-x-2">
-        <ShieldCheck className="w-4 h-4 text-green-500" />
-        <span>Transaction Session ID: {sessionId ? `${sessionId.slice(0, 18)}...` : 'Verified'}</span>
+      <div className="p-3 rounded-lg bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300 flex items-center justify-center space-x-2">
+        <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+        <span className="font-mono text-[11px] text-stone-500">Session: {sessionId ? `${sessionId.slice(0, 18)}...` : 'Verified'}</span>
       </div>
 
-      <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+      <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2.5">
         <Link
           href="/dashboard/vendor"
-          className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-pizza-600 hover:bg-pizza-700 text-white font-bold text-xs shadow-md shadow-pizza-500/25 transition-all flex items-center justify-center space-x-2"
+          className="w-full sm:w-auto px-4 py-2 rounded-lg bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-white text-white dark:text-stone-900 font-medium text-xs transition-colors flex items-center justify-center space-x-1.5"
         >
-          <span>Go to Vendor Dashboard</span>
-          <ArrowRight className="w-4 h-4" />
+          <span>Kitchen overview</span>
+          <ArrowRight className="w-3.5 h-3.5" />
         </Link>
         <Link
           href="/dashboard/vendor/add-item"
-          className="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-800 dark:text-stone-200 font-bold text-xs transition-colors flex items-center justify-center space-x-2"
+          className="w-full sm:w-auto px-4 py-2 rounded-lg border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-800 dark:text-stone-200 font-medium text-xs transition-colors flex items-center justify-center space-x-1.5"
         >
-          <Pizza className="w-4 h-4 text-pizza-500" />
-          <span>Add More Menu Items</span>
+          <Pizza className="w-3.5 h-3.5" />
+          <span>Publish dish</span>
         </Link>
       </div>
     </div>
