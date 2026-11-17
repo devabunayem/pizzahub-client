@@ -8,6 +8,8 @@ import {
   Eye,
   Trash2,
   Power,
+  Pencil,
+  X,
   MapPin,
   UtensilsCrossed,
 } from 'lucide-react';
@@ -33,6 +35,77 @@ export default function MyMenuItemsPage() {
     name: '',
     loading: false,
   });
+
+  const [editModal, setEditModal] = useState<{
+    isOpen: boolean;
+    item: any | null;
+    loading: boolean;
+  }>({
+    isOpen: false,
+    item: null,
+    loading: false,
+  });
+
+  const [editForm, setEditForm] = useState({
+    itemName: '',
+    description: '',
+    price: '',
+    category: 'Neapolitan',
+    location: '',
+  });
+
+  const handleOpenEdit = (item: any) => {
+    setEditForm({
+      itemName: item.itemName,
+      description: item.description,
+      price: item.price.toString(),
+      category: item.category,
+      location: item.location,
+    });
+    setEditModal({
+      isOpen: true,
+      item,
+      loading: false,
+    });
+  };
+
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editModal.item) return;
+
+    setEditModal((prev) => ({ ...prev, loading: true }));
+    const toastId = toast.loading('Updating menu item...');
+
+    try {
+      const res = await fetch(`${API_BASE}/menu/${editModal.item._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          itemName: editForm.itemName,
+          description: editForm.description,
+          price: parseFloat(editForm.price),
+          category: editForm.category,
+          location: editForm.location,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Menu item updated successfully.', { id: toastId });
+        setEditModal({ isOpen: false, item: null, loading: false });
+        fetchItems();
+      } else {
+        toast.error(data.message || 'Failed to update item.', { id: toastId });
+        setEditModal((prev) => ({ ...prev, loading: false }));
+      }
+    } catch (err) {
+      toast.error('Network error updating item.', { id: toastId });
+      setEditModal((prev) => ({ ...prev, loading: false }));
+    }
+  };
 
   const fetchItems = async () => {
     try {
@@ -215,10 +288,18 @@ export default function MyMenuItemsPage() {
                         <Eye className="w-3.5 h-3.5" />
                       </Link>
 
+                      <button
+                        onClick={() => handleOpenEdit(item)}
+                        className="p-1 rounded text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 inline-flex cursor-pointer"
+                        title="Edit listing"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </button>
+
                       {(item.status === 'approved' || item.status === 'inactive') && (
                         <button
                           onClick={() => toggleAvailability(item._id, item.status)}
-                          className={`p-1 rounded inline-flex ${
+                          className={`p-1 rounded inline-flex cursor-pointer ${
                             item.status === 'approved'
                               ? 'text-stone-600 hover:text-stone-900'
                               : 'text-stone-400 hover:text-stone-600'
@@ -248,6 +329,139 @@ export default function MyMenuItemsPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Menu Item Modal */}
+      {editModal.isOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => {
+            if (!editModal.loading) setEditModal({ isOpen: false, item: null, loading: false });
+          }}
+        >
+          <div
+            className="bg-white dark:bg-[#19191b] border border-black/[0.08] dark:border-white/[0.08] rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] dark:border-white/[0.06]">
+              <div>
+                <h3 className="text-base font-semibold text-stone-900 dark:text-white">
+                  Edit Menu Item
+                </h3>
+                <p className="text-xs text-stone-500 mt-0.5">
+                  Update item details, pricing, and category
+                </p>
+              </div>
+              <button
+                onClick={() => setEditModal({ isOpen: false, item: null, loading: false })}
+                disabled={editModal.loading}
+                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 p-1 rounded-lg"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+                  Pizza Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editForm.itemName}
+                  onChange={(e) => setEditForm({ ...editForm, itemName: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+                    Price ($) *
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="1"
+                    required
+                    value={editForm.price}
+                    onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+                    Category *
+                  </label>
+                  <select
+                    value={editForm.category}
+                    onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+                  >
+                    {[
+                      'Neapolitan',
+                      'New York',
+                      'Sicilian',
+                      'Chicago Deep Dish',
+                      'Detroit',
+                      'California',
+                    ].map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+                  Kitchen Location *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editForm.location}
+                  onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+                  Description *
+                </label>
+                <textarea
+                  rows={3}
+                  required
+                  value={editForm.description}
+                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none resize-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-end space-x-2 pt-3 border-t border-black/[0.06] dark:border-white/[0.06]">
+                <button
+                  type="button"
+                  onClick={() => setEditModal({ isOpen: false, item: null, loading: false })}
+                  disabled={editModal.loading}
+                  className="px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#232325] text-stone-700 dark:text-stone-300 text-xs font-medium cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={editModal.loading}
+                  className="px-4 py-2 rounded-lg bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-medium hover:bg-stone-800 dark:hover:bg-white transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {editModal.loading ? 'Saving...' : 'Save changes'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
