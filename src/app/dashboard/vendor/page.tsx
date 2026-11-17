@@ -8,11 +8,10 @@ import {
   ShoppingBag,
   Clock,
   CheckCircle2,
-  Sparkles,
   PlusCircle,
   ArrowRight,
-  TrendingUp,
 } from 'lucide-react';
+import { formatPrice } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -53,7 +52,7 @@ export default function VendorOverviewPage() {
   }, [token]);
 
   if (loading) {
-    return <LoadingSpinner message="Loading your restaurant metrics..." />;
+    return <LoadingSpinner message="Loading kitchen data..." />;
   }
 
   const totalMenuItems = menuItems.length;
@@ -64,183 +63,132 @@ export default function VendorOverviewPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header Banner */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-pizza-600 via-pizza-500 to-orange-500 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        <div className="space-y-2">
-          <div className="flex items-center space-x-2">
-            <span className="text-xs font-black uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full">
-              {user?.businessName || "Chef's Kitchen"}
-            </span>
-            {isPremium ? (
-              <span className="text-xs font-black bg-amber-400 text-stone-900 px-3 py-1 rounded-full flex items-center">
-                <Sparkles className="w-3.5 h-3.5 mr-1" /> Premium Partner
-              </span>
-            ) : (
-              <span className="text-xs font-bold bg-white/20 text-white px-3 py-1 rounded-full">
-                Free Plan (3 Items Limit)
-              </span>
-            )}
+      {/* Contextual Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-black/[0.06] dark:border-white/[0.08]">
+        <div>
+          <div className="flex items-center space-x-2 text-xs text-stone-500">
+            <span>{user?.businessName || 'Kitchen workspace'}</span>
+            <span>•</span>
+            <span>{isPremium ? 'Premium plan' : 'Free tier'}</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-            Welcome, {user?.name}!
+          <h1 className="text-xl sm:text-2xl font-semibold text-stone-900 dark:text-white tracking-tight mt-1">
+            Kitchen overview
           </h1>
-          <p className="text-sm text-pizza-100 max-w-xl">
-            Monitor incoming pizza orders, publish seasonal specialties, and track your kitchen
-            performance in real-time.
-          </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex items-center space-x-2">
           <Link
             href="/dashboard/vendor/add-item"
-            className="px-5 py-3 rounded-2xl bg-white text-pizza-600 hover:bg-pizza-50 font-bold text-xs shadow-md transition-all flex items-center justify-center space-x-2"
+            className="px-3 py-2 rounded-lg bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-white text-white dark:text-stone-900 text-xs font-medium flex items-center space-x-1.5 transition-colors"
           >
-            <PlusCircle className="w-4 h-4" />
-            <span>Add Menu Item</span>
+            <PlusCircle className="w-3.5 h-3.5" />
+            <span>Add menu item</span>
           </Link>
           {!isPremium && (
             <Link
               href="/dashboard/vendor/subscription"
-              className="px-5 py-3 rounded-2xl bg-stone-900/40 hover:bg-stone-900/60 border border-white/20 text-white font-bold text-xs transition-all flex items-center justify-center space-x-2"
+              className="px-3 py-2 rounded-lg border border-black/[0.1] dark:border-white/[0.1] hover:bg-stone-100 dark:hover:bg-white/[0.04] text-xs font-medium text-stone-700 dark:text-stone-300 transition-colors"
             >
-              <Sparkles className="w-4 h-4 text-amber-300" />
-              <span>Upgrade Plan</span>
+              Upgrade plan
             </Link>
           )}
         </div>
       </div>
 
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">
-              Total Menu Items
-            </span>
-            <div className="w-10 h-10 rounded-xl bg-pizza-100 dark:bg-pizza-950/60 text-pizza-600 flex items-center justify-center">
-              <UtensilsCrossed className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="text-3xl font-black text-stone-900 dark:text-white">
+      {/* Metrics Row: Clean Numbers */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-5 rounded-xl bg-white dark:bg-[#19191b] border border-black/[0.06] dark:border-white/[0.08] space-y-1">
+          <span className="text-xs text-stone-500 font-medium">Total menu items</span>
+          <div className="text-2xl font-semibold tabular-nums text-stone-900 dark:text-white">
             {totalMenuItems}
           </div>
-          <p className="text-xs text-stone-500">
-            {isPremium ? 'Unlimited capacity enabled' : `${activeMenuItems} / 3 active allowed`}
+          <p className="text-[11px] text-stone-400">
+            {isPremium ? 'Unlimited capacity' : `${activeMenuItems} of 3 active`}
           </p>
         </div>
 
-        <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">
-              Active Items (Approved)
-            </span>
-            <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-950/60 text-green-600 flex items-center justify-center">
-              <CheckCircle2 className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="text-3xl font-black text-stone-900 dark:text-white">
+        <div className="p-5 rounded-xl bg-white dark:bg-[#19191b] border border-black/[0.06] dark:border-white/[0.08] space-y-1">
+          <span className="text-xs text-stone-500 font-medium">Active items</span>
+          <div className="text-2xl font-semibold tabular-nums text-stone-900 dark:text-white">
             {activeMenuItems}
           </div>
-          <p className="text-xs text-stone-500">Visible to hungry customers</p>
+          <p className="text-[11px] text-stone-400">Visible on public menu</p>
         </div>
 
-        <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">
-              Pending Orders
-            </span>
-            <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 flex items-center justify-center">
-              <Clock className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="text-3xl font-black text-amber-600">
+        <div className="p-5 rounded-xl bg-white dark:bg-[#19191b] border border-black/[0.06] dark:border-white/[0.08] space-y-1">
+          <span className="text-xs text-stone-500 font-medium">Pending orders</span>
+          <div className="text-2xl font-semibold tabular-nums text-amber-600 dark:text-amber-400">
             {pendingOrders}
           </div>
-          <p className="text-xs text-stone-500">Awaiting kitchen confirmation</p>
+          <p className="text-[11px] text-stone-400">Awaiting review</p>
         </div>
 
-        <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">
-              Accepted Orders
-            </span>
-            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 flex items-center justify-center">
-              <ShoppingBag className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="text-3xl font-black text-stone-900 dark:text-white">
+        <div className="p-5 rounded-xl bg-white dark:bg-[#19191b] border border-black/[0.06] dark:border-white/[0.08] space-y-1">
+          <span className="text-xs text-stone-500 font-medium">Accepted orders</span>
+          <div className="text-2xl font-semibold tabular-nums text-stone-900 dark:text-white">
             {acceptedOrders}
           </div>
-          <p className="text-xs text-stone-500">Successfully handled</p>
+          <p className="text-[11px] text-stone-400">Confirmed by kitchen</p>
         </div>
       </div>
 
-      {/* Recent Orders Preview */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-bold text-stone-900 dark:text-white">
-              Recent Customer Orders
-            </h3>
-            <p className="text-xs text-stone-500">
-              Orders requiring your immediate culinary attention
-            </p>
-          </div>
+      {/* Recent Orders */}
+      <div className="p-5 rounded-xl bg-white dark:bg-[#19191b] border border-black/[0.06] dark:border-white/[0.08] space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
+          <h2 className="text-sm font-semibold text-stone-900 dark:text-white">
+            Recent customer orders
+          </h2>
           <Link
             href="/dashboard/vendor/orders"
-            className="text-xs font-bold text-pizza-600 hover:text-pizza-700 flex items-center space-x-1"
+            className="text-xs text-stone-500 hover:text-stone-900 dark:hover:text-white inline-flex items-center space-x-1"
           >
-            <span>View All Orders</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <span>View all</span>
+            <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
 
         {orders.length === 0 ? (
-          <div className="text-center py-12 text-stone-500 text-sm">
-            No customer orders placed yet. As soon as a customer orders your pizza, it will appear here.
+          <div className="py-8 text-center text-xs text-stone-500">
+            No orders received yet. New orders will appear here automatically.
           </div>
         ) : (
-          <div className="divide-y divide-stone-100 dark:divide-stone-800">
+          <div className="divide-y divide-black/[0.04] dark:divide-white/[0.04]">
             {orders.slice(0, 5).map((order) => (
               <div
                 key={order._id}
-                className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
               >
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 rounded-xl bg-stone-100 dark:bg-stone-800 overflow-hidden shrink-0">
-                    <img
-                      src={order.itemId?.images?.[0] || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=200&q=80'}
-                      alt={order.itemId?.itemName}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+                  <img
+                    src={order.itemId?.images?.[0] || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=200&q=80'}
+                    alt={order.itemId?.itemName}
+                    className="w-10 h-10 rounded-lg object-cover"
+                  />
                   <div>
-                    <p className="font-bold text-sm text-stone-900 dark:text-white">
-                      {order.itemId?.itemName || 'Delicious Pizza'}
+                    <p className="font-medium text-stone-900 dark:text-white">
+                      {order.itemId?.itemName}
                     </p>
-                    <p className="text-xs text-stone-500">
-                      Customer: {order.customerId?.name} ({order.deliveryAddress})
+                    <p className="text-stone-500">
+                      {order.customerId?.name} • {order.deliveryAddress}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${
+                    className={`px-2 py-0.5 rounded text-[11px] font-medium capitalize ${
                       order.status === 'pending'
-                        ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300'
+                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300'
                         : order.status === 'accepted'
-                        ? 'bg-green-100 dark:bg-green-950/60 text-green-700 dark:text-green-300'
-                        : order.status === 'rejected'
-                        ? 'bg-stone-100 dark:bg-stone-800 text-stone-600'
-                        : 'bg-red-100 text-red-600'
+                        ? 'bg-green-100 text-green-800 dark:bg-green-950/40 dark:text-green-300'
+                        : 'bg-stone-100 text-stone-600 dark:bg-white/[0.04] dark:text-stone-400'
                     }`}
                   >
                     {order.status}
                   </span>
                   <Link
                     href="/dashboard/vendor/orders"
-                    className="px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 text-xs font-semibold hover:bg-stone-50 dark:hover:bg-stone-800"
+                    className="px-2.5 py-1 rounded border border-black/[0.08] dark:border-white/[0.08] text-stone-600 dark:text-stone-300 hover:text-stone-900"
                   >
                     Manage
                   </Link>

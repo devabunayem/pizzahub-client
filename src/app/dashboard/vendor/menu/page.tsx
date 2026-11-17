@@ -4,17 +4,12 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import {
-  UtensilsCrossed,
   PlusCircle,
   Eye,
   Trash2,
   Power,
-  Sparkles,
   MapPin,
-  Clock,
-  AlertCircle,
-  CheckCircle2,
-  XCircle,
+  UtensilsCrossed,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
@@ -52,7 +47,7 @@ export default function MyMenuItemsPage() {
 
   const toggleAvailability = async (id: string, currentStatus: string) => {
     const nextStatus = currentStatus === 'approved' ? 'inactive' : 'approved';
-    const toastId = toast.loading('Updating item status...');
+    const toastId = toast.loading('Updating status...');
 
     try {
       const res = await fetch(`${API_BASE}/menu/${id}`, {
@@ -66,7 +61,7 @@ export default function MyMenuItemsPage() {
 
       const data = await res.json();
       if (data.success) {
-        toast.success(`Item marked as ${nextStatus}!`, { id: toastId });
+        toast.success(`Item marked as ${nextStatus}.`, { id: toastId });
         fetchItems();
       } else {
         toast.error(data.message || 'Failed to update status.', { id: toastId });
@@ -77,7 +72,7 @@ export default function MyMenuItemsPage() {
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!window.confirm(`Are you sure you want to delete "${name}"?`)) return;
+    if (!window.confirm(`Delete "${name}"?`)) return;
 
     const toastId = toast.loading('Deleting menu item...');
     try {
@@ -88,7 +83,7 @@ export default function MyMenuItemsPage() {
 
       const data = await res.json();
       if (data.success) {
-        toast.success('Item deleted successfully.', { id: toastId });
+        toast.success('Item deleted.', { id: toastId });
         fetchItems();
       } else {
         toast.error(data.message || 'Failed to delete item.', { id: toastId });
@@ -99,143 +94,131 @@ export default function MyMenuItemsPage() {
   };
 
   if (loading) {
-    return <LoadingSpinner message="Loading your restaurant menu..." />;
+    return <LoadingSpinner message="Loading your menu..." />;
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-black/[0.06] dark:border-white/[0.08]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-stone-900 dark:text-white tracking-tight">
-            My Menu Items
+          <h1 className="text-xl font-semibold text-stone-900 dark:text-white tracking-tight">
+            Menu listings
           </h1>
-          <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-            Manage your published pizzas, track admin approval statuses, and toggle availability.
+          <p className="text-xs text-stone-500 mt-0.5">
+            Manage your kitchen offerings, check approval status, and toggle availability.
           </p>
         </div>
 
         <Link
           href="/dashboard/vendor/add-item"
-          className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-pizza-600 hover:bg-pizza-700 text-white font-bold text-xs shadow-md shadow-pizza-500/20 transition-all shrink-0 self-start sm:self-auto"
+          className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-white text-white dark:text-stone-900 text-xs font-medium self-start sm:self-auto"
         >
-          <PlusCircle className="w-4 h-4" />
-          <span>Add New Pizza</span>
+          <PlusCircle className="w-3.5 h-3.5" />
+          <span>Add item</span>
         </Link>
       </div>
 
-      {/* Items Table / Cards */}
       {items.length === 0 ? (
-        <div className="text-center py-16 bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 dark:border-stone-800 space-y-4">
-          <div className="w-14 h-14 mx-auto rounded-full bg-pizza-50 dark:bg-pizza-950/60 text-pizza-500 flex items-center justify-center">
-            <UtensilsCrossed className="w-7 h-7" />
-          </div>
-          <h3 className="text-lg font-bold text-stone-900 dark:text-white">
-            No pizzas added yet
-          </h3>
-          <p className="text-stone-500 dark:text-stone-400 text-xs max-w-sm mx-auto">
-            Get started by adding your first wood-fired pizza with an appetizing photo and recipe details.
+        <div className="text-center py-12 bg-white dark:bg-[#19191b] rounded-xl border border-black/[0.06] dark:border-white/[0.08] space-y-3">
+          <UtensilsCrossed className="w-8 h-8 mx-auto text-stone-400" />
+          <p className="text-sm font-medium text-stone-800 dark:text-stone-200">
+            No items listed yet
           </p>
           <Link
             href="/dashboard/vendor/add-item"
-            className="inline-flex items-center px-4 py-2 rounded-xl bg-pizza-600 text-white font-bold text-xs shadow-md"
+            className="inline-block px-3 py-1.5 rounded bg-stone-900 text-white text-xs font-medium"
           >
-            <PlusCircle className="w-3.5 h-3.5 mr-1.5" />
-            <span>Add First Menu Item</span>
+            Add first item
           </Link>
         </div>
       ) : (
-        <div className="bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-[#19191b] rounded-xl border border-black/[0.06] dark:border-white/[0.08] overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-800/50 text-[11px] font-bold text-stone-500 uppercase tracking-wider">
-                  <th className="py-4 px-6">Pizza Item</th>
-                  <th className="py-4 px-6">Category</th>
-                  <th className="py-4 px-6">Price</th>
-                  <th className="py-4 px-6">Approval Status</th>
-                  <th className="py-4 px-6 text-right">Actions</th>
+                <tr className="border-b border-black/[0.06] dark:border-white/[0.08] bg-stone-50 dark:bg-white/[0.02] text-stone-500 font-medium">
+                  <th className="py-3 px-4">Item</th>
+                  <th className="py-3 px-4">Category</th>
+                  <th className="py-3 px-4">Price</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-stone-100 dark:divide-stone-800 text-sm">
+              <tbody className="divide-y divide-black/[0.04] dark:divide-white/[0.04]">
                 {items.map((item) => (
-                  <tr key={item._id} className="hover:bg-stone-50/50 dark:hover:bg-stone-800/30">
-                    <td className="py-4 px-6">
-                      <div className="flex items-center space-x-3.5">
+                  <tr key={item._id} className="hover:bg-stone-50/50 dark:hover:bg-white/[0.02]">
+                    <td className="py-3 px-4">
+                      <div className="flex items-center space-x-3">
                         <img
                           src={item.images?.[0] || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=200&q=80'}
                           alt={item.itemName}
-                          className="w-14 h-14 rounded-xl object-cover shrink-0 border border-stone-200 dark:border-stone-700"
+                          className="w-10 h-10 rounded-md object-cover"
                         />
                         <div>
-                          <p className="font-bold text-stone-900 dark:text-white">
+                          <p className="font-medium text-stone-900 dark:text-white">
                             {item.itemName}
                           </p>
-                          <p className="text-xs text-stone-400 flex items-center mt-0.5">
-                            <MapPin className="w-3 h-3 mr-1 text-pizza-500" />
+                          <p className="text-[11px] text-stone-400 flex items-center">
+                            <MapPin className="w-3 h-3 mr-0.5 text-stone-400" />
                             <span>{item.location}</span>
                           </p>
                         </div>
                       </div>
                     </td>
 
-                    <td className="py-4 px-6 font-medium text-stone-600 dark:text-stone-300">
+                    <td className="py-3 px-4 text-stone-600 dark:text-stone-300">
                       {item.category}
                     </td>
 
-                    <td className="py-4 px-6 font-black text-pizza-600">
+                    <td className="py-3 px-4 tabular-nums font-medium text-stone-900 dark:text-white">
                       {formatPrice(item.price)}
                     </td>
 
-                    <td className="py-4 px-6">
+                    <td className="py-3 px-4">
                       <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold capitalize ${
+                        className={`inline-block px-2 py-0.5 rounded text-[11px] font-medium capitalize ${
                           item.status === 'approved'
-                            ? 'bg-green-100 dark:bg-green-950/60 text-green-700 dark:text-green-300'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-950/40 dark:text-green-300'
                             : item.status === 'pending'
-                            ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300'
+                            ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300'
                             : item.status === 'inactive'
-                            ? 'bg-stone-200 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
-                            : 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300'
+                            ? 'bg-stone-100 text-stone-600 dark:bg-white/[0.05] dark:text-stone-400'
+                            : 'bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-300'
                         }`}
                       >
-                        {item.status === 'approved' && <CheckCircle2 className="w-3.5 h-3.5 mr-1" />}
-                        {item.status === 'pending' && <Clock className="w-3.5 h-3.5 mr-1" />}
-                        {item.status === 'rejected' && <XCircle className="w-3.5 h-3.5 mr-1" />}
                         {item.status}
                       </span>
                     </td>
 
-                    <td className="py-4 px-6 text-right space-x-2">
+                    <td className="py-3 px-4 text-right space-x-1">
                       <Link
                         href={`/menu/${item._id}`}
-                        className="p-2 rounded-xl text-stone-500 hover:text-pizza-600 hover:bg-stone-100 dark:hover:bg-stone-800 inline-flex transition-colors"
-                        title="View Public Details"
+                        className="p-1 rounded text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 inline-flex"
+                        title="View"
                       >
-                        <Eye className="w-4 h-4" />
+                        <Eye className="w-3.5 h-3.5" />
                       </Link>
 
-                      {/* Availability toggle for approved or inactive items */}
                       {(item.status === 'approved' || item.status === 'inactive') && (
                         <button
                           onClick={() => toggleAvailability(item._id, item.status)}
-                          className={`p-2 rounded-xl inline-flex transition-colors ${
+                          className={`p-1 rounded inline-flex ${
                             item.status === 'approved'
-                              ? 'text-green-600 hover:bg-green-50 dark:hover:bg-green-950/40'
-                              : 'text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+                              ? 'text-stone-600 hover:text-stone-900'
+                              : 'text-stone-400 hover:text-stone-600'
                           }`}
-                          title={item.status === 'approved' ? 'Mark Inactive' : 'Activate Item'}
+                          title={item.status === 'approved' ? 'Deactivate' : 'Activate'}
                         >
-                          <Power className="w-4 h-4" />
+                          <Power className="w-3.5 h-3.5" />
                         </button>
                       )}
 
                       <button
                         onClick={() => handleDelete(item._id, item.itemName)}
-                        className="p-2 rounded-xl text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 inline-flex transition-colors"
-                        title="Delete Item"
+                        className="p-1 rounded text-stone-400 hover:text-red-600 inline-flex"
+                        title="Delete"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </td>
                   </tr>
