@@ -58,11 +58,13 @@
 
 - **Framework:** Next.js 15 (App Router)
 - **Language:** TypeScript
+- **Authentication:** Better Auth (`better-auth`) with MongoDB adapter (`mongodb`) & JWT plugin
 - **Styling:** Tailwind CSS with custom warm pizza palette
 - **Icons:** Lucide React
 - **Animations:** Motion (`motion/react`)
 - **Theme:** `next-themes` (Dark / Light mode)
 - **Physics Toast Notifications:** `sileo` (Physics-based spring toasts)
+- **Confirmation Modals:** Custom accessible `ConfirmModal` (Zero browser native alerts/confirms)
 - **Loading State Experience:** Bespoke shimmer wave skeleton loading (`MenuGridSkeleton`, `ItemDetailSkeleton`, `DashboardOverviewSkeleton`, `OrderListSkeleton`, `TableSkeleton`)
 - **Celebration Effects:** `canvas-confetti`
 - **Image Hosting:** ImgBB API
@@ -75,6 +77,13 @@
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 NEXT_PUBLIC_IMGBB_API_KEY=ed9cd2830c7038c0b9ba40977ad448f4
+
+# Better Auth Configuration (MongoDB Adapter)
+BETTER_AUTH_SECRET=your_better_auth_secret_key
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
+MONGODB_URI=mongodb+srv://...
+DB_NAME=pizzahub
 ```
 
 ---
@@ -113,3 +122,8 @@ NEXT_PUBLIC_IMGBB_API_KEY=ed9cd2830c7038c0b9ba40977ad448f4
    - Tokens are securely stored in `localStorage` and `cookie`.
    - The backend `verifyToken` middleware decodes the JWT and validates user active status against MongoDB.
    - The `verifyRole('admin')` and `verifyRole('vendor')` middlewares enforce strict RBAC before any resource modification.
+
+3. **Better Auth with MongoDB Adapter:**
+   - Next.js App Router route handler at `/api/auth/[...all]` powered by `better-auth` with official `mongodbAdapter`.
+   - Integrates custom user schema fields (`role`, `isBlocked`, `businessName`, `subscriptionPlan`, `subscriptionExpiresAt`).
+   - Integrated with the `jwt` plugin ensuring seamless interoperability between Next.js client sessions and Express REST API authorization.
