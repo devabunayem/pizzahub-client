@@ -1,5 +1,4 @@
 import React from 'react';
-import { Pizza } from 'lucide-react';
 
 interface LoadingSpinnerProps {
   message?: string;
@@ -7,18 +6,13 @@ interface LoadingSpinnerProps {
 }
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
-  message = 'Loading hot & fresh pizzas...',
+  message = 'Loading...',
   fullScreen = false,
 }) => {
   const content = (
-    <div className="flex flex-col items-center justify-center p-8 space-y-4">
-      <div className="relative">
-        <div className="w-16 h-16 rounded-full border-4 border-pizza-200 dark:border-stone-800 border-t-pizza-600 animate-spin" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Pizza className="w-7 h-7 text-pizza-600 animate-bounce" />
-        </div>
-      </div>
-      <p className="text-sm font-medium text-stone-600 dark:text-stone-400 animate-pulse">
+    <div className="flex flex-col items-center justify-center p-8 space-y-3">
+      <div className="w-5 h-5 rounded-full border-2 border-stone-300 dark:border-stone-700 border-t-stone-800 dark:border-t-stone-200 animate-spin" />
+      <p className="text-xs text-stone-500 dark:text-stone-400">
         {message}
       </p>
     </div>
@@ -26,7 +20,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
   if (fullScreen) {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center bg-stone-50/50 dark:bg-stone-950/50">
+      <div className="min-h-[60vh] flex items-center justify-center">
         {content}
       </div>
     );

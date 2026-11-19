@@ -10,23 +10,26 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        pizza: {
-          50: '#fff7ed',
-          100: '#ffedd5',
-          200: '#fed7aa',
-          300: '#fdba74',
-          400: '#fb923c',
-          500: '#f97316',
-          600: '#ea580c',
-          700: '#c2410c',
-          800: '#9a3412',
-          900: '#7c2d12',
-          red: '#e11d48',
-          redDark: '#be123c',
-          crust: '#d97706',
-          sauce: '#dc2626',
-          cheese: '#fbbf24',
-          basil: '#16a34a',
+        trattoria: {
+          tomato: '#b91c1c',
+          tomatoHover: '#991b1b',
+          basil: '#15803d',
+          crust: '#b45309',
+        },
+        surface: {
+          dark: {
+            deep: '#0f0f10',
+            bg: '#141415',
+            card: '#19191b',
+            raised: '#232325',
+            hairline: 'rgba(255, 255, 255, 0.08)',
+          },
+          light: {
+            bg: '#fafafa',
+            card: '#ffffff',
+            raised: '#f4f4f5',
+            hairline: 'rgba(0, 0, 0, 0.08)',
+          },
         },
       },
     },
