@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Pizza, Mail, Lock, ArrowRight } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { toast } from '@/lib/toast';
 
 export default function SignInPage() {
   const { login, user, isLoading } = useAuth();
