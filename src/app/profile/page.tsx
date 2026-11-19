@@ -6,11 +6,9 @@ import {
   User,
   Mail,
   Store,
-  Sparkles,
   Shield,
   Save,
   Image as ImageIcon,
-  CheckCircle2,
 } from 'lucide-react';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import toast from 'react-hot-toast';
@@ -71,28 +69,28 @@ export default function ProfileSettingsPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10 space-y-8">
+    <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-black text-stone-900 dark:text-white tracking-tight">
-          Profile Settings
+      <div className="border-b border-stone-200 dark:border-stone-800 pb-5">
+        <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
+          Profile settings
         </h1>
         <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-          Manage your personal identity, contact display, and kitchen branding.
+          Manage your personal details, contact display, and kitchen information.
         </p>
       </div>
 
-      {/* Security Rule Card */}
-      <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-between text-xs">
+      {/* Account Info Strip */}
+      <div className="p-3.5 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-between text-xs">
         <div className="flex items-center space-x-2">
-          <Shield className="w-4 h-4 text-pizza-500" />
-          <span className="text-stone-600 dark:text-stone-300">
-            Account Role: <strong className="capitalize text-stone-900 dark:text-white">{user.role}</strong>
+          <Shield className="w-3.5 h-3.5 text-stone-400" />
+          <span className="text-stone-600 dark:text-stone-400">
+            Account role: <span className="capitalize font-medium text-stone-900 dark:text-stone-100">{user.role}</span>
           </span>
         </div>
         {user.role === 'vendor' && (
-          <span className="font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 rounded-full">
-            ⭐ {user.subscriptionPlan === 'premium' ? 'Premium Plan' : 'Free Tier'}
+          <span className="font-medium text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/40 px-2 py-0.5 rounded">
+            {user.subscriptionPlan === 'premium' ? 'Premium partner' : 'Free tier'}
           </span>
         )}
       </div>
@@ -100,33 +98,33 @@ export default function ProfileSettingsPage() {
       {/* Profile Form */}
       <form
         onSubmit={handleSubmit}
-        className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-6"
+        className="p-6 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-5"
       >
         {/* Avatar Preview */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3.5">
           {image ? (
             <img
               src={image}
               alt={name}
-              className="w-16 h-16 rounded-2xl object-cover border-2 border-pizza-400 shadow-sm shrink-0"
+              className="w-14 h-14 rounded-xl object-cover border border-stone-200 dark:border-stone-800 shrink-0 bg-stone-100 dark:bg-stone-800"
             />
           ) : (
-            <div className="w-16 h-16 rounded-2xl bg-pizza-600 text-white flex items-center justify-center font-bold text-2xl uppercase shrink-0">
+            <div className="w-14 h-14 rounded-xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 flex items-center justify-center font-semibold text-lg uppercase shrink-0">
               {name.charAt(0) || 'U'}
             </div>
           )}
           <div>
-            <h3 className="font-bold text-base text-stone-900 dark:text-white">{name}</h3>
-            <p className="text-xs text-stone-400">{user.email}</p>
+            <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">{name}</h3>
+            <p className="text-xs text-stone-400 mt-0.5">{user.email}</p>
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-1.5">
-            Full Name *
+          <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+            Full name
           </label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
               <User className="w-4 h-4" />
             </div>
             <input
@@ -134,35 +132,35 @@ export default function ProfileSettingsPage() {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-pizza-500"
+              className="w-full pl-9 pr-3 py-2 rounded-lg border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs focus:outline-none focus:border-stone-400 dark:focus:border-stone-600"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-1.5">
-            Email Address (Read-only)
+          <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+            Email address (read-only)
           </label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
               <Mail className="w-4 h-4" />
             </div>
             <input
               type="email"
               disabled
               value={user.email}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-100 dark:bg-stone-800/50 text-stone-500 text-sm cursor-not-allowed"
+              className="w-full pl-9 pr-3 py-2 rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-800/50 text-stone-400 text-xs cursor-not-allowed"
             />
           </div>
         </div>
 
         {user.role === 'vendor' && (
           <div>
-            <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-1.5">
-              Restaurant / Business Brand Name *
+            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+              Restaurant brand name
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
                 <Store className="w-4 h-4" />
               </div>
               <input
@@ -170,18 +168,18 @@ export default function ProfileSettingsPage() {
                 required
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-pizza-500"
+                className="w-full pl-9 pr-3 py-2 rounded-lg border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs focus:outline-none focus:border-stone-400 dark:focus:border-stone-600"
               />
             </div>
           </div>
         )}
 
         <div>
-          <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-1.5">
-            Profile Image URL
+          <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+            Profile image URL
           </label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
               <ImageIcon className="w-4 h-4" />
             </div>
             <input
@@ -189,19 +187,19 @@ export default function ProfileSettingsPage() {
               value={image}
               onChange={(e) => setImage(e.target.value)}
               placeholder="https://images.unsplash.com/photo-..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-pizza-500"
+              className="w-full pl-9 pr-3 py-2 rounded-lg border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs focus:outline-none focus:border-stone-400 dark:focus:border-stone-600"
             />
           </div>
         </div>
 
-        <div className="pt-4 border-t border-stone-100 dark:border-stone-800 flex justify-end">
+        <div className="pt-3 border-t border-stone-100 dark:border-stone-800 flex justify-end">
           <button
             type="submit"
             disabled={saving}
-            className="py-3 px-6 rounded-xl bg-pizza-600 hover:bg-pizza-700 text-white font-bold text-xs shadow-md shadow-pizza-500/20 transition-all flex items-center space-x-1.5 cursor-pointer disabled:opacity-50"
+            className="py-2 px-4 rounded-lg bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-white text-white dark:text-stone-900 font-medium text-xs transition-colors flex items-center space-x-1.5 cursor-pointer disabled:opacity-50"
           >
-            <Save className="w-4 h-4" />
-            <span>{saving ? 'Saving...' : 'Save Profile Changes'}</span>
+            <Save className="w-3.5 h-3.5" />
+            <span>{saving ? 'Saving...' : 'Save changes'}</span>
           </button>
         </div>
       </form>

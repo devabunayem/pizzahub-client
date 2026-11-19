@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Pizza, Mail, Lock, ArrowRight, ShieldCheck, ChefHat } from 'lucide-react';
+import { Pizza, Mail, Lock, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function SignInPage() {
@@ -50,60 +50,60 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-stone-50 via-pizza-50/20 to-white dark:from-stone-950 dark:via-stone-900 dark:to-stone-950">
-      <div className="max-w-md w-full space-y-8 bg-white dark:bg-stone-900 p-8 sm:p-10 rounded-3xl shadow-xl border border-stone-200 dark:border-stone-800">
+    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-7 bg-white dark:bg-stone-900 p-8 sm:p-10 rounded-2xl border border-stone-200 dark:border-stone-800">
         {/* Header */}
-        <div className="text-center space-y-3">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-tr from-pizza-600 to-pizza-500 flex items-center justify-center text-white shadow-lg shadow-pizza-500/30">
-            <Pizza className="w-8 h-8" />
+        <div className="text-center space-y-2">
+          <div className="w-10 h-10 mx-auto rounded-xl bg-stone-900 dark:bg-stone-100 flex items-center justify-center text-white dark:text-stone-900">
+            <Pizza className="w-5 h-5" />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-white tracking-tight">
-            Sign In to Pizza<span className="text-pizza-600">Hub</span>
+          <h2 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
+            Sign in to PizzaHub
           </h2>
-          <p className="text-sm text-stone-600 dark:text-stone-400">
-            Welcome back! Enter your credentials to access your account.
+          <p className="text-xs text-stone-500 dark:text-stone-400">
+            Enter your credentials to access your account.
           </p>
         </div>
 
         {/* Quick Demo Credentials Helpers */}
-        <div className="p-3 rounded-2xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 text-xs space-y-1.5">
-          <p className="font-semibold text-stone-700 dark:text-stone-300">
-            ⚡ Quick Demo Logins (Click to autofill):
+        <div className="p-3.5 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-800 text-xs space-y-2">
+          <p className="font-medium text-stone-700 dark:text-stone-300 text-[11px]">
+            Demo credentials (click to populate):
           </p>
-          <div className="flex flex-wrap gap-2 pt-1">
+          <div className="flex flex-wrap gap-1.5">
             <button
               type="button"
               onClick={() => fillQuickDemo('admin')}
-              className="px-2.5 py-1 rounded-lg bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-medium hover:bg-purple-200 transition-colors"
+              className="px-2.5 py-1 rounded-md bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 font-medium text-xs hover:border-stone-400 dark:hover:border-stone-500 transition-colors cursor-pointer"
             >
-              👑 Admin (admin@pizzahub.com)
+              Admin
             </button>
             <button
               type="button"
               onClick={() => fillQuickDemo('vendor')}
-              className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 font-medium hover:bg-amber-200 transition-colors"
+              className="px-2.5 py-1 rounded-md bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 font-medium text-xs hover:border-stone-400 dark:hover:border-stone-500 transition-colors cursor-pointer"
             >
-              🍕 Vendor (mario@pizzahub.com)
+              Vendor (Mario&apos;s)
             </button>
             <button
               type="button"
               onClick={() => fillQuickDemo('customer')}
-              className="px-2.5 py-1 rounded-lg bg-green-100 dark:bg-green-950/60 text-green-700 dark:text-green-300 font-medium hover:bg-green-200 transition-colors"
+              className="px-2.5 py-1 rounded-md bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 font-medium text-xs hover:border-stone-400 dark:hover:border-stone-500 transition-colors cursor-pointer"
             >
-              👤 Customer (customer@pizzahub.com)
+              Customer
             </button>
           </div>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-1.5">
-              Email Address
+            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+              Email address
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
-                <Mail className="w-5 h-5" />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
+                <Mail className="w-4 h-4" />
               </div>
               <input
                 type="email"
@@ -111,18 +111,18 @@ export default function SignInPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-pizza-500 focus:border-transparent transition-all text-sm"
+                className="w-full pl-9 pr-3 py-2 rounded-lg border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-stone-400 dark:focus:border-stone-600 text-xs"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1.5">
               Password
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
-                <Lock className="w-5 h-5" />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
+                <Lock className="w-4 h-4" />
               </div>
               <input
                 type="password"
@@ -130,7 +130,7 @@ export default function SignInPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-pizza-500 focus:border-transparent transition-all text-sm"
+                className="w-full pl-9 pr-3 py-2 rounded-lg border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-stone-400 dark:focus:border-stone-600 text-xs"
               />
             </div>
           </div>
@@ -138,28 +138,28 @@ export default function SignInPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-3.5 px-4 rounded-xl text-white font-semibold bg-gradient-to-r from-pizza-600 to-pizza-500 hover:from-pizza-700 hover:to-pizza-600 shadow-lg shadow-pizza-500/30 transition-all flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full py-2.5 px-4 rounded-lg text-white font-medium bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-white dark:text-stone-900 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-xs"
           >
             {submitting ? (
               <span className="flex items-center space-x-2">
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
                 <span>Signing in...</span>
               </span>
             ) : (
               <>
-                <span>Sign In</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>Sign in</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </>
             )}
           </button>
         </form>
 
         {/* Footer Link */}
-        <p className="text-center text-sm text-stone-600 dark:text-stone-400">
-          Don&apos;t have an account yet?{' '}
+        <p className="text-center text-xs text-stone-500 dark:text-stone-400">
+          Don&apos;t have an account?{' '}
           <Link
             href="/signup"
-            className="font-semibold text-pizza-600 hover:text-pizza-700 dark:text-pizza-400"
+            className="font-medium text-stone-900 dark:text-stone-100 underline underline-offset-2"
           >
             Create an account
           </Link>

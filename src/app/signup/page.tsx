@@ -60,65 +60,65 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-stone-50 via-pizza-50/20 to-white dark:from-stone-950 dark:via-stone-900 dark:to-stone-950">
-      <div className="max-w-lg w-full space-y-8 bg-white dark:bg-stone-900 p-8 sm:p-10 rounded-3xl shadow-xl border border-stone-200 dark:border-stone-800">
+    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-lg w-full space-y-7 bg-white dark:bg-stone-900 p-8 sm:p-10 rounded-2xl border border-stone-200 dark:border-stone-800">
         {/* Header */}
-        <div className="text-center space-y-3">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-tr from-pizza-600 to-pizza-500 flex items-center justify-center text-white shadow-lg shadow-pizza-500/30">
-            <Pizza className="w-8 h-8" />
+        <div className="text-center space-y-2">
+          <div className="w-10 h-10 mx-auto rounded-xl bg-stone-900 dark:bg-stone-100 flex items-center justify-center text-white dark:text-stone-900">
+            <Pizza className="w-5 h-5" />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-white tracking-tight">
-            Create your Pizza<span className="text-pizza-600">Hub</span> Account
+          <h2 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
+            Create an account
           </h2>
-          <p className="text-sm text-stone-600 dark:text-stone-400">
-            Join PizzaHub today as a Pizza Lover or Restaurant Partner.
+          <p className="text-xs text-stone-500 dark:text-stone-400">
+            Join as a dining customer or restaurant partner.
           </p>
         </div>
 
         {/* Role Selection */}
-        <div className="space-y-2">
-          <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider">
-            I am joining as:
+        <div className="space-y-1.5">
+          <label className="block text-xs font-medium text-stone-700 dark:text-stone-300">
+            Account role
           </label>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <button
               type="button"
               onClick={() => setRole('customer')}
-              className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center space-y-1.5 transition-all ${
+              className={`p-3.5 rounded-xl border flex flex-col items-center justify-center space-y-1 transition-colors cursor-pointer ${
                 role === 'customer'
-                  ? 'border-pizza-500 bg-pizza-50/50 dark:bg-pizza-950/30 text-pizza-600 dark:text-pizza-400 font-bold shadow-sm'
-                  : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:border-stone-300'
+                  ? 'border-stone-900 bg-stone-50 dark:border-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 font-medium'
+                  : 'border-stone-200 dark:border-stone-800 text-stone-500 dark:text-stone-400 hover:border-stone-300 dark:hover:border-stone-700'
               }`}
             >
-              <User className="w-6 h-6" />
-              <span className="text-sm">Customer</span>
-              <span className="text-[11px] text-stone-500 font-normal">Order & Eat</span>
+              <User className="w-5 h-5" />
+              <span className="text-xs font-medium">Customer</span>
+              <span className="text-[11px] text-stone-400 font-normal">Order pizza</span>
             </button>
 
             <button
               type="button"
               onClick={() => setRole('vendor')}
-              className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center space-y-1.5 transition-all ${
+              className={`p-3.5 rounded-xl border flex flex-col items-center justify-center space-y-1 transition-colors cursor-pointer ${
                 role === 'vendor'
-                  ? 'border-pizza-500 bg-pizza-50/50 dark:bg-pizza-950/30 text-pizza-600 dark:text-pizza-400 font-bold shadow-sm'
-                  : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:border-stone-300'
+                  ? 'border-stone-900 bg-stone-50 dark:border-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 font-medium'
+                  : 'border-stone-200 dark:border-stone-800 text-stone-500 dark:text-stone-400 hover:border-stone-300 dark:hover:border-stone-700'
               }`}
             >
-              <Store className="w-6 h-6" />
-              <span className="text-sm">Restaurant Owner</span>
-              <span className="text-[11px] text-stone-500 font-normal">Sell & Manage</span>
+              <Store className="w-5 h-5" />
+              <span className="text-xs font-medium">Restaurant</span>
+              <span className="text-[11px] text-stone-400 font-normal">Manage kitchen</span>
             </button>
           </div>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3.5">
           <div>
-            <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-1">
-              Full Name
+            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
+              Full name
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
                 <User className="w-4 h-4" />
               </div>
               <input
@@ -127,18 +127,18 @@ export default function SignUpPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="John Doe"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 text-sm focus:outline-none focus:ring-2 focus:ring-pizza-500"
+                className="w-full pl-9 pr-3 py-2 rounded-lg border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 text-xs focus:outline-none focus:border-stone-400 dark:focus:border-stone-600"
               />
             </div>
           </div>
 
           {role === 'vendor' && (
             <div>
-              <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-1">
-                Restaurant / Business Name
+              <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
+                Restaurant brand name
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
                   <Store className="w-4 h-4" />
                 </div>
                 <input
@@ -146,19 +146,19 @@ export default function SignUpPage() {
                   required
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
-                  placeholder="e.g. Napoli Woodfire Pizza"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 text-sm focus:outline-none focus:ring-2 focus:ring-pizza-500"
+                  placeholder="Napoli Woodfire Pizza"
+                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 text-xs focus:outline-none focus:border-stone-400 dark:focus:border-stone-600"
                 />
               </div>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-1">
-              Email Address
+            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
+              Email address
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
                 <Mail className="w-4 h-4" />
               </div>
               <input
@@ -167,35 +167,35 @@ export default function SignUpPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 text-sm focus:outline-none focus:ring-2 focus:ring-pizza-500"
+                className="w-full pl-9 pr-3 py-2 rounded-lg border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 text-xs focus:outline-none focus:border-stone-400 dark:focus:border-stone-600"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-1">
-              Profile Image URL (Optional)
+            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
+              Profile image URL (optional)
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
                 <ImageIcon className="w-4 h-4" />
               </div>
               <input
                 type="url"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
-                placeholder="https://example.com/avatar.jpg"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 text-sm focus:outline-none focus:ring-2 focus:ring-pizza-500"
+                placeholder="https://example.com/photo.jpg"
+                className="w-full pl-9 pr-3 py-2 rounded-lg border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 text-xs focus:outline-none focus:border-stone-400 dark:focus:border-stone-600"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
               Password
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
                 <Lock className="w-4 h-4" />
               </div>
               <input
@@ -204,36 +204,33 @@ export default function SignUpPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 text-sm focus:outline-none focus:ring-2 focus:ring-pizza-500"
+                className="w-full pl-9 pr-3 py-2 rounded-lg border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 text-xs focus:outline-none focus:border-stone-400 dark:focus:border-stone-600"
               />
             </div>
 
             {/* Password Validation Indicators */}
-            <div className="mt-2.5 p-3 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 text-xs space-y-1">
-              <p className="font-semibold text-stone-600 dark:text-stone-400 mb-1">
-                Password Requirements:
-              </p>
-              <div className="flex items-center space-x-2">
-                <span className={isLengthValid ? 'text-green-500' : 'text-stone-400'}>
+            <div className="mt-2 p-2.5 rounded-lg bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-800 text-[11px] space-y-1">
+              <div className="flex items-center space-x-1.5">
+                <span className={isLengthValid ? 'text-emerald-600' : 'text-stone-400'}>
                   {isLengthValid ? '✓' : '○'}
                 </span>
-                <span className={isLengthValid ? 'text-green-600 dark:text-green-400 font-medium' : 'text-stone-500'}>
+                <span className={isLengthValid ? 'text-emerald-700 dark:text-emerald-400 font-medium' : 'text-stone-500'}>
                   Minimum 6 characters
                 </span>
               </div>
-              <div className="flex items-center space-x-2">
-                <span className={hasUpperCase ? 'text-green-500' : 'text-stone-400'}>
+              <div className="flex items-center space-x-1.5">
+                <span className={hasUpperCase ? 'text-emerald-600' : 'text-stone-400'}>
                   {hasUpperCase ? '✓' : '○'}
                 </span>
-                <span className={hasUpperCase ? 'text-green-600 dark:text-green-400 font-medium' : 'text-stone-500'}>
+                <span className={hasUpperCase ? 'text-emerald-700 dark:text-emerald-400 font-medium' : 'text-stone-500'}>
                   At least one uppercase letter (A-Z)
                 </span>
               </div>
-              <div className="flex items-center space-x-2">
-                <span className={hasLowerCase ? 'text-green-500' : 'text-stone-400'}>
+              <div className="flex items-center space-x-1.5">
+                <span className={hasLowerCase ? 'text-emerald-600' : 'text-stone-400'}>
                   {hasLowerCase ? '✓' : '○'}
                 </span>
-                <span className={hasLowerCase ? 'text-green-600 dark:text-green-400 font-medium' : 'text-stone-500'}>
+                <span className={hasLowerCase ? 'text-emerald-700 dark:text-emerald-400 font-medium' : 'text-stone-500'}>
                   At least one lowercase letter (a-z)
                 </span>
               </div>
@@ -243,30 +240,30 @@ export default function SignUpPage() {
           <button
             type="submit"
             disabled={submitting || !isPasswordValid}
-            className="w-full py-3.5 px-4 rounded-xl text-white font-semibold bg-gradient-to-r from-pizza-600 to-pizza-500 hover:from-pizza-700 hover:to-pizza-600 shadow-lg shadow-pizza-500/30 transition-all flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full py-2.5 px-4 rounded-lg text-white font-medium bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-white dark:text-stone-900 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-xs"
           >
             {submitting ? (
               <span className="flex items-center space-x-2">
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Creating Account...</span>
+                <span className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                <span>Creating account...</span>
               </span>
             ) : (
               <>
                 <span>Register as {role === 'vendor' ? 'Restaurant' : 'Customer'}</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5" />
               </>
             )}
           </button>
         </form>
 
         {/* Footer Link */}
-        <p className="text-center text-sm text-stone-600 dark:text-stone-400">
+        <p className="text-center text-xs text-stone-500 dark:text-stone-400">
           Already have an account?{' '}
           <Link
             href="/signin"
-            className="font-semibold text-pizza-600 hover:text-pizza-700 dark:text-pizza-400"
+            className="font-medium text-stone-900 dark:text-stone-100 underline underline-offset-2"
           >
-            Sign In here
+            Sign in
           </Link>
         </p>
       </div>
