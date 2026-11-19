@@ -48,25 +48,25 @@ export default function AdminTransactionsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-5">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-stone-900 dark:text-white tracking-tight">
-            Platform Transactions Audit
+          <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
+            Transaction audit ledger
           </h1>
           <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
             Read-only financial records of vendor subscription payments processed via Stripe.
           </p>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm flex items-center space-x-3 self-start sm:self-auto">
-          <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 flex items-center justify-center">
-            <DollarSign className="w-5 h-5" />
+        <div className="px-4 py-3 rounded-lg bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center space-x-3 self-start sm:self-auto">
+          <div className="w-8 h-8 rounded-md bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 flex items-center justify-center">
+            <DollarSign className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">
-              Settled Revenue
+            <span className="text-[10px] font-medium text-stone-400 uppercase tracking-wider block">
+              Settled revenue
             </span>
-            <p className="text-xl font-black text-stone-900 dark:text-white">
+            <p className="text-base font-semibold text-stone-900 dark:text-stone-100 font-mono tabular-nums">
               {formatPrice(totalRevenue)}
             </p>
           </div>
@@ -74,81 +74,83 @@ export default function AdminTransactionsPage() {
       </div>
 
       {/* Security Notice */}
-      <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900/60 border border-stone-200 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-400 flex items-center">
-        <ShieldAlert className="w-4 h-4 mr-2 text-pizza-500 shrink-0" />
+      <div className="p-3.5 rounded-lg bg-stone-50 dark:bg-stone-900/60 border border-stone-200 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-400 flex items-center">
+        <ShieldAlert className="w-4 h-4 mr-2 text-stone-400 shrink-0" />
         <span>
-          <strong>Audit Security Rule:</strong> Administrators cannot alter, mark as paid, or forge
-          payment records. All transactions are cryptographically verified by Stripe Webhooks.
+          <strong className="text-stone-800 dark:text-stone-200 font-medium">Audit note:</strong> Financial records are immutable and cryptographically confirmed via Stripe Webhooks. Manual database edits are restricted.
         </span>
       </div>
 
       {/* Transactions Table */}
       {transactions.length === 0 ? (
-        <div className="text-center py-16 bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 dark:border-stone-800 space-y-3">
-          <Receipt className="w-12 h-12 mx-auto text-stone-400" />
-          <h3 className="text-lg font-bold text-stone-900 dark:text-white">
-            No transactions recorded yet
+        <div className="text-center py-16 bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 space-y-2">
+          <Receipt className="w-8 h-8 mx-auto text-stone-400" />
+          <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100">
+            No transactions recorded
           </h3>
           <p className="text-stone-500 text-xs max-w-sm mx-auto">
-            When restaurant vendors upgrade to the Premium tier via Stripe Checkout, verified
-            records will appear in this ledger.
+            When restaurant vendors upgrade to the Premium tier via Stripe Checkout, confirmed records will appear in this ledger.
           </p>
         </div>
       ) : (
-        <div className="bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-800/50 text-[11px] font-bold text-stone-500 uppercase tracking-wider">
-                  <th className="py-4 px-6">Vendor Restaurant</th>
-                  <th className="py-4 px-6">Subscription Plan</th>
-                  <th className="py-4 px-6">Amount Paid</th>
-                  <th className="py-4 px-6">Payment Status</th>
-                  <th className="py-4 px-6">Stripe Reference</th>
-                  <th className="py-4 px-6 text-right">Transaction Date</th>
+                <tr className="border-b border-stone-200 dark:border-stone-800 bg-stone-50/70 dark:bg-stone-800/40 text-[11px] font-semibold text-stone-500 uppercase tracking-wider">
+                  <th className="py-3 px-5">Restaurant</th>
+                  <th className="py-3 px-5">Subscription</th>
+                  <th className="py-3 px-5">Amount</th>
+                  <th className="py-3 px-5">Status</th>
+                  <th className="py-3 px-5">Stripe session</th>
+                  <th className="py-3 px-5 text-right">Settled at</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-stone-100 dark:divide-stone-800 text-sm">
+              <tbody className="divide-y divide-stone-100 dark:divide-stone-800 text-xs">
                 {transactions.map((tx) => (
-                  <tr key={tx._id} className="hover:bg-stone-50/50 dark:hover:bg-stone-800/30">
-                    <td className="py-4 px-6">
-                      <p className="font-bold text-stone-900 dark:text-white">
-                        {tx.vendorId?.businessName || tx.vendorId?.name || 'Vendor Account'}
+                  <tr key={tx._id} className="hover:bg-stone-50/50 dark:hover:bg-stone-800/30 transition-colors">
+                    <td className="py-3.5 px-5">
+                      <p className="font-medium text-stone-900 dark:text-stone-100">
+                        {tx.vendorId?.businessName || tx.vendorId?.name || 'Vendor Kitchen'}
                       </p>
-                      <p className="text-xs text-stone-400 flex items-center">
-                        <Mail className="w-3 h-3 mr-1" />
+                      <p className="text-[11px] text-stone-400 flex items-center mt-0.5">
+                        <Mail className="w-3 h-3 mr-1 text-stone-400" />
                         <span>{tx.vendorId?.email}</span>
                       </p>
                     </td>
 
-                    <td className="py-4 px-6">
-                      <span className="font-bold text-xs capitalize text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 rounded-full">
-                        ⭐ {tx.plan}
+                    <td className="py-3.5 px-5">
+                      <span className="font-medium text-[11px] capitalize text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/40 px-2 py-0.5 rounded">
+                        {tx.plan} partner
                       </span>
                     </td>
 
-                    <td className="py-4 px-6 font-black text-stone-900 dark:text-white">
+                    <td className="py-3.5 px-5 font-mono text-xs font-semibold text-stone-900 dark:text-stone-100 tabular-nums">
                       {formatPrice(tx.amount)}
                     </td>
 
-                    <td className="py-4 px-6">
+                    <td className="py-3.5 px-5">
                       <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold capitalize ${
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-medium border ${
                           tx.status === 'succeeded'
-                            ? 'bg-green-100 dark:bg-green-950/60 text-green-700 dark:text-green-300'
-                            : 'bg-amber-100 text-amber-700'
+                            ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/40'
+                            : 'bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800/40'
                         }`}
                       >
-                        <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
-                        {tx.status}
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            tx.status === 'succeeded' ? 'bg-emerald-500' : 'bg-amber-500'
+                          }`}
+                        />
+                        <span className="capitalize">{tx.status}</span>
                       </span>
                     </td>
 
-                    <td className="py-4 px-6 text-xs text-stone-400 font-mono">
+                    <td className="py-3.5 px-5 text-[11px] text-stone-400 font-mono">
                       {tx.stripeSessionId ? `${tx.stripeSessionId.slice(0, 16)}...` : 'Direct API'}
                     </td>
 
-                    <td className="py-4 px-6 text-right text-xs text-stone-500">
+                    <td className="py-3.5 px-5 text-right font-mono text-[11px] text-stone-500 tabular-nums">
                       {formatDate(tx.createdAt)}
                     </td>
                   </tr>
