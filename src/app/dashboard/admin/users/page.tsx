@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { TableSkeleton } from '@/components/ui/Skeleton';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -25,6 +26,15 @@ export default function ManageUsersPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>('');
   const [roleFilter, setRoleFilter] = useState<string>('all');
+  const [blockModal, setBlockModal] = useState<{
+    isOpen: boolean;
+    user: any | null;
+    loading: boolean;
+  }>({
+    isOpen: false,
+    user: null,
+    loading: false,
+  });
 
   const fetchUsers = async () => {
     try {
@@ -58,15 +68,23 @@ export default function ManageUsersPage() {
     fetchUsers();
   };
 
-  const handleToggleBlock = async (targetUser: any) => {
+  const handleInitiateBlock = (targetUser: any) => {
     if (targetUser._id === currentAdmin?._id) {
       toast.error('You cannot block your own admin account.');
       return;
     }
+    setBlockModal({
+      isOpen: true,
+      user: targetUser,
+      loading: false,
+    });
+  };
 
-    const action = targetUser.isBlocked ? 'unblock' : 'block';
-    if (!window.confirm(`Are you sure you want to ${action} ${targetUser.email}?`)) return;
+  const confirmToggleBlock = async () => {
+    const targetUser = blockModal.user;
+    if (!targetUser) return;
 
+    setBlockModal((prev) => ({ ...prev, loading: true }));
     const toastId = toast.loading(`Updating status for ${targetUser.email}...`);
     try {
       const res = await fetch(`${API_BASE}/admin/users/${targetUser._id}/block`, {
@@ -77,12 +95,15 @@ export default function ManageUsersPage() {
       const data = await res.json();
       if (data.success) {
         toast.success(data.message, { id: toastId });
+        setBlockModal({ isOpen: false, user: null, loading: false });
         fetchUsers();
       } else {
         toast.error(data.message || 'Failed to update user block status.', { id: toastId });
+        setBlockModal((prev) => ({ ...prev, loading: false }));
       }
     } catch (err) {
       toast.error('Network error updating user.', { id: toastId });
+      setBlockModal((prev) => ({ ...prev, loading: false }));
     }
   };
 
@@ -237,7 +258,7 @@ export default function ManageUsersPage() {
                       <td className="py-3.5 px-5 text-right">
                         {!isCurrent && (
                           <button
-                            onClick={() => handleToggleBlock(u)}
+                            onClick={() => handleInitiateBlock(u)}
                             className={`px-2.5 py-1 rounded-md font-medium text-xs transition-colors cursor-pointer border ${
                               u.isBlocked
                                 ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border-emerald-800/40'
@@ -256,6 +277,22 @@ export default function ManageUsersPage() {
           </div>
         </div>
       )}
+
+      {/* Block / Unblock Confirmation Modal */}
+      <ConfirmModal
+        isOpen={blockModal.isOpen}
+        loading={blockModal.loading}
+        onClose={() => setBlockModal({ isOpen: false, user: null, loading: false })}
+        onConfirm={confirmToggleBlock}
+        title={blockModal.user?.isBlocked ? 'Unblock platform account' : 'Block user account'}
+        message={
+          blockModal.user?.isBlocked
+            ? `Are you sure you want to restore access for "${blockModal.user?.email}"? They will regain access to their dashboard.`
+            : `Are you sure you want to block "${blockModal.user?.email}"? They will immediately be logged out and prohibited from logging in or using any platform services.`
+        }
+        confirmText={blockModal.user?.isBlocked ? 'Confirm unblock' : 'Block account'}
+        variant={blockModal.user?.isBlocked ? 'warning' : 'danger'}
+      />
     </div>
   );
 }

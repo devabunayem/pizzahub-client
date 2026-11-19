@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { TableSkeleton } from '@/components/ui/Skeleton';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -21,6 +22,17 @@ export default function MyMenuItemsPage() {
   const { token } = useAuth();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    id: string;
+    name: string;
+    loading: boolean;
+  }>({
+    isOpen: false,
+    id: '',
+    name: '',
+    loading: false,
+  });
 
   const fetchItems = async () => {
     try {
@@ -71,25 +83,29 @@ export default function MyMenuItemsPage() {
     }
   };
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!window.confirm(`Delete "${name}"?`)) return;
+  const confirmDelete = async () => {
+    if (!deleteModal.id) return;
 
+    setDeleteModal((prev) => ({ ...prev, loading: true }));
     const toastId = toast.loading('Deleting menu item...');
     try {
-      const res = await fetch(`${API_BASE}/menu/${id}`, {
+      const res = await fetch(`${API_BASE}/menu/${deleteModal.id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
 
       const data = await res.json();
       if (data.success) {
-        toast.success('Item deleted.', { id: toastId });
+        toast.success('Item deleted successfully.', { id: toastId });
+        setDeleteModal({ isOpen: false, id: '', name: '', loading: false });
         fetchItems();
       } else {
         toast.error(data.message || 'Failed to delete item.', { id: toastId });
+        setDeleteModal((prev) => ({ ...prev, loading: false }));
       }
     } catch (err) {
       toast.error('Network error deleting item.', { id: toastId });
+      setDeleteModal((prev) => ({ ...prev, loading: false }));
     }
   };
 
@@ -214,8 +230,15 @@ export default function MyMenuItemsPage() {
                       )}
 
                       <button
-                        onClick={() => handleDelete(item._id, item.itemName)}
-                        className="p-1 rounded text-stone-400 hover:text-red-600 inline-flex"
+                        onClick={() =>
+                          setDeleteModal({
+                            isOpen: true,
+                            id: item._id,
+                            name: item.itemName,
+                            loading: false,
+                          })
+                        }
+                        className="p-1 rounded text-stone-400 hover:text-red-600 inline-flex cursor-pointer"
                         title="Delete"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -228,6 +251,20 @@ export default function MyMenuItemsPage() {
           </div>
         </div>
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        loading={deleteModal.loading}
+        onClose={() =>
+          setDeleteModal({ isOpen: false, id: '', name: '', loading: false })
+        }
+        onConfirm={confirmDelete}
+        title="Delete pizza listing"
+        message={`Are you sure you want to permanently remove "${deleteModal.name}" from your menu? This action cannot be reversed.`}
+        confirmText="Delete permanently"
+        variant="danger"
+      />
     </div>
   );
 }

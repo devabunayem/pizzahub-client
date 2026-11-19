@@ -19,6 +19,7 @@ import {
 import { formatPrice, formatDate } from '@/lib/utils';
 import { OrderListSkeleton } from '@/components/ui/Skeleton';
 import { StatusTimeline } from '@/components/ui/StatusTimeline';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -28,6 +29,15 @@ export default function CustomerOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const [cancelModal, setCancelModal] = useState<{
+    isOpen: boolean;
+    orderId: string;
+    loading: boolean;
+  }>({
+    isOpen: false,
+    orderId: '',
+    loading: false,
+  });
 
   const fetchOrders = async () => {
     try {
@@ -52,12 +62,13 @@ export default function CustomerOrdersPage() {
     }
   }, [token]);
 
-  const handleCancelOrder = async (orderId: string) => {
-    if (!window.confirm('Are you sure you want to cancel this pending pizza order?')) return;
+  const confirmCancelOrder = async () => {
+    if (!cancelModal.orderId) return;
 
+    setCancelModal((prev) => ({ ...prev, loading: true }));
     const toastId = toast.loading('Cancelling order...');
     try {
-      const res = await fetch(`${API_BASE}/orders/${orderId}/cancel`, {
+      const res = await fetch(`${API_BASE}/orders/${cancelModal.orderId}/cancel`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -65,12 +76,15 @@ export default function CustomerOrdersPage() {
       const data = await res.json();
       if (data.success) {
         toast.success('Order has been cancelled.', { id: toastId });
+        setCancelModal({ isOpen: false, orderId: '', loading: false });
         fetchOrders();
       } else {
         toast.error(data.message || 'Failed to cancel order.', { id: toastId });
+        setCancelModal((prev) => ({ ...prev, loading: false }));
       }
     } catch (err) {
       toast.error('Network error cancelling order.', { id: toastId });
+      setCancelModal((prev) => ({ ...prev, loading: false }));
     }
   };
 
@@ -217,7 +231,13 @@ export default function CustomerOrdersPage() {
 
                       {order.status === 'pending' && (
                         <button
-                          onClick={() => handleCancelOrder(order._id)}
+                          onClick={() =>
+                            setCancelModal({
+                              isOpen: true,
+                              orderId: order._id,
+                              loading: false,
+                            })
+                          }
                           className="px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/20 hover:bg-red-100 text-red-700 dark:text-red-300 font-medium text-xs transition-colors flex items-center space-x-1 cursor-pointer"
                         >
                           <XCircle className="w-3.5 h-3.5" />
@@ -242,6 +262,20 @@ export default function CustomerOrdersPage() {
           })}
         </div>
       )}
+
+      {/* Cancellation Confirmation Modal */}
+      <ConfirmModal
+        isOpen={cancelModal.isOpen}
+        loading={cancelModal.loading}
+        onClose={() =>
+          setCancelModal({ isOpen: false, orderId: '', loading: false })
+        }
+        onConfirm={confirmCancelOrder}
+        title="Cancel pending order"
+        message="Are you sure you want to cancel this pending pizza order? This action cannot be undone."
+        confirmText="Yes, cancel order"
+        variant="danger"
+      />
     </div>
   );
 }
