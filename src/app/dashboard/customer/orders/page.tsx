@@ -81,87 +81,89 @@ export default function CustomerOrdersPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-5">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-stone-900 dark:text-white tracking-tight">
-            My Pizza Orders
+          <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
+            My orders
           </h1>
           <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-            Track live preparation and delivery status, or cancel pending requests.
+            Track order preparation, delivery progress, or cancel pending requests.
           </p>
         </div>
 
         <Link
           href="/menu"
-          className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-pizza-600 hover:bg-pizza-700 text-white font-bold text-xs shadow-md shadow-pizza-500/20 transition-all shrink-0 self-start sm:self-auto"
+          className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-white text-white dark:text-stone-900 font-medium text-xs transition-colors shrink-0 self-start sm:self-auto cursor-pointer"
         >
-          <Pizza className="w-4 h-4" />
-          <span>Order Another Pizza</span>
+          <Pizza className="w-3.5 h-3.5" />
+          <span>Browse menu</span>
         </Link>
       </div>
 
       {/* Orders List */}
       {orders.length === 0 ? (
-        <div className="text-center py-16 bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 dark:border-stone-800 space-y-4">
-          <div className="w-14 h-14 mx-auto rounded-full bg-pizza-50 dark:bg-pizza-950/60 text-pizza-500 flex items-center justify-center">
-            <ShoppingBag className="w-7 h-7" />
+        <div className="text-center py-16 bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 space-y-3">
+          <div className="w-10 h-10 mx-auto rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-500 flex items-center justify-center">
+            <ShoppingBag className="w-5 h-5" />
           </div>
-          <h3 className="text-lg font-bold text-stone-900 dark:text-white">No orders yet</h3>
+          <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100">No orders placed</h3>
           <p className="text-stone-500 dark:text-stone-400 text-xs max-w-sm mx-auto">
-            You have not placed any pizza orders yet. Explore our fresh menu to satisfy your cravings.
+            You haven&apos;t placed any pizza orders yet. Explore our menu to order fresh, handmade pizza.
           </p>
-          <Link
-            href="/menu"
-            className="inline-flex items-center px-4 py-2 rounded-xl bg-pizza-600 text-white font-bold text-xs shadow-md"
-          >
-            <span>Browse Pizza Menu</span>
-          </Link>
+          <div className="pt-2">
+            <Link
+              href="/menu"
+              className="inline-flex items-center px-3.5 py-1.5 rounded-lg bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 font-medium text-xs"
+            >
+              <span>Explore menu</span>
+            </Link>
+          </div>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {orders.map((order) => {
             const isExpanded = expandedOrderId === order._id;
 
             return (
               <div
                 key={order._id}
-                className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm transition-all"
+                className="p-5 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 transition-colors"
               >
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
                   {/* Left Info */}
-                  <div className="flex items-start space-x-4">
+                  <div className="flex items-start space-x-4 min-w-0">
                     <img
                       src={order.itemId?.images?.[0] || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=200&q=80'}
                       alt={order.itemId?.itemName}
-                      className="w-16 h-16 rounded-2xl object-cover shrink-0 border border-stone-200 dark:border-stone-700"
+                      className="w-16 h-16 rounded-lg object-cover shrink-0 border border-stone-200 dark:border-stone-800 bg-stone-100 dark:bg-stone-800"
                     />
-                    <div className="space-y-1">
-                      <div className="flex items-center space-x-2">
-                        <h3 className="font-bold text-base text-stone-900 dark:text-white">
-                          {order.itemId?.itemName || 'Gourmet Pizza'}
+                    <div className="space-y-1 min-w-0">
+                      <div className="flex items-baseline space-x-3">
+                        <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">
+                          {order.itemId?.itemName || 'Artisanal Pizza'}
                         </h3>
-                        <span className="font-extrabold text-pizza-600 text-sm">
+                        <span className="font-mono text-xs font-semibold text-stone-900 dark:text-stone-100 tabular-nums">
                           {formatPrice(order.itemId?.price || 0)}
                         </span>
                       </div>
 
                       <p className="text-xs text-stone-500 flex items-center">
-                        <Store className="w-3.5 h-3.5 mr-1 text-pizza-500" />
+                        <Store className="w-3.5 h-3.5 mr-1 text-stone-400" />
                         <span>{order.vendorId?.businessName || order.vendorId?.name}</span>
                       </p>
 
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-stone-500 dark:text-stone-400 pt-0.5">
                         <span className="flex items-center">
-                          <Calendar className="w-3.5 h-3.5 mr-1 text-pizza-500" />
-                          Delivery Date: <strong>{formatDate(order.deliveryDate)}</strong>
+                          <Calendar className="w-3.5 h-3.5 mr-1 text-stone-400" />
+                          Delivery: <span className="ml-1 font-medium text-stone-800 dark:text-stone-200">{formatDate(order.deliveryDate)}</span>
                         </span>
-                        <span className="flex items-center text-[11px] text-stone-400">
-                          Placed on: {formatDate(order.createdAt)}
+                        <span className="flex items-center text-stone-400">
+                          Placed: {formatDate(order.createdAt)}
                         </span>
                       </div>
 
-                      <p className="text-xs text-stone-600 dark:text-stone-300 flex items-start pt-1">
-                        <MapPin className="w-3.5 h-3.5 mr-1 text-pizza-500 shrink-0 mt-0.5" />
+                      <p className="text-xs text-stone-600 dark:text-stone-300 flex items-start pt-0.5">
+                        <MapPin className="w-3.5 h-3.5 mr-1 text-stone-400 shrink-0 mt-0.5" />
                         <span>{order.deliveryAddress}</span>
                       </p>
 
@@ -174,19 +176,28 @@ export default function CustomerOrdersPage() {
                   </div>
 
                   {/* Right Status & Action */}
-                  <div className="flex flex-col sm:flex-row lg:flex-col items-end justify-between gap-3 shrink-0 pt-4 lg:pt-0 border-t lg:border-t-0 border-stone-100 dark:border-stone-800">
+                  <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end justify-between gap-3 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-stone-100 dark:border-stone-800">
                     <span
-                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border ${
                         order.status === 'pending'
-                          ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300'
+                          ? 'bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800/40'
                           : order.status === 'accepted'
-                          ? 'bg-green-100 dark:bg-green-950/60 text-green-700 dark:text-green-300'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/40'
                           : order.status === 'rejected'
-                          ? 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
-                          : 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300'
+                          ? 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 border-stone-200 dark:border-stone-700'
+                          : 'bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800/40'
                       }`}
                     >
-                      {order.status}
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          order.status === 'pending'
+                            ? 'bg-amber-500'
+                            : order.status === 'accepted'
+                            ? 'bg-emerald-500'
+                            : 'bg-stone-400'
+                        }`}
+                      />
+                      <span className="capitalize">{order.status}</span>
                     </span>
 
                     <div className="flex items-center space-x-2">
@@ -194,9 +205,9 @@ export default function CustomerOrdersPage() {
                         onClick={() =>
                           setExpandedOrderId(isExpanded ? null : order._id)
                         }
-                        className="px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 text-xs font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center space-x-1"
+                        className="px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 text-xs font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center space-x-1 cursor-pointer"
                       >
-                        <span>{isExpanded ? 'Hide Timeline' : 'Track Status'}</span>
+                        <span>{isExpanded ? 'Hide timeline' : 'Track progress'}</span>
                         {isExpanded ? (
                           <ChevronUp className="w-3.5 h-3.5" />
                         ) : (
@@ -207,7 +218,7 @@ export default function CustomerOrdersPage() {
                       {order.status === 'pending' && (
                         <button
                           onClick={() => handleCancelOrder(order._id)}
-                          className="px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-950/60 text-red-600 dark:text-red-400 font-bold text-xs transition-colors flex items-center space-x-1"
+                          className="px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/20 hover:bg-red-100 text-red-700 dark:text-red-300 font-medium text-xs transition-colors flex items-center space-x-1 cursor-pointer"
                         >
                           <XCircle className="w-3.5 h-3.5" />
                           <span>Cancel</span>
@@ -217,11 +228,11 @@ export default function CustomerOrdersPage() {
                   </div>
                 </div>
 
-                {/* Bonus Requirement 2: Order Status Timeline Expansion */}
+                {/* Status Timeline Expansion */}
                 {isExpanded && (
-                  <div className="mt-6 pt-6 border-t border-stone-100 dark:border-stone-800 space-y-4 animate-in fade-in duration-200">
-                    <h4 className="text-xs font-bold text-stone-500 uppercase tracking-wider">
-                      Live Delivery Progress Timeline
+                  <div className="mt-5 pt-5 border-t border-stone-200 dark:border-stone-800 space-y-3">
+                    <h4 className="text-xs font-medium text-stone-500 dark:text-stone-400">
+                      Order progress timeline
                     </h4>
                     <StatusTimeline status={order.status} deliveryDate={order.deliveryDate} />
                   </div>
