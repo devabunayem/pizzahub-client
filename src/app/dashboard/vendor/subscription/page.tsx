@@ -3,11 +3,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import {
-  Sparkles,
   Check,
   CreditCard,
-  ShieldCheck,
-  Zap,
   Star,
   Clock,
   ArrowRight,
@@ -51,170 +48,161 @@ export default function VendorSubscriptionPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-10">
+    <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-pizza-100 dark:bg-pizza-950/60 text-pizza-700 dark:text-pizza-300 text-xs font-bold uppercase tracking-wider">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Vendor Subscriptions</span>
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-stone-900 dark:text-white tracking-tight">
-          Upgrade Your Restaurant Plan
+      <div className="border-b border-stone-200 dark:border-stone-800 pb-5">
+        <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
+          Subscription plan
         </h1>
-        <p className="text-sm text-stone-600 dark:text-stone-400 max-w-lg mx-auto">
-          Scale your culinary business with unlimited menu publishing, top homepage spotlight,
-          and a verified Premium Vendor badge.
+        <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+          Review your current tier or upgrade to Premium for unlimited active menu items and priority placement.
         </p>
       </div>
 
       {/* Current Plan Alert */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm flex items-center justify-between">
+      <div className="p-4 sm:p-5 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div
-            className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+            className={`w-9 h-9 rounded-lg flex items-center justify-center ${
               isPremium
-                ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-600'
+                ? 'bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40'
                 : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300'
             }`}
           >
-            {isPremium ? <Star className="w-5 h-5 fill-current" /> : <Clock className="w-5 h-5" />}
+            {isPremium ? <Star className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
           </div>
           <div>
-            <p className="text-xs text-stone-500 font-medium">Your Current Plan</p>
-            <p className="text-base font-extrabold text-stone-900 dark:text-white capitalize">
-              {user?.subscriptionPlan} Tier {isPremium && '⭐'}
+            <p className="text-xs text-stone-500 dark:text-stone-400">Current tier</p>
+            <p className="text-sm font-semibold text-stone-900 dark:text-stone-100 capitalize">
+              {user?.subscriptionPlan} tier {isPremium && '· Verified'}
             </p>
           </div>
         </div>
 
         {isPremium ? (
-          <span className="px-3.5 py-1.5 rounded-full bg-green-100 dark:bg-green-950/60 text-green-700 dark:text-green-300 text-xs font-bold flex items-center">
-            <Check className="w-3.5 h-3.5 mr-1" /> Active Subscription
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 text-xs font-medium">
+            <Check className="w-3.5 h-3.5" /> Active subscription
           </span>
         ) : (
-          <span className="px-3.5 py-1.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 text-xs font-bold">
-            Free (Limited to 3 Items)
+          <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 border border-stone-200 dark:border-stone-700 text-xs font-medium">
+            Free tier (maximum 3 active items)
           </span>
         )}
       </div>
 
       {/* Pricing Comparison Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
         {/* Free Plan */}
-        <div className="p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between space-y-6">
+        <div className="p-6 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex flex-col justify-between space-y-6">
           <div className="space-y-4">
             <div>
-              <span className="text-xs font-bold text-stone-400 uppercase tracking-widest">
-                Starter Tier
+              <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                Starter tier
               </span>
-              <h3 className="text-2xl font-black text-stone-900 dark:text-white mt-1">Free Plan</h3>
-              <p className="text-xs text-stone-500 mt-1">
-                Perfect for local home bakers testing the waters.
+              <h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mt-1">Free plan</h3>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                Standard access for local kitchens testing the platform.
               </p>
             </div>
 
-            <div className="text-3xl font-black text-stone-900 dark:text-white">
+            <div className="text-2xl font-semibold text-stone-900 dark:text-stone-100 font-mono tabular-nums">
               $0{' '}
-              <span className="text-xs font-normal text-stone-500 tracking-normal">/ forever</span>
+              <span className="text-xs font-normal text-stone-500 tracking-normal font-sans">/ month</span>
             </div>
 
-            <ul className="space-y-3 pt-4 border-t border-stone-100 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300">
+            <ul className="space-y-2.5 pt-4 border-t border-stone-200 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300">
               <li className="flex items-center">
-                <Check className="w-4 h-4 text-green-500 mr-2 shrink-0" />
+                <Check className="w-4 h-4 text-emerald-600 mr-2 shrink-0" />
                 <span>Maximum 3 active menu items</span>
               </li>
               <li className="flex items-center">
-                <Check className="w-4 h-4 text-green-500 mr-2 shrink-0" />
-                <span>Basic vendor dashboard overview</span>
+                <Check className="w-4 h-4 text-emerald-600 mr-2 shrink-0" />
+                <span>Standard kitchen dashboard & order management</span>
               </li>
               <li className="flex items-center">
-                <Check className="w-4 h-4 text-green-500 mr-2 shrink-0" />
-                <span>Order management & status updates</span>
+                <Check className="w-4 h-4 text-emerald-600 mr-2 shrink-0" />
+                <span>Order accept and reject workflows</span>
               </li>
               <li className="flex items-center text-stone-400 dark:text-stone-600 line-through">
                 <span>Featured placement on homepage</span>
               </li>
               <li className="flex items-center text-stone-400 dark:text-stone-600 line-through">
-                <span>Official Premium Vendor badge</span>
+                <span>Premium partner badge</span>
               </li>
             </ul>
           </div>
 
-          <div className="pt-4">
+          <div className="pt-2">
             <button
               disabled
-              className="w-full py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-400 font-bold text-xs cursor-default"
+              className="w-full py-2.5 rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-800/50 text-stone-400 text-xs font-medium cursor-default"
             >
-              {isPremium ? 'Included in your account' : 'Current Plan'}
+              {isPremium ? 'Included' : 'Current tier'}
             </button>
           </div>
         </div>
 
-        {/* Premium Plan (Featured) */}
-        <div className="p-8 rounded-3xl bg-gradient-to-b from-stone-900 via-stone-900 to-stone-950 text-white shadow-2xl border-2 border-pizza-500 relative flex flex-col justify-between space-y-6">
-          <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-pizza-500 text-stone-950 font-black text-[11px] shadow-md uppercase tracking-wider flex items-center">
-            <Sparkles className="w-3 h-3 mr-1" /> Most Popular
-          </div>
-
+        {/* Premium Plan */}
+        <div className="p-6 rounded-xl bg-stone-900 text-stone-100 dark:bg-stone-900 dark:border-stone-700 border border-stone-800 flex flex-col justify-between space-y-6 relative">
           <div className="space-y-4">
             <div>
-              <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
-                Growth Tier
+              <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
+                Growth tier
               </span>
-              <h3 className="text-2xl font-black text-white mt-1">Premium Partner</h3>
+              <h3 className="text-xl font-semibold text-white mt-1">Premium partner</h3>
               <p className="text-xs text-stone-400 mt-1">
-                For established pizzerias aiming for high sales volume.
+                For established restaurants requiring unlimited capacity and high visibility.
               </p>
             </div>
 
-            <div className="text-4xl font-black text-white">
+            <div className="text-2xl font-semibold text-white font-mono tabular-nums">
               $29.99{' '}
-              <span className="text-xs font-normal text-stone-400 tracking-normal">/ month</span>
+              <span className="text-xs font-normal text-stone-400 tracking-normal font-sans">/ month</span>
             </div>
 
-            <ul className="space-y-3 pt-4 border-t border-stone-800 text-xs text-stone-300">
-              <li className="flex items-center font-semibold text-white">
-                <Check className="w-4 h-4 text-pizza-400 mr-2 shrink-0" />
+            <ul className="space-y-2.5 pt-4 border-t border-stone-800 text-xs text-stone-300">
+              <li className="flex items-center font-medium text-white">
+                <Check className="w-4 h-4 text-amber-400 mr-2 shrink-0" />
                 <span>Unlimited active menu items</span>
               </li>
-              <li className="flex items-center font-semibold text-white">
-                <Check className="w-4 h-4 text-pizza-400 mr-2 shrink-0" />
-                <span>Golden &ldquo;Premium&rdquo; verified restaurant badge</span>
+              <li className="flex items-center font-medium text-white">
+                <Check className="w-4 h-4 text-amber-400 mr-2 shrink-0" />
+                <span>Verified &ldquo;Premium&rdquo; restaurant badge</span>
               </li>
-              <li className="flex items-center font-semibold text-white">
-                <Check className="w-4 h-4 text-pizza-400 mr-2 shrink-0" />
-                <span>Priority featured placement on homepage</span>
-              </li>
-              <li className="flex items-center">
-                <Check className="w-4 h-4 text-pizza-400 mr-2 shrink-0" />
-                <span>Real-time customer analytics & insights</span>
+              <li className="flex items-center font-medium text-white">
+                <Check className="w-4 h-4 text-amber-400 mr-2 shrink-0" />
+                <span>Priority placement on homepage</span>
               </li>
               <li className="flex items-center">
-                <Check className="w-4 h-4 text-pizza-400 mr-2 shrink-0" />
-                <span>Priority 24/7 customer & kitchen support</span>
+                <Check className="w-4 h-4 text-stone-400 mr-2 shrink-0" />
+                <span>Instant order notifications and status updates</span>
+              </li>
+              <li className="flex items-center">
+                <Check className="w-4 h-4 text-stone-400 mr-2 shrink-0" />
+                <span>Priority platform support</span>
               </li>
             </ul>
           </div>
 
-          <div className="pt-4">
+          <div className="pt-2">
             {isPremium ? (
-              <div className="w-full py-3 rounded-xl bg-green-500/20 border border-green-500/40 text-green-300 font-bold text-xs text-center flex items-center justify-center space-x-1.5">
+              <div className="w-full py-2.5 rounded-lg bg-emerald-950/40 border border-emerald-800/40 text-emerald-300 text-xs font-medium text-center flex items-center justify-center space-x-1.5">
                 <Check className="w-4 h-4" />
-                <span>You are currently enjoying Premium!</span>
+                <span>Active subscription</span>
               </div>
             ) : (
               <button
                 onClick={handleUpgrade}
                 disabled={loading}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-pizza-600 via-pizza-500 to-orange-500 hover:from-pizza-700 hover:to-pizza-600 text-white font-bold text-sm shadow-xl shadow-pizza-500/30 transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+                className="w-full py-2.5 rounded-lg bg-pizza-700 hover:bg-pizza-800 text-white text-xs font-medium transition-colors flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
               >
                 {loading ? (
                   <span>Connecting to Stripe...</span>
                 ) : (
                   <>
-                    <CreditCard className="w-4 h-4" />
+                    <CreditCard className="w-3.5 h-3.5" />
                     <span>Upgrade via Stripe Checkout</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </>
                 )}
               </button>
