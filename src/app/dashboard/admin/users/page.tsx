@@ -14,8 +14,8 @@ import {
   User as UserIcon,
 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import toast from 'react-hot-toast';
+import { TableSkeleton } from '@/components/ui/Skeleton';
+import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -87,7 +87,7 @@ export default function ManageUsersPage() {
   };
 
   if (loading) {
-    return <LoadingSpinner message="Loading user directory..." />;
+    return <TableSkeleton rows={6} columns={6} />;
   }
 
   return (

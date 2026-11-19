@@ -12,8 +12,8 @@ import {
   UtensilsCrossed,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import toast from 'react-hot-toast';
+import { TableSkeleton } from '@/components/ui/Skeleton';
+import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -94,7 +94,7 @@ export default function MyMenuItemsPage() {
   };
 
   if (loading) {
-    return <LoadingSpinner message="Loading your menu..." />;
+    return <TableSkeleton rows={5} columns={5} />;
   }
 
   return (

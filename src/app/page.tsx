@@ -13,7 +13,7 @@ import {
   Store,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { MenuGridSkeleton } from '@/components/ui/Skeleton';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -171,7 +171,7 @@ export default function HomePage() {
         </div>
 
         {loading ? (
-          <LoadingSpinner message="Loading menu items..." />
+          <MenuGridSkeleton count={4} />
         ) : featuredItems.length === 0 ? (
           <div className="text-center py-12 bg-stone-50 dark:bg-white/[0.02] rounded-xl border border-black/[0.06] dark:border-white/[0.08] text-xs text-stone-500">
             No items available at this time.

@@ -12,7 +12,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { formatPrice, formatDate } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { DashboardOverviewSkeleton } from '@/components/ui/Skeleton';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -44,7 +44,7 @@ export default function CustomerOverviewPage() {
   }, [token]);
 
   if (loading) {
-    return <LoadingSpinner message="Loading your order history..." />;
+    return <DashboardOverviewSkeleton />;
   }
 
   const totalOrders = orders.length;
