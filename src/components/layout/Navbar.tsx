@@ -30,35 +30,40 @@ export const Navbar = () => {
 
   const navLinks = [
     { name: 'Home', href: '/' },
-    { name: 'Browse menu', href: '/menu' },
+    { name: 'Browse Menu', href: '/menu' },
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 dark:bg-[#141415]/95 backdrop-blur-sm border-b border-black/[0.06] dark:border-white/[0.08] transition-colors">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-14">
+    <div className="sticky top-0 z-50 mx-auto w-full max-w-7xl px-4 pt-3 sm:px-6 lg:px-8">
+      <header className="relative">
+        <nav
+          aria-label="Main navigation"
+          className="flex items-center justify-between gap-4 rounded-2xl border border-stone-200/80 bg-white/85 dark:border-white/10 dark:bg-[#111315]/80 px-4 py-2.5 shadow-lg shadow-black/10 dark:shadow-black/30 backdrop-blur-xl sm:px-5 transition-all"
+        >
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#b91c1c] flex items-center justify-center text-white">
-              <Pizza className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-semibold text-base tracking-tight text-stone-900 dark:text-stone-100">
-              Pizza<span className="text-[#b91c1c]">Hub</span>
+          <Link
+            href="/"
+            aria-label="PizzaHub home"
+            className="flex shrink-0 items-center gap-2 text-base font-black tracking-tight text-stone-900 dark:text-white"
+          >
+            <Pizza className="w-5 h-5 text-emerald-500" />
+            <span>
+              Pizza<span className="text-emerald-500 dark:text-emerald-400">Hub</span>
             </span>
           </Link>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center space-x-1">
+          <div className="hidden md:flex items-center gap-6 lg:gap-8">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`px-3 py-1.5 rounded-md text-sm font-normal transition-colors ${
+                  className={`text-sm transition font-medium ${
                     isActive
-                      ? 'text-stone-900 dark:text-white font-medium bg-stone-100 dark:bg-white/[0.06]'
-                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white hover:bg-stone-50 dark:hover:bg-white/[0.03]'
+                      ? 'text-emerald-600 dark:text-emerald-400 font-semibold'
+                      : 'text-stone-700 dark:text-white/75 hover:text-stone-950 dark:hover:text-white'
                   }`}
                 >
                   {link.name}
@@ -69,48 +74,48 @@ export const Navbar = () => {
             {user && (
               <Link
                 href={getDashboardPath()}
-                className={`px-3 py-1.5 rounded-md text-sm transition-colors flex items-center space-x-1.5 ${
+                className={`text-sm transition flex items-center gap-1.5 font-medium ${
                   pathname.startsWith('/dashboard')
-                    ? 'text-stone-900 dark:text-white font-medium bg-stone-100 dark:bg-white/[0.06]'
-                    : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white'
+                    ? 'text-emerald-600 dark:text-emerald-400 font-semibold'
+                    : 'text-stone-700 dark:text-white/75 hover:text-stone-950 dark:hover:text-white'
                 }`}
               >
-                <LayoutDashboard className="w-3.5 h-3.5 text-stone-400" />
+                <LayoutDashboard className="w-4 h-4 text-emerald-500" />
                 <span>
                   {user.role === 'admin'
-                    ? 'Admin portal'
+                    ? 'Admin Portal'
                     : user.role === 'vendor'
-                    ? 'Vendor dashboard'
+                    ? 'Vendor Dashboard'
                     : 'Dashboard'}
                 </span>
               </Link>
             )}
-          </nav>
+          </div>
 
-          {/* Right Area */}
-          <div className="hidden md:flex items-center space-x-3">
+          {/* Right Action Area */}
+          <div className="hidden md:flex items-center gap-3">
             <ThemeToggle />
 
             {isLoading ? (
-              <div className="w-20 h-8 bg-stone-100 dark:bg-white/[0.06] rounded-md animate-pulse" />
+              <div className="w-20 h-8 bg-stone-200/60 dark:bg-white/10 rounded-xl animate-pulse" />
             ) : user ? (
               <div className="relative">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center space-x-2 py-1 px-2 rounded-lg hover:bg-stone-100 dark:hover:bg-white/[0.05] border border-black/[0.06] dark:border-white/[0.08] transition-colors"
+                  className="flex items-center gap-2 py-1.5 px-2.5 rounded-xl hover:bg-stone-100 dark:hover:bg-white/[0.08] border border-stone-200 dark:border-white/10 transition-colors"
                 >
                   {user.image ? (
                     <img
                       src={user.image}
                       alt={user.name}
-                      className="w-6 h-6 rounded-md object-cover"
+                      className="w-6 h-6 rounded-lg object-cover"
                     />
                   ) : (
-                    <div className="w-6 h-6 rounded-md bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-200 flex items-center justify-center font-medium text-xs uppercase">
+                    <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-xs uppercase">
                       {user.name.charAt(0)}
                     </div>
                   )}
-                  <span className="text-xs font-medium text-stone-800 dark:text-stone-200 max-w-[120px] truncate">
+                  <span className="text-xs font-semibold text-stone-800 dark:text-stone-200 max-w-[120px] truncate">
                     {user.name}
                   </span>
                   <ChevronDown className="w-3.5 h-3.5 text-stone-400" />
@@ -118,11 +123,11 @@ export const Navbar = () => {
 
                 {dropdownOpen && (
                   <div
-                    className="absolute right-0 mt-1.5 w-52 bg-white dark:bg-[#19191b] rounded-xl shadow-lg border border-black/[0.06] dark:border-white/[0.08] py-1 z-50 text-xs"
+                    className="absolute right-0 mt-2 w-52 bg-white dark:bg-[#16181a] rounded-2xl shadow-xl border border-stone-200 dark:border-white/10 py-1.5 z-50 text-xs"
                     onMouseLeave={() => setDropdownOpen(false)}
                   >
-                    <div className="px-3.5 py-2 border-b border-black/[0.06] dark:border-white/[0.08]">
-                      <p className="font-medium text-stone-900 dark:text-white truncate">
+                    <div className="px-4 py-2.5 border-b border-stone-100 dark:border-white/10">
+                      <p className="font-semibold text-stone-900 dark:text-white truncate">
                         {user.name}
                       </p>
                       <p className="text-[11px] text-stone-500 truncate">{user.email}</p>
@@ -131,128 +136,128 @@ export const Navbar = () => {
                     <Link
                       href={getDashboardPath()}
                       onClick={() => setDropdownOpen(false)}
-                      className="flex items-center px-3.5 py-2 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-white/[0.04]"
+                      className="flex items-center px-4 py-2.5 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-white/[0.05]"
                     >
-                      <LayoutDashboard className="w-3.5 h-3.5 mr-2 text-stone-400" />
+                      <LayoutDashboard className="w-4 h-4 mr-2.5 text-emerald-500" />
                       Dashboard
                     </Link>
 
                     <Link
                       href="/profile"
                       onClick={() => setDropdownOpen(false)}
-                      className="flex items-center px-3.5 py-2 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-white/[0.04]"
+                      className="flex items-center px-4 py-2.5 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-white/[0.05]"
                     >
-                      <Settings className="w-3.5 h-3.5 mr-2 text-stone-400" />
-                      Profile settings
+                      <Settings className="w-4 h-4 mr-2.5 text-stone-400" />
+                      Profile Settings
                     </Link>
 
-                    <div className="border-t border-black/[0.06] dark:border-white/[0.08] my-1" />
+                    <div className="border-t border-stone-100 dark:border-white/10 my-1" />
 
                     <button
                       onClick={() => {
                         setDropdownOpen(false);
                         logout();
                       }}
-                      className="w-full flex items-center px-3.5 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20"
+                      className="w-full flex items-center px-4 py-2.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20"
                     >
-                      <LogOut className="w-3.5 h-3.5 mr-2" />
-                      Sign out
+                      <LogOut className="w-4 h-4 mr-2.5" />
+                      Sign Out
                     </button>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-2">
                 <Link
                   href="/signin"
-                  className="px-3 py-1.5 rounded-md text-xs font-medium text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors"
+                  className="px-3 py-1.5 rounded-xl text-xs font-semibold text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white transition-colors"
                 >
-                  Sign in
+                  Sign In
                 </Link>
                 <Link
                   href="/signup"
-                  className="px-3.5 py-1.5 rounded-md text-xs font-medium text-white bg-[#b91c1c] hover:bg-[#991b1b] transition-colors"
+                  className="px-4 py-1.5 rounded-xl text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 shadow-md shadow-emerald-600/20 transition-all"
                 >
-                  Sign up
+                  Sign Up
                 </Link>
               </div>
             )}
           </div>
 
           {/* Mobile menu trigger */}
-          <div className="flex md:hidden items-center space-x-2">
+          <div className="flex md:hidden items-center gap-2">
             <ThemeToggle />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 rounded-md text-stone-600 dark:text-stone-400"
+              className="p-1.5 rounded-xl border border-stone-200 dark:border-white/10 text-stone-700 dark:text-stone-300"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
-        </div>
-      </div>
+        </nav>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-black/[0.06] dark:border-white/[0.08] bg-white dark:bg-[#141415] px-4 py-3 space-y-1 text-sm">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-md text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-white/[0.04]"
-            >
-              {link.name}
-            </Link>
-          ))}
+        {/* Mobile Dropdown Drawer */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-2 rounded-2xl border border-stone-200 dark:border-white/10 bg-white/95 dark:bg-[#111315]/95 backdrop-blur-xl px-4 py-4 space-y-1.5 text-sm shadow-xl">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-white/[0.05]"
+              >
+                {link.name}
+              </Link>
+            ))}
 
-          {user ? (
-            <>
-              <Link
-                href={getDashboardPath()}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-md text-stone-900 dark:text-white font-medium bg-stone-100 dark:bg-white/[0.05]"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/profile"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-md text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-white/[0.04]"
-              >
-                Profile settings
-              </Link>
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  logout();
-                }}
-                className="w-full text-left px-3 py-2 rounded-md text-red-600 dark:text-red-400"
-              >
-                Sign out
-              </button>
-            </>
-          ) : (
-            <div className="pt-2 flex flex-col space-y-1.5">
-              <Link
-                href="/signin"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-2 text-center rounded-md border border-stone-200 dark:border-white/[0.1] text-xs font-medium"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/signup"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-2 text-center rounded-md bg-[#b91c1c] text-white text-xs font-medium"
-              >
-                Sign up
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
-    </header>
+            {user ? (
+              <>
+                <Link
+                  href={getDashboardPath()}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-2 rounded-xl text-stone-900 dark:text-white font-semibold bg-stone-100 dark:bg-white/[0.05]"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-2 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-white/[0.05]"
+                >
+                  Profile Settings
+                </Link>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    logout();
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-xl text-red-600 dark:text-red-400"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <div className="pt-2 flex flex-col gap-2">
+                <Link
+                  href="/signin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full py-2 text-center rounded-xl border border-stone-200 dark:border-white/10 text-xs font-semibold text-stone-800 dark:text-stone-200"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/signup"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full py-2 text-center rounded-xl bg-emerald-600 text-white text-xs font-semibold shadow-md shadow-emerald-600/20"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
+      </header>
+    </div>
   );
 };
