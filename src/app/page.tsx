@@ -14,11 +14,82 @@ import {
   HeartHandshake,
   CheckCircle2,
   Sparkles,
+  Flame,
+  Clock,
+  Layers,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { PizzaVisualizer } from '@/components/home/PizzaVisualizer';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+// 4 Interactive Showcase Pizzas for the User's Hero Wireframe
+const heroShowcasePizzas = [
+  {
+    id: 'pepperoni',
+    name: 'Signature Double Pepperoni',
+    shortName: 'Pepperoni',
+    tagline: 'WOOD-FIRED & EXTRA CRISPY',
+    price: '$14.99',
+    rawPrice: 14.99,
+    calories: '850 kcal',
+    rating: '4.9',
+    prepTime: '20-25 min',
+    image:
+      'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=1200&q=90',
+    description:
+      'Loaded with crispy-cupped double beef pepperoni, whole-milk mozzarella cheese, and rich San Marzano tomato sauce on 48-hour fermented sourdough crust.',
+    accentColor: '#ed101b',
+  },
+  {
+    id: 'truffle',
+    name: 'Wild Truffle & Forest Mushroom',
+    shortName: 'Truffle Funghi',
+    tagline: "CHEF'S GOURMET RESERVE",
+    price: '$17.50',
+    rawPrice: 17.50,
+    calories: '780 kcal',
+    rating: '4.8',
+    prepTime: '25-30 min',
+    image:
+      'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=90',
+    description:
+      'Pan-roasted wild cremini mushrooms, aged fontina cheese, fresh rosemary needles, and an aromatic drizzle of cold-pressed Italian white truffle oil.',
+    accentColor: '#ffb900',
+  },
+  {
+    id: 'margherita',
+    name: 'Heritage Margherita Royale',
+    shortName: 'Margherita',
+    tagline: 'CLASSIC ITALIAN RECIPE',
+    price: '$13.25',
+    rawPrice: 13.25,
+    calories: '720 kcal',
+    rating: '4.9',
+    prepTime: '18-22 min',
+    image:
+      'https://images.unsplash.com/photo-1604382355076-af4b0eb60143?auto=format&fit=crop&w=1200&q=90',
+    description:
+      'Creamy fresh buffalo mozzarella, vine-ripened San Marzano tomato puree, hand-torn Genovese sweet basil, and extra virgin olive oil drizzle.',
+    accentColor: '#10b981',
+  },
+  {
+    id: 'bbq-chicken',
+    name: 'Smokey Chipotle BBQ Chicken',
+    shortName: 'BBQ Chicken',
+    tagline: 'SWEET & SMOKEY FEAST',
+    price: '$16.80',
+    rawPrice: 16.80,
+    calories: '920 kcal',
+    rating: '4.8',
+    prepTime: '22-26 min',
+    image:
+      'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1200&q=90',
+    description:
+      'Hickory wood-smoked tender chicken breast, sweet chipotle BBQ glaze, caramelized red onions, smoked provolone, and fresh garden cilantro.',
+    accentColor: '#f97316',
+  },
+];
 
 const categories = [
   {
@@ -60,8 +131,19 @@ const categories = [
 ];
 
 export default function HomePage() {
+  const [selectedIdx, setSelectedIdx] = useState<number>(0);
+  const [rotationDegree, setRotationDegree] = useState<number>(0);
   const [featuredItems, setFeaturedItems] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const currentPizza = heroShowcasePizzas[selectedIdx];
+
+  const handleSelectPizza = (idx: number) => {
+    if (idx === selectedIdx) return;
+    // Rotate the pizza by 90deg on each selection to create dynamic movement
+    setRotationDegree((prev) => prev + 90);
+    setSelectedIdx(idx);
+  };
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -84,268 +166,239 @@ export default function HomePage() {
   return (
     <div className="flex flex-col w-full">
       {/* ========================================================
-          1. HERO SECTION (Bold reference design from pizzahub-client.vercel.app)
+          1. HERO SECTION (Custom Wireframe Design:
+             Navbar at top -> Left Text Box with 4 Mini Pizzas ->
+             Right Big Edge-Bleed Circular Pizza Plate)
       ======================================================== */}
-      <section className="relative isolate flex min-h-[100svh] w-full flex-col justify-between overflow-x-clip bg-[#fff8ed] text-[#30251f] select-none dark:bg-[#070707] dark:text-white lg:min-h-[calc(100svh-4rem)]">
-        {/* Background glow effects */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_75%_55%,rgba(255,110,15,0.12),transparent_50%)] dark:bg-[radial-gradient(circle_at_75%_55%,rgba(255,110,15,0.22),transparent_50%)]" />
-        <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-[#fff8ed] via-[#fff8ed]/90 to-transparent lg:block dark:from-[#070707] dark:via-[#070707]/85" />
+      <section className="relative isolate flex min-h-[90svh] w-full items-center overflow-x-clip bg-[#fff8ed] text-[#30251f] select-none dark:bg-[#070707] dark:text-white lg:min-h-[calc(100svh-4.5rem)] py-8 lg:py-12">
+        {/* Ambient background glows */}
+        <div className="pointer-events-none absolute -left-20 top-1/4 size-[400px] rounded-full bg-orange-500/10 dark:bg-orange-500/15 blur-[120px]" />
+        <div className="pointer-events-none absolute right-0 top-1/3 size-[550px] rounded-full bg-[#ffb900]/15 dark:bg-[#ffb900]/20 blur-[140px]" />
 
-        {/* Right Pizza Background (Desktop) */}
-        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[62%] lg:block">
-          <img
-            src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1600&q=90"
-            alt="Delicious cheesy pepperoni pizza"
-            className="h-full w-full object-cover object-right"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#fff8ed] via-[#fff8ed]/35 to-transparent dark:from-[#070707] dark:via-[#070707]/40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#fff8ed]/75 via-transparent to-[#fff8ed]/20 dark:from-[#070707] dark:to-[#070707]/50" />
-
-          {/* Steam doodle on pizza */}
-          <svg
-            viewBox="0 0 60 60"
-            className="absolute right-[4%] top-[44%] h-12 w-12 text-white/80"
-            fill="currentColor"
-          >
-            <path d="M12 22C24 14 38 12 44 16C48 19 30 24 12 22Z" />
-            <path d="M14 31C28 29 44 31 48 36C50 40 30 37 14 31Z" />
-            <path d="M12 40C22 44 34 50 36 54C37 57 22 49 12 40Z" />
-          </svg>
-        </div>
-
-        {/* Main Hero Container */}
-        <div className="relative z-20 mx-auto flex w-full max-w-[1540px] flex-1 flex-col justify-between px-4 pb-8 pt-5 sm:px-8 sm:pt-7 lg:px-14 lg:pb-10 lg:pt-8">
-          {/* Inner Header Row: Mascot Brand + Good Food Good Mood */}
-          <header className="flex w-full items-center justify-between gap-2">
-            <Link href="/" className="group flex items-center gap-2.5 sm:gap-3">
-              <div className="transition-transform duration-300 group-hover:scale-105">
-                {/* Pizza Mascot SVG */}
-                <svg
-                  viewBox="0 0 110 100"
-                  className="h-11 w-12 shrink-0 sm:h-14 sm:w-16 lg:h-16 lg:w-20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12 58C10 30 35 8 68 12C90 15 104 32 106 54C107 58 103 61 99 60L94 58C92 38 78 24 60 22C38 20 22 36 22 56L16 61C13 62 12 60 12 58Z"
-                    fill="#E50916"
-                  />
-                  <path
-                    d="M24 55C24 38 39 25 58 26C75 27 89 40 91 57L76 62C74 62 73 65 73 68V74C73 77 69 77 69 74V67C69 65 67 64 65 65L56 68C54 69 53 71 53 74V84C53 88 47 88 47 84V73C47 71 45 70 43 71L38 73C36 74 35 76 35 79V82C35 85 30 85 30 82V74C30 71 28 70 26 71L21 73C18 74 16 71 18 68L24 55Z"
-                    fill="#FFB900"
-                  />
-                  <path
-                    d="M58 26L46 69M58 26L72 63"
-                    stroke="#080808"
-                    strokeWidth="3.5"
-                    strokeLinecap="round"
-                  />
-                  <circle cx="44" cy="45" r="5" fill="#E50916" />
-                  <circle cx="62" cy="42" r="4.5" fill="#E50916" />
-                  <circle cx="77" cy="49" r="4.5" fill="#E50916" />
-                  <circle cx="33" cy="58" r="3.5" fill="#E50916" />
-                  <circle cx="57" cy="56" r="3.5" fill="#E50916" />
-                </svg>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-extrabold leading-none tracking-tight sm:text-3xl lg:text-[40px]">
-                  <span className="text-[#30251f] dark:text-white">Pizza </span>
-                  <span className="text-[#ed101b]">Hub</span>
-                </h2>
-                <p className="mt-1 text-xs font-medium tracking-wide text-[#57483d] sm:text-sm lg:text-[17px] dark:text-white/90">
-                  Taste The Happiness
-                </p>
-                {/* Red Underline Curved Swoosh SVG */}
-                <svg
-                  viewBox="0 0 140 16"
-                  className="ml-14 mt-0.5 h-2.5 w-20 sm:ml-20 sm:h-3 sm:w-28 lg:ml-24 lg:w-32"
-                  fill="none"
-                >
-                  <path d="M2 10C45 2 95 2 138 11C95 7 45 7 2 10Z" fill="#ed101b" />
-                </svg>
-              </div>
-            </Link>
-
-            {/* Right: Good Food Good Mood Script */}
-            <div className="-rotate-6 text-right lg:mr-12">
-              <p className="font-script-brush text-2xl font-bold leading-[0.85] text-[#30251f] sm:text-3xl lg:text-[46px] dark:text-white">
-                Good Food
-              </p>
-              <p className="font-script-brush mt-0.5 text-2xl font-bold leading-[0.85] text-[#ffb900] sm:text-3xl lg:text-[48px]">
-                Good Mood
-              </p>
-              {/* Yellow Underline SVG */}
-              <svg
-                viewBox="0 0 180 20"
-                className="ml-auto mt-0.5 h-2.5 w-24 sm:h-3 sm:w-32 lg:mt-1 lg:h-3.5 lg:w-44"
-                fill="none"
-              >
-                <path d="M4 16C55 3 125 2 176 9C125 6 55 8 4 16Z" fill="#ffb900" />
-              </svg>
-            </div>
-          </header>
-
-          {/* Central Typography: Delicious Pizza Makes Everything Better! */}
-          <div className="my-auto flex flex-col items-center py-6 text-center lg:max-w-[650px] lg:items-start lg:py-4 lg:text-left">
-            <div className="relative inline-flex flex-col items-center lg:items-start">
-              {/* Left Steam Doodle */}
-              <svg
-                viewBox="0 0 60 80"
-                className="pointer-events-none absolute -left-7 top-6 h-12 w-9 text-[#ffb900] sm:-left-10 sm:top-10 sm:h-16 sm:w-12 lg:-left-11 lg:top-14 lg:h-20 lg:w-14"
-                fill="currentColor"
-              >
-                <path d="M44 26C36 16 28 8 33 4C38 1 46 14 44 26Z" />
-                <path d="M36 42C22 36 8 32 10 26C12 20 26 30 36 42Z" />
-                <path d="M36 58C24 62 12 68 10 62C8 56 22 54 36 58Z" />
-              </svg>
-
-              <p
-                className="font-script-brush relative z-20 -mb-4 text-[clamp(2.75rem,7vw,5.5rem)] font-bold leading-none tracking-wide text-[#30251f] sm:-mb-6 lg:ml-24 lg:-mb-9 dark:text-white"
-                style={{
-                  textShadow: '0 4px 14px rgba(0,0,0,0.4), 0 0 4px rgba(0,0,0,0.3)',
-                }}
-              >
-                Delicious
-              </p>
-
-              <h1
-                className="font-pizza-heavy relative z-10 -rotate-3 text-[clamp(4.25rem,14vw,9.8rem)] leading-[0.92] tracking-tight text-[#ffb900]"
-                style={{
-                  textShadow: '4px 6px 0px rgba(0,0,0,0.35)',
-                }}
-              >
-                Pizza
-              </h1>
-
-              {/* Yellow Swoop Underline under Pizza */}
-              <svg
-                viewBox="0 0 340 26"
-                className="-mt-1 h-4 w-[clamp(13rem,45vw,22.5rem)] sm:h-5 lg:ml-28"
-                fill="none"
-              >
-                <path d="M4 21C105 3 230 2 336 13C230 8 105 11 4 21Z" fill="#ffb900" />
-              </svg>
-
-              <div className="mt-2 flex flex-wrap items-baseline justify-center gap-x-2.5 lg:justify-start lg:pl-4">
-                <span className="font-script-brush text-[clamp(2rem,5.2vw,3.5rem)] font-semibold leading-tight text-[#30251f] dark:text-white">
-                  Makes Everything
+        <div className="relative z-20 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* ================= LEFT COLUMN: TEXT BLOCK + 4 MINI PIZZAS ================= */}
+            <div className="lg:col-span-7 flex flex-col justify-center space-y-6 pt-2 lg:pt-0">
+              {/* Eyebrow Tag */}
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#ffb900]/40 bg-[#ffb900]/15 px-3.5 py-1 text-xs font-bold tracking-wider text-amber-700 dark:text-[#ffb900] uppercase shadow-sm">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-[#ffb900]" />
+                  <span>{currentPizza.tagline}</span>
                 </span>
-                <div className="inline-flex flex-col items-center lg:items-start">
-                  <span className="font-script-brush text-[clamp(2.1rem,5.4vw,3.65rem)] font-bold leading-tight text-[#ed101b]">
-                    Better!
-                  </span>
-                  {/* Red Swoop Underline under Better */}
-                  <svg
-                    viewBox="0 0 150 16"
-                    className="-mt-1 h-2.5 w-24 sm:h-3 sm:w-32 lg:w-36"
-                    fill="none"
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-stone-500 dark:text-stone-400">
+                  <Flame className="w-3.5 h-3.5 text-red-500" />
+                  <span>480°C Stone Oven</span>
+                </span>
+              </div>
+
+              {/* Main Headline Block (Delicious Pizza Makes Everything Better!) */}
+              <div className="relative inline-flex flex-col items-start">
+                <p
+                  className="font-script-brush -mb-3 sm:-mb-5 text-[clamp(2.5rem,6vw,4.5rem)] font-bold leading-none tracking-wide text-[#30251f] dark:text-white"
+                  style={{
+                    textShadow: '0 4px 14px rgba(0,0,0,0.35)',
+                  }}
+                >
+                  Delicious
+                </p>
+
+                <div className="flex flex-wrap items-baseline gap-x-3">
+                  <h1
+                    className="font-pizza-heavy -rotate-2 text-[clamp(3.8rem,11vw,7.5rem)] leading-[0.92] tracking-tight text-[#ffb900]"
+                    style={{
+                      textShadow: '4px 6px 0px rgba(0,0,0,0.35)',
+                    }}
                   >
-                    <path d="M2 12C48 3 102 2 148 8C102 6 48 8 2 12Z" fill="#ed101b" />
-                  </svg>
+                    Pizza
+                  </h1>
+                  <span className="font-script-brush text-[clamp(1.8rem,4.5vw,3.2rem)] font-bold leading-none text-[#ed101b]">
+                    Makes Everything Better!
+                  </span>
+                </div>
+
+                {/* Active Pizza Flavor Name with Subtle Underline */}
+                <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-stone-900 dark:text-white flex items-center gap-2">
+                  <span>{currentPizza.name}</span>
+                </h2>
+              </div>
+
+              {/* Description */}
+              <p className="text-sm sm:text-base leading-relaxed text-stone-600 dark:text-stone-300 max-w-xl">
+                {currentPizza.description}
+              </p>
+
+              {/* Key Highlights Metrics */}
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-1 text-xs sm:text-sm font-semibold">
+                <div className="flex items-center gap-1.5 text-stone-800 dark:text-white">
+                  <span className="text-2xl font-black text-[#e50916] dark:text-[#ffb900] tabular-nums">
+                    {currentPizza.price}
+                  </span>
+                </div>
+                <div className="h-4 w-px bg-stone-300 dark:bg-white/20" />
+                <div className="flex items-center gap-1 text-stone-700 dark:text-stone-300">
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <span>{currentPizza.rating} / 5.0</span>
+                </div>
+                <div className="h-4 w-px bg-stone-300 dark:bg-white/20" />
+                <div className="flex items-center gap-1 text-stone-700 dark:text-stone-300">
+                  <Clock className="w-4 h-4 text-emerald-500" />
+                  <span>{currentPizza.prepTime}</span>
+                </div>
+                <div className="h-4 w-px bg-stone-300 dark:bg-white/20 hidden sm:block" />
+                <div className="hidden sm:flex items-center gap-1 text-stone-700 dark:text-stone-300">
+                  <Flame className="w-4 h-4 text-orange-500" />
+                  <span>{currentPizza.calories}</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Link
+                  href="/menu"
+                  className="group inline-flex items-center gap-3 rounded-full bg-[#e50916] py-3 pl-7 pr-3 text-base font-bold text-white shadow-[0_10px_25px_rgba(229,9,22,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ff1624] sm:text-lg"
+                >
+                  <span>Order Now</span>
+                  <span className="flex size-8 items-center justify-center rounded-full bg-white text-[#e50916] transition-transform duration-300 group-hover:translate-x-1">
+                    <ArrowRight className="w-4 h-4 stroke-[3]" />
+                  </span>
+                </Link>
+
+                <Link
+                  href="/menu"
+                  className="inline-flex items-center gap-2 rounded-full border border-stone-300 dark:border-white/20 bg-white/60 dark:bg-white/5 px-6 py-3 text-sm font-bold text-stone-800 dark:text-white backdrop-blur-sm transition-all hover:bg-stone-100 dark:hover:bg-white/10"
+                >
+                  <Layers className="w-4 h-4 text-stone-500 dark:text-stone-400" />
+                  <span>Explore All Flavors</span>
+                </Link>
+              </div>
+
+              {/* ================= 4 MINI CIRCULAR PIZZAS (User Wireframe Element) ================= */}
+              <div className="pt-4 border-t border-stone-200/80 dark:border-white/10">
+                <div className="flex items-center justify-between mb-2.5">
+                  <p className="text-[11px] font-extrabold tracking-wider text-stone-500 dark:text-stone-400 uppercase">
+                    Select Flavor Showcase ({selectedIdx + 1} of 4)
+                  </p>
+                  <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                    Click to spin &amp; preview
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3 sm:gap-5 overflow-x-auto pb-2">
+                  {heroShowcasePizzas.map((pizza, idx) => {
+                    const isSelected = selectedIdx === idx;
+                    return (
+                      <button
+                        key={pizza.id}
+                        type="button"
+                        onClick={() => handleSelectPizza(idx)}
+                        className={`group relative flex flex-col items-center transition-all duration-300 focus:outline-none ${
+                          isSelected
+                            ? 'scale-110 -translate-y-1'
+                            : 'opacity-70 hover:opacity-100 hover:scale-105'
+                        }`}
+                        title={pizza.name}
+                      >
+                        {/* Circular Mini Pizza */}
+                        <div
+                          className={`relative size-14 sm:size-16 rounded-full overflow-hidden p-0.5 border-2 transition-all shadow-md ${
+                            isSelected
+                              ? 'border-[#ffb900] ring-4 ring-[#ffb900]/30 shadow-orange-500/30'
+                              : 'border-stone-300 dark:border-white/20 hover:border-[#ffb900]/70'
+                          }`}
+                        >
+                          <img
+                            src={pizza.image}
+                            alt={pizza.name}
+                            className="w-full h-full object-cover rounded-full transition-transform duration-700 group-hover:rotate-45"
+                          />
+                          {isSelected && (
+                            <div className="absolute inset-0 bg-[#ffb900]/10 rounded-full" />
+                          )}
+                        </div>
+
+                        {/* Title Underneath */}
+                        <span
+                          className={`mt-1.5 text-[11px] font-bold truncate max-w-[70px] sm:max-w-[85px] transition-colors ${
+                            isSelected
+                              ? 'text-[#e50916] dark:text-[#ffb900]'
+                              : 'text-stone-700 dark:text-stone-300'
+                          }`}
+                        >
+                          {pizza.shortName}
+                        </span>
+
+                        {/* Price */}
+                        <span className="text-[10px] font-semibold text-stone-500 dark:text-stone-400 tabular-nums">
+                          {pizza.price}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
 
-            {/* Pill "Order Now" Button with White Arrow Circle */}
-            <div className="mt-6 sm:mt-8 lg:pl-10">
-              <Link
-                href="/menu"
-                className="group inline-flex items-center gap-3 rounded-full bg-[#e50916] py-2.5 pl-6 pr-2.5 text-base font-bold text-white shadow-[0_10px_30px_rgba(229,9,22,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ff1624] sm:gap-4 sm:py-3 sm:pl-9 sm:pr-3 sm:text-[22px]"
-              >
-                <span>Order Now</span>
-                <span className="flex size-8 items-center justify-center rounded-full bg-white text-[#e50916] transition-transform duration-300 group-hover:translate-x-1 sm:size-10">
-                  <ArrowRight className="w-5 h-5 stroke-[3]" />
-                </span>
-              </Link>
-            </div>
+            {/* ================= RIGHT COLUMN: BIG EDGE-BLEED CIRCULAR PIZZA ================= */}
+            <div className="lg:col-span-5 relative flex items-center justify-center lg:justify-end">
+              {/* Outer Circular Tray Container */}
+              <div className="relative flex items-center justify-center">
+                {/* Ambient Radial Backlight */}
+                <div className="absolute -inset-8 rounded-full bg-gradient-to-tr from-[#ffb900]/30 via-orange-500/20 to-red-500/10 blur-2xl pointer-events-none" />
 
-            {/* Mobile Pizza Image (Visible on screen < lg) */}
-            <div className="relative mt-8 h-[240px] w-full max-w-[540px] overflow-hidden rounded-3xl border border-white/10 shadow-[0_20px_50px_rgba(255,100,0,0.18)] sm:h-[320px] lg:hidden">
-              <img
-                src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=90"
-                alt="Delicious cheesy pepperoni pizza"
-                className="h-full w-full object-cover object-center"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#30251f]/45 via-transparent to-transparent dark:from-[#070707]/80" />
+                {/* Steam doodle decorative SVG */}
+                <svg
+                  viewBox="0 0 60 60"
+                  className="absolute -top-8 right-12 z-30 h-14 w-14 text-white/80 animate-pulse pointer-events-none"
+                  fill="currentColor"
+                >
+                  <path d="M12 22C24 14 38 12 44 16C48 19 30 24 12 22Z" />
+                  <path d="M14 31C28 29 44 31 48 36C50 40 30 37 14 31Z" />
+                  <path d="M12 40C22 44 34 50 36 54C37 57 22 49 12 40Z" />
+                </svg>
+
+                {/* The Giant Circular Pizza Plate (Bleeds off right edge on desktop) */}
+                <div
+                  className="relative size-[300px] sm:size-[420px] lg:size-[560px] xl:size-[640px] rounded-full p-2.5 sm:p-4 bg-stone-900/15 dark:bg-black/60 border-4 sm:border-8 border-stone-800/10 dark:border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.4)] backdrop-blur-sm lg:-mr-28 xl:-mr-36 transition-transform duration-700 ease-out"
+                  style={{
+                    transform: `rotate(${rotationDegree}deg)`,
+                  }}
+                >
+                  {/* Pizza Image inside circular plate */}
+                  <div className="relative w-full h-full rounded-full overflow-hidden shadow-2xl">
+                    <img
+                      src={currentPizza.image}
+                      alt={currentPizza.name}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+
+                    {/* Subtle warm crust lighting overlay */}
+                    <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-tr from-black/25 via-transparent to-white/10" />
+                  </div>
+                </div>
+
+                {/* Floating Hot Fresh Badge */}
+                <div className="absolute -bottom-2 sm:bottom-4 left-4 sm:left-2 z-30 flex items-center gap-2 rounded-2xl bg-white/95 dark:bg-[#16181a]/95 px-4 py-2 shadow-xl border border-stone-200 dark:border-white/10 backdrop-blur-md">
+                  <div className="size-8 rounded-xl bg-red-600 text-white flex items-center justify-center font-bold">
+                    <Flame className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-[11px] font-bold text-stone-900 dark:text-white uppercase tracking-wider">
+                      Hot &amp; Fresh
+                    </div>
+                    <div className="text-[10px] text-stone-500 font-medium">
+                      Oven Baked in 480°C
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          {/* Hero Trust Badges Footer Bar (Fast Delivery, Best Quality, Happy Customers) */}
-          <footer className="relative z-20 mt-4 grid w-full grid-cols-3 divide-x-2 divide-[#ffb900] pt-2 sm:max-w-[560px] lg:mt-0 lg:flex lg:max-w-none lg:items-center lg:divide-x-0 lg:pl-4">
-            {/* 1. Fast Delivery */}
-            <div className="flex flex-col items-center justify-center gap-1.5 px-2 text-center sm:flex-row sm:justify-start sm:gap-3 sm:px-0 sm:pr-6 sm:text-left lg:pr-7">
-              <svg viewBox="0 0 64 52" className="h-8 w-10 shrink-0 sm:h-10 sm:w-12" fill="none">
-                <rect x="8" y="10" width="16" height="14" rx="2" stroke="#FFB900" strokeWidth="2.8" />
-                <path d="M12 15H20" stroke="#FFB900" strokeWidth="2.5" strokeLinecap="round" />
-                <path
-                  d="M10 28H28L34 16H42M38 16L46 34M12 36H48C50 36 52 34 52 32C52 28 48 26 44 26H35"
-                  stroke="#FFB900"
-                  strokeWidth="2.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <circle cx="17" cy="39" r="6.5" stroke="#FFB900" strokeWidth="2.8" fill="#080808" />
-                <circle cx="46" cy="39" r="6.5" stroke="#FFB900" strokeWidth="2.8" fill="#080808" />
-                <path d="M2 20H6M4 32H8" stroke="#FFB900" strokeWidth="2.5" strokeLinecap="round" />
-              </svg>
-              <p className="text-xs font-bold leading-tight text-[#30251f] sm:text-base lg:text-[17px] dark:text-white">
-                Fast<br />Delivery
-              </p>
-            </div>
-
-            {/* 2. Best Quality */}
-            <div className="flex flex-col items-center justify-center gap-1.5 px-2 text-center sm:flex-row sm:justify-start sm:gap-3 sm:px-6 sm:text-left lg:border-l-2 lg:border-[#ffb900] lg:px-7">
-              <svg viewBox="0 0 56 56" className="h-8 w-8 shrink-0 sm:h-10 sm:w-10" fill="none">
-                <path
-                  d="M28 6L33.5 9.5L40 9L43 15L49 18L48.5 24.5L52 30L48.5 35.5L49 42L43 45L40 51L33.5 50.5L28 54L22.5 50.5L16 51L13 45L7 42L7.5 35.5L4 30L7.5 24.5L7 18L13 15L16 9L22.5 9.5L28 6Z"
-                  stroke="#FFB900"
-                  strokeWidth="2.6"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M28 19L30.8 24.8L37.2 25.7L32.6 30.2L33.7 36.5L28 33.5L22.3 36.5L23.4 30.2L18.8 25.7L25.2 24.8L28 19Z"
-                  stroke="#FFB900"
-                  strokeWidth="2.4"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M21 49L18 55L24 52M35 49L38 55L32 52"
-                  stroke="#FFB900"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <p className="text-xs font-bold leading-tight text-[#30251f] sm:text-base lg:text-[17px] dark:text-white">
-                Best<br />Quality
-              </p>
-            </div>
-
-            {/* 3. Happy Customers */}
-            <div className="flex flex-col items-center justify-center gap-1.5 px-2 text-center sm:flex-row sm:justify-start sm:gap-3 sm:px-0 sm:pl-6 sm:text-left lg:border-l-2 lg:border-[#ffb900] lg:pl-7">
-              <svg viewBox="0 0 52 52" className="h-8 w-8 shrink-0 sm:h-10 sm:w-10" fill="none">
-                <circle cx="26" cy="26" r="21" stroke="#FFB900" strokeWidth="2.8" />
-                <circle cx="19" cy="21" r="2.5" fill="#FFB900" />
-                <circle cx="33" cy="21" r="2.5" fill="#FFB900" />
-                <path
-                  d="M16 29C18.5 35.5 33.5 35.5 36 29"
-                  stroke="#FFB900"
-                  strokeWidth="2.8"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <p className="text-xs font-bold leading-tight text-[#30251f] sm:text-base lg:text-[17px] dark:text-white">
-                Happy<br />Customers
-              </p>
-            </div>
-          </footer>
         </div>
 
-        {/* Bottom Left Corner Red Splash Wave */}
+        {/* Bottom Left Corner Red Wave Splash SVG */}
         <svg
           viewBox="0 0 260 120"
-          className="pointer-events-none absolute bottom-0 left-0 z-10 h-12 w-24 sm:h-16 sm:w-36 lg:h-24 lg:w-56"
+          className="pointer-events-none absolute bottom-0 left-0 z-10 h-10 w-20 sm:h-16 sm:w-36 lg:h-20 lg:w-48"
           fill="none"
         >
           <path d="M0 0C55 68 155 104 260 120H0V0Z" fill="#e50916" />
@@ -353,7 +406,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================
-          2. FEATURED PIZZAS (Dynamic from API, with reference design)
+          2. FEATURED PIZZAS (Dynamic from API)
       ======================================================== */}
       <section className="bg-[#08090b] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 border-t border-white/5">
         <div className="mx-auto max-w-7xl">
@@ -522,7 +575,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================
-          4. WHY CHOOSE PIZZAHUB? (Reference 4-card layout with watermarks)
+          4. WHY CHOOSE PIZZAHUB? (4-card layout with watermarks)
       ======================================================== */}
       <section className="relative overflow-hidden bg-[#fffaf2] px-5 py-20 text-[#30251f] dark:bg-[#08090b] dark:text-white sm:px-8 lg:px-12 border-t border-black/[0.04] dark:border-white/5">
         <div className="pointer-events-none absolute -left-32 top-20 size-80 rounded-full bg-emerald-500/5 blur-3xl" />
@@ -658,7 +711,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================
-          5. HOW PIZZAHUB WORKS (Reference 3-card layout)
+          5. HOW PIZZAHUB WORKS (3-card layout)
       ======================================================== */}
       <section className="overflow-hidden bg-[#f4ece1] px-5 py-20 text-[#30251f] dark:bg-[#111315] dark:text-white sm:px-8 lg:px-12">
         <div className="mx-auto max-w-7xl">
@@ -758,7 +811,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================
-          6. INTERACTIVE CRUST LAB (Unique visualizer feature)
+          6. INTERACTIVE CRUST LAB (Crust Visualizer)
       ======================================================== */}
       <section className="bg-[#fff8ed] dark:bg-[#08090b] px-5 py-20 text-[#30251f] dark:text-white sm:px-8 lg:px-12 border-t border-black/[0.04] dark:border-white/5">
         <div className="mx-auto max-w-7xl">
