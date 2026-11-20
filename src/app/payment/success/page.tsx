@@ -13,12 +13,11 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
-  const { user, token, refreshUser } = useAuth();
-  const [verifying, setVerifying] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { token, refreshUser } = useAuth();
+  const [checking, setChecking] = useState<boolean>(true);
 
   useEffect(() => {
-    // Fire confetti celebration!
+    // Fire confetti celebration
     try {
       confetti({
         particleCount: 100,
@@ -29,40 +28,40 @@ function PaymentSuccessContent() {
       // safe fallback
     }
 
-    const verifyStripePayment = async () => {
+    const checkWebhookStatus = async () => {
       if (!sessionId || !token) {
-        setVerifying(false);
+        setChecking(false);
         return;
       }
 
       try {
-        const res = await fetch(`${API_BASE}/subscription/verify-session`, {
-          method: 'POST',
+        // Read-only status verification: frontend redirect does NOT activate premium.
+        // It strictly polls whether the Stripe Webhook has finished processing.
+        const res = await fetch(`${API_BASE}/subscription/session-status/${sessionId}`, {
           headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ sessionId }),
         });
 
         const data = await res.json();
-        if (data.success) {
+        if (data.success && data.processedByWebhook) {
           await refreshUser();
         } else {
-          setError(data.message || 'Payment verification in progress.');
+          // Refresh user session state
+          await refreshUser();
         }
       } catch (err) {
-        console.error('Verification error:', err);
+        console.error('Status check error:', err);
       } finally {
-        setVerifying(false);
+        setChecking(false);
       }
     };
 
-    verifyStripePayment();
+    checkWebhookStatus();
   }, [sessionId, token, refreshUser]);
 
-  if (verifying) {
-    return <LoadingSpinner fullScreen message="Cryptographically verifying Stripe payment confirmation..." />;
+  if (checking) {
+    return <LoadingSpinner fullScreen message="Confirming Stripe webhook event processing..." />;
   }
 
   return (
@@ -73,16 +72,18 @@ function PaymentSuccessContent() {
 
       <div className="space-y-1.5">
         <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
-          Subscription confirmed
+          Payment confirmed
         </h1>
         <p className="text-xs text-stone-500 dark:text-stone-400 max-w-sm mx-auto leading-relaxed">
-          Your payment was verified via Stripe. Premium benefits including unlimited active items and featured placement are now active.
+          Your payment was processed by Stripe. Premium access is activated strictly through the verified Stripe webhook.
         </p>
       </div>
 
       <div className="p-3 rounded-lg bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300 flex items-center justify-center space-x-2">
         <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-        <span className="font-mono text-[11px] text-stone-500">Session: {sessionId ? `${sessionId.slice(0, 18)}...` : 'Verified'}</span>
+        <span className="font-mono text-[11px] text-stone-500">
+          Session: {sessionId ? `${sessionId.slice(0, 18)}...` : 'Confirmed'}
+        </span>
       </div>
 
       <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2.5">
