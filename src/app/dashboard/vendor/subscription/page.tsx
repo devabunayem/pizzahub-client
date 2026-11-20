@@ -17,7 +17,10 @@ export default function VendorSubscriptionPage() {
   const { user, token } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const isPremium = user?.subscriptionPlan === 'premium';
+  const isPremium =
+    user?.subscriptionPlan === 'premium' &&
+    (!user?.subscriptionExpiresAt ||
+      new Date(user.subscriptionExpiresAt) > new Date());
 
   const handleUpgrade = async () => {
     setLoading(true);
