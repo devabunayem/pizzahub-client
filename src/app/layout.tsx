@@ -3,8 +3,6 @@ import './globals.css';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { AuthProvider } from '@/context/AuthContext';
-import { Navbar } from '@/components/layout/Navbar';
-import { Footer } from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'PizzaHub — Authentic Pizza Ordering & Delivery Platform',
@@ -20,13 +18,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col antialiased selection:bg-pizza-500 selection:text-white">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <body className="min-h-screen bg-white text-stone-900 antialiased">
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <AuthProvider>
             <ToastProvider />
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            {children}
           </AuthProvider>
         </ThemeProvider>
       </body>
