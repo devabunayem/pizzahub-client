@@ -39,11 +39,15 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-stone-900 dark:bg-stone-100 flex items-center justify-center text-white dark:text-stone-900">
-              <Pizza className="w-4 h-4 text-white dark:text-stone-900" />
+            <div className="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center text-white shadow-md shadow-red-600/30 group-hover:scale-105 transition-transform">
+              <Pizza className="w-4 h-4 text-white" />
             </div>
-            <span className="font-semibold text-base tracking-tight text-stone-900 dark:text-white">
-              Pizza<span className="text-[#b91c1c] dark:text-[#ea580c]">Hub</span>
+            <span className="font-black text-lg tracking-tighter uppercase text-stone-900 dark:text-white">
+              PIZZA<span className="text-red-600">HUB</span>
+            </span>
+            <span className="hidden xl:inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Ovens Active</span>
             </span>
           </Link>
 
