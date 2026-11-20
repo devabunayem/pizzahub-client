@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import {
   User,
@@ -27,12 +28,19 @@ interface ProfileSettingsPanelProps {
 
 export function ProfileSettingsPanel({ inDashboard = false }: ProfileSettingsPanelProps) {
   const { user, token, updateUser, isLoading } = useAuth();
+  const router = useRouter();
 
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const [businessName, setBusinessName] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/signin?redirect=/dashboard/profile');
+    }
+  }, [isLoading, user, router]);
 
   useEffect(() => {
     if (user) {

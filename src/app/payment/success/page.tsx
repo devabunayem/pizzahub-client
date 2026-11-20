@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { CheckCircle2, ArrowRight, ShieldCheck, Pizza } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -11,12 +11,20 @@ import { PaymentStatusSkeleton } from '@/components/ui/Skeleton';
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 function PaymentSuccessContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
-  const { token, refreshUser } = useAuth();
+  const { user, token, refreshUser, isLoading: authLoading } = useAuth();
   const [checking, setChecking] = useState<boolean>(true);
 
   useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/signin?redirect=/payment/success');
+    }
+  }, [authLoading, user, router]);
+
+  useEffect(() => {
+    if (authLoading || !user) return;
     try {
       confetti({
         particleCount: 100,
@@ -50,9 +58,9 @@ function PaymentSuccessContent() {
     };
 
     checkWebhookStatus();
-  }, [sessionId, token, refreshUser]);
+  }, [sessionId, token, refreshUser, authLoading, user]);
 
-  if (checking) {
+  if (authLoading || !user || checking) {
     return <PaymentStatusSkeleton />;
   }
 

@@ -1,10 +1,26 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import { AlertCircle, ArrowLeft, CreditCard } from 'lucide-react';
+import { PaymentStatusSkeleton } from '@/components/ui/Skeleton';
 
 export default function PaymentCancelPage() {
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/signin?redirect=/payment/cancel');
+    }
+  }, [isLoading, user, router]);
+
+  if (isLoading || !user) {
+    return <PaymentStatusSkeleton />;
+  }
+
   return (
     <section className="flex min-h-[78vh] items-center justify-center bg-[#FAF7F2] px-4 py-16">
       <div className="w-full max-w-md space-y-6 rounded-3xl border border-stone-200/90 bg-white p-8 sm:p-10 text-center shadow-[0_24px_48px_-22px_rgba(24,18,14,0.16)]">

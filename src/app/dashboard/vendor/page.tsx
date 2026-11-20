@@ -146,11 +146,11 @@ export default function VendorOverviewPage() {
         </div>
       </div>
 
-      {/* Bento 4-Card KPI Row */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Bento 5-Card KPI Row */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <PremiumStatCard
           tone="dark"
-          label="Total Listings"
+          label="Total Menu Items"
           value={totalMenuItems}
           subtitle={isPremium ? 'Unlimited Pro capacity' : `${activeMenuItems} of 3 active`}
           badge={isPremium ? 'Pro' : 'Free'}
@@ -160,9 +160,9 @@ export default function VendorOverviewPage() {
 
         <PremiumStatCard
           tone="emerald"
-          label="Active Public"
+          label="Active Menu Items"
           value={activeMenuItems}
-          subtitle="Visible on public menu"
+          subtitle="Approved & visible on menu"
           badge="Live"
           icon={CheckCircle2}
           sparkline={[18, 28, 36, 42, 54, Math.max(62, activeMenuItems * 14)]}
@@ -187,6 +187,17 @@ export default function VendorOverviewPage() {
           badge="Done"
           icon={ShoppingBag}
           sparkline={[12, 24, 34, 44, 58, Math.max(64, acceptedOrders * 14)]}
+        />
+
+        <PremiumStatCard
+          tone="espresso"
+          label="Subscription Plan"
+          value={isPremium ? 'Premium' : 'Free'}
+          subtitle={isPremium ? 'Unlimited active items' : 'Max 3 active items'}
+          badge={isPremium ? 'Active' : 'Upgrade'}
+          icon={Crown}
+          href="/dashboard/vendor/subscription"
+          sparkline={isPremium ? [30, 42, 50, 62, 74, 86] : [20, 24, 28, 30, 32, 36]}
         />
       </div>
 

@@ -152,12 +152,12 @@ export default function CustomerOverviewPage() {
 
         <PremiumStatCard
           tone="crimson"
-          label="Active Spend"
-          value={formatPrice(totalSpent)}
-          subtitle={`${rejectedOrders} archived / cancelled`}
-          badge="USD"
-          icon={DollarSign}
-          sparkline={[22, 34, 38, 45, 55, 68]}
+          label="Rejected / Cancelled"
+          value={rejectedOrders}
+          subtitle={`${formatPrice(totalSpent)} active orders spend`}
+          badge="History"
+          icon={XCircle}
+          sparkline={[22, 34, 38, 45, 55, Math.max(48, rejectedOrders * 12)]}
         />
       </div>
 

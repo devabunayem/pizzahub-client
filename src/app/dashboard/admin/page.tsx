@@ -63,10 +63,10 @@ export default function AdminOverviewPage() {
     highlight?: boolean;
   }[] = [
     {
-      title: 'Total Revenue',
-      value: formatPrice(stats?.totalRevenue || 0),
-      desc: `${stats?.totalTransactions || 0} Stripe transactions`,
-      icon: DollarSign,
+      title: 'Total Transactions',
+      value: stats?.totalTransactions || 0,
+      desc: `${formatPrice(stats?.totalRevenue || 0)} settled Stripe revenue`,
+      icon: Receipt,
       tone: 'dark',
       href: '/dashboard/admin/transactions',
     },
