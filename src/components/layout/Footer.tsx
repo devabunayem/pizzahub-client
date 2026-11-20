@@ -1,209 +1,227 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import {
-  Pizza,
-  ArrowRight,
-  MapPin,
-  Mail,
-  Phone,
-  Clock,
-  Heart,
-  Facebook,
-  Instagram,
-  Youtube,
-} from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Pizza, ArrowUpRight, Mail, Phone, MapPin, Instagram, Facebook, Github } from 'lucide-react';
+import { BrushHighlight } from '@/components/ui/BrushHighlight';
+
+const CATEGORY_LINKS = [
+  'Classic Pizzas',
+  'Vegetarian Pizzas',
+  'Meat Lovers',
+  'Specialty / Gourmet Pizzas',
+  'Sides & Appetizers',
+  'Beverages & Desserts',
+];
 
 export const Footer = () => {
-  return (
-    <footer className="relative overflow-hidden border-t border-stone-200/80 dark:border-white/10 bg-[#fff8ed] dark:bg-[#08090b] text-stone-800 dark:text-white transition-colors">
-      <div className="pointer-events-none absolute -right-32 -top-32 size-96 rounded-full bg-emerald-500/5 blur-[120px]" />
-      <div className="pointer-events-none absolute -left-32 bottom-0 size-80 rounded-full bg-orange-500/5 blur-[120px]" />
+  const pathname = usePathname();
 
-      <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-12 pt-16">
-        {/* Pre-Footer CTA Banner */}
-        <div
-          data-light-theme="footer-cta"
-          className="mb-14 flex flex-col justify-between gap-6 rounded-3xl border border-emerald-500/20 bg-gradient-to-r from-emerald-950/80 via-[#10251e] to-[#111a17] text-white p-7 sm:flex-row sm:items-center sm:p-9 shadow-xl shadow-emerald-950/10"
-        >
+  if (pathname?.startsWith('/dashboard')) {
+    return null;
+  }
+
+  return (
+    <footer className="relative overflow-hidden bg-[#18120E] text-[#FAF7F2]">
+      {/* Subtle top wood-ember hairline */}
+      <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#E50916]/60 to-transparent" />
+
+      <div className="site-container py-16 md:py-20">
+        {/* Top Editorial Banner Row */}
+        <div className="flex flex-col justify-between gap-8 border-b border-white/10 pb-12 md:flex-row md:items-end">
           <div>
-            <p className="text-xs font-bold tracking-[0.2em] text-emerald-400">
-              YOUR NEXT FAVORITE SLICE
-            </p>
-            <h3 className="mt-2 text-xl font-bold sm:text-2xl text-white">
-              Hungry? Let&apos;s fix that!
-            </h3>
-            <p className="mt-2 text-sm text-white/60">
-              Explore delicious pizzas and find your perfect match from local kitchens.
-            </p>
+            <div className="mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#D97706]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#E50916]" />
+              <span>Wood-Fired Marketplace · 480°C Brick Ovens</span>
+            </div>
+            <h2 className="leading-[0.96] tracking-tight text-white">
+              <span className="font-display block text-[clamp(2.25rem,4.4vw,3.75rem)] uppercase">
+                Craving An{' '}
+                <BrushHighlight color="#E50916" secondaryColor="#D97706" delay={0.15}>
+                  <span className="font-editorial font-normal italic lowercase text-[#FAF7F2]">
+                    authentic
+                  </span>
+                </BrushHighlight>{' '}
+                Slice?
+              </span>
+            </h2>
           </div>
-          <Link
-            href="/menu"
-            className="group inline-flex shrink-0 items-center justify-center gap-3 rounded-xl bg-emerald-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition-all duration-300 hover:-translate-y-1 hover:bg-emerald-500 hover:shadow-xl"
-          >
-            <span>Explore Menu</span>
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
+
+          <div className="flex flex-wrap items-center gap-4">
+            <Link
+              href="/menu"
+              className="group inline-flex items-center gap-2 rounded-full bg-[#E50916] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_12px_28px_-10px_rgba(229,9,22,0.65)] transition hover:bg-[#c80814]"
+            >
+              <span>Browse Full Menu</span>
+              <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Link>
+            <Link
+              href="/signup?role=vendor"
+              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-semibold text-[#FAF7F2] transition hover:border-white/30 hover:bg-white/10"
+            >
+              <span>Partner Your Kitchen</span>
+            </Link>
+          </div>
         </div>
 
-        {/* 4 Column Footer Grid */}
-        <div className="grid gap-12 py-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10 border-t border-stone-200/80 dark:border-white/10">
-          {/* Brand */}
-          <div>
-            <Link href="/" className="group inline-flex items-center gap-2">
-              <span className="flex size-11 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-600/20 transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
-                <Pizza className="w-6 h-6" />
+        {/* Main 4-Column Directory */}
+        <div className="grid grid-cols-1 gap-10 py-14 sm:grid-cols-2 lg:grid-cols-12">
+          {/* Brand Column */}
+          <div className="lg:col-span-4">
+            <Link href="/" className="inline-flex items-center gap-2.5 text-xl font-black tracking-tight text-white">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#e50916] text-white shadow-sm">
+                <Pizza className="h-5 w-5" />
               </span>
-              <span className="text-2xl font-extrabold tracking-tight text-stone-900 dark:text-white">
-                Pizza<span className="text-emerald-500">Hub.</span>
+              <span>
+                Pizza<span className="text-[#e50916]">Hub</span>
               </span>
             </Link>
-            <p className="mt-5 max-w-xs text-sm leading-6 text-stone-600 dark:text-white/50">
-              Freshly baked happiness, delivered hot to your door. Discover amazing flavors and
-              support your favorite local pizza makers with PizzaHub.
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-stone-400">
+              Hand-stretched 72-hour fermented dough, San Marzano DOP tomatoes, and neighborhood
+              brick-oven kitchens delivering bubbling artisan pies straight to your table.
             </p>
+
+            {/* Social Links — includes modern X SVG */}
             <div className="mt-6 flex items-center gap-3">
               <a
-                href="https://facebook.com"
+                href="https://x.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Facebook"
-                className="flex size-10 items-center justify-center rounded-xl border border-stone-300 dark:border-white/10 bg-white dark:bg-white/[0.04] text-stone-700 dark:text-white/60 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/50 hover:bg-emerald-600 hover:text-white"
+                aria-label="PizzaHub on X"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-stone-300 transition hover:border-[#E50916]/60 hover:bg-[#E50916] hover:text-white"
               >
-                <Facebook className="w-4 h-4" />
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
               </a>
               <a
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="flex size-10 items-center justify-center rounded-xl border border-stone-300 dark:border-white/10 bg-white dark:bg-white/[0.04] text-stone-700 dark:text-white/60 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/50 hover:bg-emerald-600 hover:text-white"
+                aria-label="PizzaHub on Instagram"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-stone-300 transition hover:border-[#E50916]/60 hover:bg-[#E50916] hover:text-white"
               >
-                <Instagram className="w-4 h-4" />
+                <Instagram className="h-4 w-4" />
               </a>
               <a
-                href="https://youtube.com"
+                href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="YouTube"
-                className="flex size-10 items-center justify-center rounded-xl border border-stone-300 dark:border-white/10 bg-white dark:bg-white/[0.04] text-stone-700 dark:text-white/60 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/50 hover:bg-emerald-600 hover:text-white"
+                aria-label="PizzaHub on Facebook"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-stone-300 transition hover:border-[#E50916]/60 hover:bg-[#E50916] hover:text-white"
               >
-                <Youtube className="w-4 h-4" />
+                <Facebook className="h-4 w-4" />
+              </a>
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="PizzaHub on GitHub"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-stone-300 transition hover:border-[#E50916]/60 hover:bg-[#E50916] hover:text-white"
+              >
+                <Github className="h-4 w-4" />
               </a>
             </div>
           </div>
 
-          {/* Explore */}
-          <div>
-            <h3 className="mb-6 text-sm font-bold uppercase tracking-wider text-stone-900 dark:text-white">
+          {/* Navigation Column */}
+          <div className="lg:col-span-2">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D97706]">
               Explore
             </h3>
-            <div className="flex flex-col gap-3.5">
-              <Link
-                href="/"
-                className="group flex items-center gap-2 text-sm text-stone-600 dark:text-white/50 transition-colors duration-300 hover:text-emerald-600 dark:hover:text-emerald-400"
-              >
-                <ArrowRight className="w-3.5 h-3.5 -ml-4 opacity-0 transition-all duration-300 group-hover:ml-0 group-hover:opacity-100 text-emerald-500" />
-                Home
-              </Link>
-              <Link
-                href="/menu"
-                className="group flex items-center gap-2 text-sm text-stone-600 dark:text-white/50 transition-colors duration-300 hover:text-emerald-600 dark:hover:text-emerald-400"
-              >
-                <ArrowRight className="w-3.5 h-3.5 -ml-4 opacity-0 transition-all duration-300 group-hover:ml-0 group-hover:opacity-100 text-emerald-500" />
-                Our Menu
-              </Link>
-              <Link
-                href="/menu?category=Classic+Pizzas"
-                className="group flex items-center gap-2 text-sm text-stone-600 dark:text-white/50 transition-colors duration-300 hover:text-emerald-600 dark:hover:text-emerald-400"
-              >
-                <ArrowRight className="w-3.5 h-3.5 -ml-4 opacity-0 transition-all duration-300 group-hover:ml-0 group-hover:opacity-100 text-emerald-500" />
-                Classic Pizzas
-              </Link>
-              <Link
-                href="/menu?category=Meat+Lovers"
-                className="group flex items-center gap-2 text-sm text-stone-600 dark:text-white/50 transition-colors duration-300 hover:text-emerald-600 dark:hover:text-emerald-400"
-              >
-                <ArrowRight className="w-3.5 h-3.5 -ml-4 opacity-0 transition-all duration-300 group-hover:ml-0 group-hover:opacity-100 text-emerald-500" />
-                Meat Lovers
-              </Link>
-            </div>
+            <ul className="mt-4 space-y-2.5 text-sm">
+              <li>
+                <Link href="/" className="text-stone-300 transition hover:text-white">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link href="/menu" className="text-stone-300 transition hover:text-white">
+                  Browse Menu
+                </Link>
+              </li>
+              <li>
+                <Link href="/signin" className="text-stone-300 transition hover:text-white">
+                  Sign In
+                </Link>
+              </li>
+              <li>
+                <Link href="/signup" className="text-stone-300 transition hover:text-white">
+                  Sign Up
+                </Link>
+              </li>
+              <li>
+                <Link href="/signup?role=vendor" className="text-stone-300 transition hover:text-white">
+                  Become a Vendor
+                </Link>
+              </li>
+            </ul>
           </div>
 
-          {/* Our Services */}
-          <div>
-            <h3 className="mb-6 text-sm font-bold uppercase tracking-wider text-stone-900 dark:text-white">
-              Platform
+          {/* Pizza Categories Column */}
+          <div className="lg:col-span-3">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D97706]">
+              Oven Categories
             </h3>
-            <div className="flex flex-col gap-3.5">
-              <Link
-                href="/menu"
-                className="group flex items-center gap-2 text-sm text-stone-600 dark:text-white/50 transition-colors duration-300 hover:text-emerald-600 dark:hover:text-emerald-400"
-              >
-                <ArrowRight className="w-3.5 h-3.5 -ml-4 opacity-0 transition-all duration-300 group-hover:ml-0 group-hover:opacity-100 text-emerald-500" />
-                Order Pizza
-              </Link>
-              <Link
-                href="/signup?role=vendor"
-                className="group flex items-center gap-2 text-sm text-stone-600 dark:text-white/50 transition-colors duration-300 hover:text-emerald-600 dark:hover:text-emerald-400"
-              >
-                <ArrowRight className="w-3.5 h-3.5 -ml-4 opacity-0 transition-all duration-300 group-hover:ml-0 group-hover:opacity-100 text-emerald-500" />
-                Become a Vendor
-              </Link>
-              <Link
-                href="/signin"
-                className="group flex items-center gap-2 text-sm text-stone-600 dark:text-white/50 transition-colors duration-300 hover:text-emerald-600 dark:hover:text-emerald-400"
-              >
-                <ArrowRight className="w-3.5 h-3.5 -ml-4 opacity-0 transition-all duration-300 group-hover:ml-0 group-hover:opacity-100 text-emerald-500" />
-                My Account
-              </Link>
-              <Link
-                href="/dashboard/customer"
-                className="group flex items-center gap-2 text-sm text-stone-600 dark:text-white/50 transition-colors duration-300 hover:text-emerald-600 dark:hover:text-emerald-400"
-              >
-                <ArrowRight className="w-3.5 h-3.5 -ml-4 opacity-0 transition-all duration-300 group-hover:ml-0 group-hover:opacity-100 text-emerald-500" />
-                Order Tracking
-              </Link>
-            </div>
+            <ul className="mt-4 space-y-2.5 text-sm">
+              {CATEGORY_LINKS.map((cat) => (
+                <li key={cat}>
+                  <Link
+                    href={`/menu?category=${encodeURIComponent(cat)}`}
+                    className="text-stone-300 transition hover:text-white"
+                  >
+                    {cat}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Get In Touch */}
-          <div>
-            <h3 className="mb-6 text-sm font-bold uppercase tracking-wider text-stone-900 dark:text-white">
-              Get In Touch
+          {/* Contact Column */}
+          <div className="lg:col-span-3">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D97706]">
+              Kitchen Desk
             </h3>
-            <div className="flex flex-col gap-4 text-sm text-stone-600 dark:text-white/50">
-              <div className="flex items-start gap-3">
-                <MapPin className="mt-0.5 shrink-0 text-emerald-500 dark:text-emerald-400 w-4 h-4" />
-                <span>Dhaka, Bangladesh</span>
-              </div>
-              <a
-                href="mailto:support@pizzahub.com"
-                className="flex items-center gap-3 transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
-              >
-                <Mail className="shrink-0 text-emerald-500 dark:text-emerald-400 w-4 h-4" />
-                <span>support@pizzahub.com</span>
-              </a>
-              <a
-                href="tel:+8801300725948"
-                className="flex items-center gap-3 transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
-              >
-                <Phone className="shrink-0 text-emerald-500 dark:text-emerald-400 w-4 h-4" />
-                <span>+880 1300-725948</span>
-              </a>
-              <div className="flex items-center gap-3">
-                <Clock className="shrink-0 text-emerald-500 dark:text-emerald-400 w-4 h-4" />
-                <span>Always ready for your cravings</span>
-              </div>
+            <ul className="mt-4 space-y-3 text-sm text-stone-300">
+              <li className="flex items-start gap-2.5">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#E50916]" />
+                <span>214 Mulberry Brick-Oven District, Downtown NY 10012</span>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Mail className="h-4 w-4 shrink-0 text-[#E50916]" />
+                <a href="mailto:support@pizzahub.com" className="transition hover:text-white">
+                  support@pizzahub.com
+                </a>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Phone className="h-4 w-4 shrink-0 text-[#E50916]" />
+                <a href="tel:+8801300725948" className="transition hover:text-white">
+                  +880 1300-725948
+                </a>
+              </li>
+            </ul>
+            <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-xs text-stone-400">
+              <span className="font-semibold text-[#FAF7F2]">Daily Hearth Hours:</span>{' '}
+              11:00 AM — 11:30 PM EST
             </div>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="flex flex-col justify-between gap-4 border-t border-stone-200/80 dark:border-white/10 py-7 text-center text-xs text-stone-500 dark:text-white/40 sm:flex-row sm:items-center sm:text-left">
-          <p>© {new Date().getFullYear()} PizzaHub. All rights reserved.</p>
-          <p className="inline-flex items-center justify-center gap-1.5">
-            Made with <Heart className="w-3.5 h-3.5 fill-red-500 text-red-500" /> for pizza lovers.
-          </p>
+        {/* Bottom Copyright Row */}
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-7 text-xs text-stone-400 sm:flex-row">
+          <p>© {new Date().getFullYear()} PizzaHub Artisan Delivery. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            <Link href="/menu" className="transition hover:text-white">
+              Menu Standards
+            </Link>
+            <Link href="/profile" className="transition hover:text-white">
+              Account Settings
+            </Link>
+            <a href="mailto:support@pizzahub.com" className="transition hover:text-white">
+              Help &amp; Support
+            </a>
+          </div>
         </div>
       </div>
     </footer>

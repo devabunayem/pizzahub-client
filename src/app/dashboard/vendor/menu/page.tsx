@@ -20,6 +20,15 @@ import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
+const VALID_CATEGORIES = [
+  'Classic Pizzas',
+  'Vegetarian Pizzas',
+  'Meat Lovers',
+  'Specialty / Gourmet Pizzas',
+  'Sides & Appetizers',
+  'Beverages & Desserts',
+];
+
 export default function MyMenuItemsPage() {
   const { token } = useAuth();
   const [items, setItems] = useState<any[]>([]);
@@ -50,7 +59,7 @@ export default function MyMenuItemsPage() {
     itemName: '',
     description: '',
     price: '',
-    category: 'Neapolitan',
+    category: 'Classic Pizzas',
     location: '',
   });
 
@@ -59,7 +68,7 @@ export default function MyMenuItemsPage() {
       itemName: item.itemName,
       description: item.description,
       price: item.price.toString(),
-      category: item.category,
+      category: item.category || 'Classic Pizzas',
       location: item.location,
     });
     setEditModal({
@@ -188,129 +197,135 @@ export default function MyMenuItemsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-black/[0.06] dark:border-white/[0.08]">
+      <div className="flex flex-col justify-between gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-end">
         <div>
-          <h1 className="text-xl font-semibold text-stone-900 dark:text-white tracking-tight">
-            Menu listings
+          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#9A4A12]">
+            Kitchen Catalogue
+          </span>
+          <h1 className="font-display mt-1 text-3xl uppercase tracking-tight text-[#18120E]">
+            Menu Listings
           </h1>
-          <p className="text-xs text-stone-500 mt-0.5">
+          <p className="mt-1 text-sm text-[#6E6259]">
             Manage your kitchen offerings, check approval status, and toggle availability.
           </p>
         </div>
 
         <Link
           href="/dashboard/vendor/add-item"
-          className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-white text-white dark:text-stone-900 text-xs font-medium self-start sm:self-auto"
+          className="inline-flex shrink-0 items-center space-x-1.5 self-start rounded-full bg-[#D91E18] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#b81712] sm:self-auto"
         >
-          <PlusCircle className="w-3.5 h-3.5" />
-          <span>Add item</span>
+          <PlusCircle className="h-3.5 w-3.5" />
+          <span>Add Item</span>
         </Link>
       </div>
 
       {items.length === 0 ? (
-        <div className="text-center py-12 bg-white dark:bg-[#19191b] rounded-xl border border-black/[0.06] dark:border-white/[0.08] space-y-3">
-          <UtensilsCrossed className="w-8 h-8 mx-auto text-stone-400" />
-          <p className="text-sm font-medium text-stone-800 dark:text-stone-200">
+        <div className="space-y-3 rounded-3xl border border-stone-200 bg-white py-16 text-center shadow-sm">
+          <UtensilsCrossed className="mx-auto h-8 w-8 text-[#9A4A12]" />
+          <p className="text-base font-extrabold text-[#18120E]">
             No items listed yet
           </p>
           <Link
             href="/dashboard/vendor/add-item"
-            className="inline-block px-3 py-1.5 rounded bg-stone-900 text-white text-xs font-medium"
+            className="inline-block rounded-full bg-[#18120E] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#D91E18]"
           >
-            Add first item
+            Add First Item
           </Link>
         </div>
       ) : (
-        <div className="bg-white dark:bg-[#19191b] rounded-xl border border-black/[0.06] dark:border-white/[0.08] overflow-hidden">
+        <div className="overflow-hidden rounded-3xl border border-stone-200/90 bg-white shadow-sm">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className="w-full border-collapse text-left text-xs">
               <thead>
-                <tr className="border-b border-black/[0.06] dark:border-white/[0.08] bg-stone-50 dark:bg-white/[0.02] text-stone-500 font-medium">
-                  <th className="py-3 px-4">Item</th>
-                  <th className="py-3 px-4">Category</th>
-                  <th className="py-3 px-4">Price</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                <tr className="border-b border-stone-200 bg-[#FAF7F2] text-[11px] font-bold uppercase tracking-wider text-[#6E6259]">
+                  <th className="px-5 py-3.5">Item</th>
+                  <th className="px-5 py-3.5">Category</th>
+                  <th className="px-5 py-3.5">Price</th>
+                  <th className="px-5 py-3.5">Status</th>
+                  <th className="px-5 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-black/[0.04] dark:divide-white/[0.04]">
+              <tbody className="divide-y divide-stone-100">
                 {items.map((item) => (
-                  <tr key={item._id} className="hover:bg-stone-50/50 dark:hover:bg-white/[0.02]">
-                    <td className="py-3 px-4">
+                  <tr key={item._id} className="transition-colors hover:bg-[#FAF7F2]/60">
+                    <td className="px-5 py-3.5">
                       <div className="flex items-center space-x-3">
                         <img
-                          src={item.images?.[0] || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=200&q=80'}
+                          src={item.images?.[0] || '/images/cat-classic.jpg'}
                           alt={item.itemName}
-                          className="w-10 h-10 rounded-md object-cover"
+                          className="h-11 w-11 rounded-xl border border-stone-200 object-cover"
                         />
                         <div>
-                          <p className="font-medium text-stone-900 dark:text-white">
+                          <p className="text-sm font-bold text-[#18120E]">
                             {item.itemName}
                           </p>
-                          <p className="text-[11px] text-stone-400 flex items-center">
-                            <MapPin className="w-3 h-3 mr-0.5 text-stone-400" />
+                          <p className="flex items-center text-[11px] text-[#6E6259]">
+                            <MapPin className="mr-1 h-3 w-3 text-[#D91E18]" />
                             <span>{item.location}</span>
                           </p>
                         </div>
                       </div>
                     </td>
 
-                    <td className="py-3 px-4 text-stone-600 dark:text-stone-300">
+                    <td className="px-5 py-3.5 font-medium text-[#6E6259]">
                       {item.category}
                     </td>
 
-                    <td className="py-3 px-4 tabular-nums font-medium text-stone-900 dark:text-white">
+                    <td className="font-display px-5 py-3.5 text-base text-[#D91E18] tabular-nums">
                       {formatPrice(item.price)}
                     </td>
 
-                    <td className="py-3 px-4">
+                    <td className="px-5 py-3.5">
                       <span
-                        className={`inline-block px-2 py-0.5 rounded text-[11px] font-medium capitalize ${
+                        className={`inline-block rounded-full border px-2.5 py-0.5 text-[11px] font-bold capitalize ${
                           item.status === 'approved'
-                            ? 'bg-green-100 text-green-800 dark:bg-green-950/40 dark:text-green-300'
+                            ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
                             : item.status === 'pending'
-                            ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300'
+                            ? 'border-amber-200 bg-amber-50 text-[#9A4A12]'
                             : item.status === 'inactive'
-                            ? 'bg-stone-100 text-stone-600 dark:bg-white/[0.05] dark:text-stone-400'
-                            : 'bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-300'
+                            ? 'border-stone-200 bg-[#FAF7F2] text-[#6E6259]'
+                            : 'border-red-200 bg-red-50 text-[#D91E18]'
                         }`}
                       >
                         {item.status}
                       </span>
                     </td>
 
-                    <td className="py-3 px-4 text-right space-x-1">
+                    <td className="space-x-1 px-5 py-3.5 text-right">
                       <Link
                         href={`/menu/${item._id}`}
-                        className="p-1 rounded text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 inline-flex"
+                        className="inline-flex rounded-lg p-1.5 text-stone-500 transition hover:bg-[#FAF7F2] hover:text-[#18120E]"
                         title="View"
                       >
-                        <Eye className="w-3.5 h-3.5" />
+                        <Eye className="h-4 w-4" />
                       </Link>
 
                       <button
+                        type="button"
                         onClick={() => handleOpenEdit(item)}
-                        className="p-1 rounded text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 inline-flex cursor-pointer"
+                        className="inline-flex cursor-pointer rounded-lg p-1.5 text-stone-500 transition hover:bg-[#FAF7F2] hover:text-[#9A4A12]"
                         title="Edit listing"
                       >
-                        <Pencil className="w-3.5 h-3.5" />
+                        <Pencil className="h-4 w-4" />
                       </button>
 
                       {(item.status === 'approved' || item.status === 'inactive') && (
                         <button
+                          type="button"
                           onClick={() => toggleAvailability(item._id, item.status)}
-                          className={`p-1 rounded inline-flex cursor-pointer ${
+                          className={`inline-flex cursor-pointer rounded-lg p-1.5 transition hover:bg-[#FAF7F2] ${
                             item.status === 'approved'
-                              ? 'text-stone-600 hover:text-stone-900'
-                              : 'text-stone-400 hover:text-stone-600'
+                              ? 'text-emerald-600 hover:text-emerald-800'
+                              : 'text-stone-400 hover:text-[#18120E]'
                           }`}
                           title={item.status === 'approved' ? 'Deactivate' : 'Activate'}
                         >
-                          <Power className="w-3.5 h-3.5" />
+                          <Power className="h-4 w-4" />
                         </button>
                       )}
 
                       <button
+                        type="button"
                         onClick={() =>
                           setDeleteModal({
                             isOpen: true,
@@ -319,10 +334,10 @@ export default function MyMenuItemsPage() {
                             loading: false,
                           })
                         }
-                        className="p-1 rounded text-stone-400 hover:text-red-600 inline-flex cursor-pointer"
+                        className="inline-flex cursor-pointer rounded-lg p-1.5 text-stone-400 transition hover:bg-red-50 hover:text-[#D91E18]"
                         title="Delete"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </td>
                   </tr>
@@ -336,50 +351,51 @@ export default function MyMenuItemsPage() {
       {/* Edit Menu Item Modal */}
       {editModal.isOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#18120E]/55 p-4 backdrop-blur-sm"
           onClick={() => {
             if (!editModal.loading) setEditModal({ isOpen: false, item: null, loading: false });
           }}
         >
           <div
-            className="bg-white dark:bg-[#19191b] border border-black/[0.08] dark:border-white/[0.08] rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in zoom-in-95 duration-200"
+            className="w-full max-w-lg space-y-5 rounded-3xl border border-stone-200 bg-white p-6 sm:p-7 shadow-[0_28px_60px_-20px_rgba(24,18,14,0.3)]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] dark:border-white/[0.06]">
+            <div className="flex items-center justify-between border-b border-stone-100 pb-4">
               <div>
-                <h3 className="text-base font-semibold text-stone-900 dark:text-white">
+                <h3 className="text-lg font-extrabold tracking-tight text-[#18120E]">
                   Edit Menu Item
                 </h3>
-                <p className="text-xs text-stone-500 mt-0.5">
+                <p className="mt-0.5 text-xs text-[#6E6259]">
                   Update item details, pricing, and category
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => setEditModal({ isOpen: false, item: null, loading: false })}
                 disabled={editModal.loading}
-                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 p-1 rounded-lg"
+                className="rounded-xl p-1.5 text-stone-400 transition hover:bg-[#FAF7F2] hover:text-[#18120E] cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveEdit} className="space-y-4 text-xs">
+            <form onSubmit={handleSaveEdit} className="space-y-4">
               <div>
-                <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
-                  Pizza Name *
+                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                  Item Name *
                 </label>
                 <input
                   type="text"
                   required
                   value={editForm.itemName}
                   onChange={(e) => setEditForm({ ...editForm, itemName: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+                  className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm text-[#18120E] focus:border-[#D91E18] focus:bg-white focus:outline-none"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
                     Price ($) *
                   </label>
                   <input
@@ -389,27 +405,20 @@ export default function MyMenuItemsPage() {
                     required
                     value={editForm.price}
                     onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+                    className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm text-[#18120E] focus:border-[#D91E18] focus:bg-white focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
                     Category *
                   </label>
                   <select
                     value={editForm.category}
                     onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+                    className="w-full cursor-pointer rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm text-[#18120E] focus:border-[#D91E18] focus:bg-white focus:outline-none"
                   >
-                    {[
-                      'Neapolitan',
-                      'New York',
-                      'Sicilian',
-                      'Chicago Deep Dish',
-                      'Detroit',
-                      'California',
-                    ].map((cat) => (
+                    {VALID_CATEGORIES.map((cat) => (
                       <option key={cat} value={cat}>
                         {cat}
                       </option>
@@ -419,7 +428,7 @@ export default function MyMenuItemsPage() {
               </div>
 
               <div>
-                <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
                   Kitchen Location *
                 </label>
                 <input
@@ -427,12 +436,12 @@ export default function MyMenuItemsPage() {
                   required
                   value={editForm.location}
                   onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+                  className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm text-[#18120E] focus:border-[#D91E18] focus:bg-white focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
                   Description *
                 </label>
                 <textarea
@@ -440,25 +449,25 @@ export default function MyMenuItemsPage() {
                   required
                   value={editForm.description}
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none resize-none"
+                  className="w-full resize-none rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm text-[#18120E] focus:border-[#D91E18] focus:bg-white focus:outline-none"
                 />
               </div>
 
-              <div className="flex items-center justify-end space-x-2 pt-3 border-t border-black/[0.06] dark:border-white/[0.06]">
+              <div className="flex items-center justify-end space-x-2.5 border-t border-stone-100 pt-4">
                 <button
                   type="button"
                   onClick={() => setEditModal({ isOpen: false, item: null, loading: false })}
                   disabled={editModal.loading}
-                  className="px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#232325] text-stone-700 dark:text-stone-300 text-xs font-medium cursor-pointer"
+                  className="cursor-pointer rounded-xl border border-stone-200 bg-[#FAF7F2] px-4 py-2.5 text-xs font-bold text-[#18120E] transition hover:bg-stone-100"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={editModal.loading}
-                  className="px-4 py-2 rounded-lg bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-medium hover:bg-stone-800 dark:hover:bg-white transition-colors cursor-pointer disabled:opacity-50"
+                  className="cursor-pointer rounded-xl bg-[#D91E18] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#b81712] disabled:opacity-50"
                 >
-                  {editModal.loading ? 'Saving...' : 'Save changes'}
+                  {editModal.loading ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>
             </form>
@@ -466,7 +475,6 @@ export default function MyMenuItemsPage() {
         </div>
       )}
 
-      {/* Confirmation Modal */}
       <ConfirmModal
         isOpen={deleteModal.isOpen}
         loading={deleteModal.loading}

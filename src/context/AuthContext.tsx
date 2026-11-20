@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/lib/toast';
+import { authClient } from '@/lib/auth-client';
 
 export interface User {
   _id: string;
@@ -17,12 +18,19 @@ export interface User {
   createdAt?: string;
 }
 
+export interface GoogleLoginOptions {
+  role?: 'customer' | 'vendor';
+  businessName?: string;
+  redirectTo?: string | null;
+}
+
 interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   register: (data: any) => Promise<boolean>;
+  loginWithGoogle: (options?: GoogleLoginOptions) => Promise<void>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => void;
   refreshUser: () => Promise<void>;
@@ -38,40 +46,84 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
 
-  // Load user from token on mount
+  // Load user from token or sync active Better Auth Google OAuth session on mount
   useEffect(() => {
     const initAuth = async () => {
       try {
         const storedToken = localStorage.getItem('pizzahub_token');
-        if (!storedToken) {
-          setIsLoading(false);
-          return;
-        }
 
-        setToken(storedToken);
-        const res = await fetch(`${API_BASE}/auth/me`, {
-          headers: {
-            Authorization: `Bearer ${storedToken}`,
-          },
-        });
+        if (storedToken) {
+          setToken(storedToken);
+          const res = await fetch(`${API_BASE}/auth/me`, {
+            headers: {
+              Authorization: `Bearer ${storedToken}`,
+            },
+          });
 
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success && data.user) {
-            setUser(data.user);
-          } else {
-            // Invalid session
-            localStorage.removeItem('pizzahub_token');
-            document.cookie = 'token=; path=/; max-age=0';
-            setToken(null);
-            setUser(null);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.user) {
+              setUser(data.user);
+              return;
+            }
           }
-        } else {
-          // Token expired or invalid
+
+          // Invalid or expired token
           localStorage.removeItem('pizzahub_token');
           document.cookie = 'token=; path=/; max-age=0';
           setToken(null);
           setUser(null);
+        }
+
+        // Check if a Better Auth Google OAuth session is active
+        const sessionRes = await fetch('/api/auth/get-session', {
+          credentials: 'include',
+        });
+
+        if (sessionRes.ok) {
+          const sessionData = await sessionRes.json();
+          const socialUser = sessionData?.user;
+
+          if (socialUser?.email) {
+            let meta: GoogleLoginOptions = {};
+            try {
+              const rawMeta = localStorage.getItem('pizzahub_oauth_meta');
+              if (rawMeta) {
+                meta = JSON.parse(rawMeta);
+                localStorage.removeItem('pizzahub_oauth_meta');
+              }
+            } catch {
+              // ignore parse error
+            }
+
+            const syncRes = await fetch(`${API_BASE}/auth/google`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name: socialUser.name,
+                email: socialUser.email,
+                image: socialUser.image,
+                role: meta.role || 'customer',
+                businessName: meta.businessName,
+              }),
+            });
+
+            const syncData = await syncRes.json();
+            if (syncRes.ok && syncData.success && syncData.token && syncData.user) {
+              setToken(syncData.token);
+              setUser(syncData.user);
+              localStorage.setItem('pizzahub_token', syncData.token);
+              document.cookie = `token=${syncData.token}; path=/; max-age=604800; SameSite=Lax`;
+              toast.success(syncData.message || `Signed in as ${syncData.user.name}`);
+
+              if (meta.redirectTo && meta.redirectTo.startsWith('/')) {
+                router.replace(meta.redirectTo);
+              }
+            } else if (!syncRes.ok && syncData?.message) {
+              toast.error(syncData.message);
+              await authClient.signOut().catch(() => {});
+            }
+          }
         }
       } catch (err) {
         console.error('Auth initialization error:', err);
@@ -81,7 +133,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     initAuth();
-  }, []);
+  }, [router]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
@@ -105,7 +157,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       toast.success(data.message || 'Login successful! Welcome back.');
 
-      // Role-based redirect
       if (data.user.role === 'admin') {
         router.push('/dashboard/admin');
       } else if (data.user.role === 'vendor') {
@@ -143,7 +194,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       toast.success(data.message || 'Account created successfully!');
 
-      // Redirect based on role
       if (data.user.role === 'vendor') {
         router.push('/dashboard/vendor');
       } else {
@@ -157,11 +207,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const loginWithGoogle = async (options?: GoogleLoginOptions): Promise<void> => {
+    try {
+      localStorage.setItem('pizzahub_oauth_meta', JSON.stringify(options || {}));
+      await authClient.signIn.social({
+        provider: 'google',
+        callbackURL: '/signin?oauth=google',
+      });
+    } catch (err) {
+      console.error('Google sign-in error:', err);
+      toast.error('Unable to start Google sign-in.');
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('pizzahub_token');
+    localStorage.removeItem('pizzahub_oauth_meta');
     document.cookie = 'token=; path=/; max-age=0';
     setToken(null);
     setUser(null);
+    authClient.signOut().catch(() => {});
     toast.success('Logged out successfully.');
     router.push('/');
   };
@@ -195,6 +260,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         login,
         register,
+        loginWithGoogle,
         logout,
         updateUser,
         refreshUser,

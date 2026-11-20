@@ -7,11 +7,8 @@ import {
   ShoppingBag,
   Calendar,
   MapPin,
-  MessageSquare,
-  Clock,
   XCircle,
   Pizza,
-  CheckCircle2,
   Store,
   ChevronDown,
   ChevronUp,
@@ -95,94 +92,100 @@ export default function CustomerOrdersPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-5">
+      <div className="flex flex-col justify-between gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-end">
         <div>
-          <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
-            My orders
+          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#9A4A12]">
+            Order History
+          </span>
+          <h1 className="font-display mt-1 text-3xl uppercase tracking-tight text-[#18120E]">
+            My Orders
           </h1>
-          <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+          <p className="mt-1 text-sm text-[#6E6259]">
             Track order preparation, delivery progress, or cancel pending requests.
           </p>
         </div>
 
         <Link
           href="/menu"
-          className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-white text-white dark:text-stone-900 font-medium text-xs transition-colors shrink-0 self-start sm:self-auto cursor-pointer"
+          className="inline-flex shrink-0 items-center space-x-2 self-start rounded-full bg-[#D91E18] px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-[#b81712] sm:self-auto"
         >
-          <Pizza className="w-3.5 h-3.5" />
-          <span>Browse menu</span>
+          <Pizza className="h-3.5 w-3.5" />
+          <span>Browse Menu</span>
         </Link>
       </div>
 
       {/* Orders List */}
       {orders.length === 0 ? (
-        <div className="text-center py-16 bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 space-y-3">
-          <div className="w-10 h-10 mx-auto rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-500 flex items-center justify-center">
-            <ShoppingBag className="w-5 h-5" />
+        <div className="space-y-3 rounded-3xl border border-stone-200 bg-white py-16 text-center shadow-sm">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FAF7F2] text-[#9A4A12]">
+            <ShoppingBag className="h-6 w-6" />
           </div>
-          <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100">No orders placed</h3>
-          <p className="text-stone-500 dark:text-stone-400 text-xs max-w-sm mx-auto">
+          <h3 className="text-base font-extrabold text-[#18120E]">No orders placed</h3>
+          <p className="mx-auto max-w-sm text-xs text-[#6E6259]">
             You haven&apos;t placed any pizza orders yet. Explore our menu to order fresh, handmade pizza.
           </p>
           <div className="pt-2">
             <Link
               href="/menu"
-              className="inline-flex items-center px-3.5 py-1.5 rounded-lg bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 font-medium text-xs"
+              className="inline-flex items-center rounded-full bg-[#18120E] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#D91E18]"
             >
-              <span>Explore menu</span>
+              <span>Explore Menu</span>
             </Link>
           </div>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {orders.map((order) => {
             const isExpanded = expandedOrderId === order._id;
 
             return (
               <div
                 key={order._id}
-                className="p-5 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 transition-colors"
+                className="rounded-3xl border border-stone-200/90 bg-white p-5 sm:p-6 shadow-sm transition-colors"
               >
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+                <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
                   {/* Left Info */}
-                  <div className="flex items-start space-x-4 min-w-0">
+                  <div className="flex min-w-0 items-start space-x-4">
                     <img
-                      src={order.itemId?.images?.[0] || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=200&q=80'}
+                      src={order.itemId?.images?.[0] || '/images/cat-classic.jpg'}
                       alt={order.itemId?.itemName}
-                      className="w-16 h-16 rounded-lg object-cover shrink-0 border border-stone-200 dark:border-stone-800 bg-stone-100 dark:bg-stone-800"
+                      className="h-16 w-16 shrink-0 rounded-2xl border border-stone-200 bg-[#FAF7F2] object-cover"
                     />
-                    <div className="space-y-1 min-w-0">
+                    <div className="min-w-0 space-y-1">
                       <div className="flex items-baseline space-x-3">
-                        <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">
+                        <h3 className="text-base font-extrabold text-[#18120E]">
                           {order.itemId?.itemName || 'Artisanal Pizza'}
                         </h3>
-                        <span className="font-mono text-xs font-semibold text-stone-900 dark:text-stone-100 tabular-nums">
+                        <span className="font-display text-lg text-[#D91E18] tabular-nums">
                           {formatPrice(order.itemId?.price || 0)}
                         </span>
                       </div>
 
-                      <p className="text-xs text-stone-500 flex items-center">
-                        <Store className="w-3.5 h-3.5 mr-1 text-stone-400" />
+                      <p className="flex items-center text-xs font-medium text-[#6E6259]">
+                        <Store className="mr-1.5 h-3.5 w-3.5 text-[#9A4A12]" />
                         <span>{order.vendorId?.businessName || order.vendorId?.name}</span>
                       </p>
 
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-stone-500 dark:text-stone-400 pt-0.5">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-0.5 text-xs text-[#6E6259]">
                         <span className="flex items-center">
-                          <Calendar className="w-3.5 h-3.5 mr-1 text-stone-400" />
-                          Delivery: <span className="ml-1 font-medium text-stone-800 dark:text-stone-200">{formatDate(order.deliveryDate)}</span>
+                          <Calendar className="mr-1.5 h-3.5 w-3.5 text-stone-400" />
+                          Delivery:{' '}
+                          <span className="ml-1 font-semibold text-[#18120E]">
+                            {formatDate(order.deliveryDate)}
+                          </span>
                         </span>
-                        <span className="flex items-center text-stone-400">
+                        <span className="text-stone-400">
                           Placed: {formatDate(order.createdAt)}
                         </span>
                       </div>
 
-                      <p className="text-xs text-stone-600 dark:text-stone-300 flex items-start pt-0.5">
-                        <MapPin className="w-3.5 h-3.5 mr-1 text-stone-400 shrink-0 mt-0.5" />
+                      <p className="flex items-start pt-0.5 text-xs text-[#6E6259]">
+                        <MapPin className="mr-1.5 mt-0.5 h-3.5 w-3.5 shrink-0 text-[#D91E18]" />
                         <span>{order.deliveryAddress}</span>
                       </p>
 
                       {order.message && (
-                        <p className="text-xs text-stone-500 dark:text-stone-400 italic pt-0.5">
+                        <p className="pt-0.5 text-xs italic text-[#6E6259]">
                           Note: &ldquo;{order.message}&rdquo;
                         </p>
                       )}
@@ -190,24 +193,26 @@ export default function CustomerOrdersPage() {
                   </div>
 
                   {/* Right Status & Action */}
-                  <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end justify-between gap-3 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-stone-100 dark:border-stone-800">
+                  <div className="flex shrink-0 flex-col items-start justify-between gap-3 border-t border-stone-100 pt-3 sm:flex-row lg:flex-col lg:items-end lg:border-t-0 lg:pt-0">
                     <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border ${
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold ${
                         order.status === 'pending'
-                          ? 'bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800/40'
+                          ? 'border-amber-200 bg-amber-50 text-[#9A4A12]'
                           : order.status === 'accepted'
-                          ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/40'
+                          ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
                           : order.status === 'rejected'
-                          ? 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 border-stone-200 dark:border-stone-700'
-                          : 'bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800/40'
+                          ? 'border-stone-200 bg-[#FAF7F2] text-[#6E6259]'
+                          : 'border-red-200 bg-red-50 text-[#D91E18]'
                       }`}
                     >
                       <span
-                        className={`w-1.5 h-1.5 rounded-full ${
+                        className={`h-1.5 w-1.5 rounded-full ${
                           order.status === 'pending'
                             ? 'bg-amber-500'
                             : order.status === 'accepted'
                             ? 'bg-emerald-500'
+                            : order.status === 'cancelled'
+                            ? 'bg-[#D91E18]'
                             : 'bg-stone-400'
                         }`}
                       />
@@ -216,21 +221,23 @@ export default function CustomerOrdersPage() {
 
                     <div className="flex items-center space-x-2">
                       <button
+                        type="button"
                         onClick={() =>
                           setExpandedOrderId(isExpanded ? null : order._id)
                         }
-                        className="px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 text-xs font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center space-x-1 cursor-pointer"
+                        className="flex cursor-pointer items-center space-x-1.5 rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2 text-xs font-bold text-[#18120E] transition hover:border-[#18120E]"
                       >
                         <span>{isExpanded ? 'Hide timeline' : 'Track progress'}</span>
                         {isExpanded ? (
-                          <ChevronUp className="w-3.5 h-3.5" />
+                          <ChevronUp className="h-3.5 w-3.5" />
                         ) : (
-                          <ChevronDown className="w-3.5 h-3.5" />
+                          <ChevronDown className="h-3.5 w-3.5" />
                         )}
                       </button>
 
                       {order.status === 'pending' && (
                         <button
+                          type="button"
                           onClick={() =>
                             setCancelModal({
                               isOpen: true,
@@ -238,9 +245,9 @@ export default function CustomerOrdersPage() {
                               loading: false,
                             })
                           }
-                          className="px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/20 hover:bg-red-100 text-red-700 dark:text-red-300 font-medium text-xs transition-colors flex items-center space-x-1 cursor-pointer"
+                          className="flex cursor-pointer items-center space-x-1 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2 text-xs font-bold text-[#D91E18] transition-colors hover:bg-[#D91E18] hover:text-white"
                         >
-                          <XCircle className="w-3.5 h-3.5" />
+                          <XCircle className="h-3.5 w-3.5" />
                           <span>Cancel</span>
                         </button>
                       )}
@@ -248,10 +255,9 @@ export default function CustomerOrdersPage() {
                   </div>
                 </div>
 
-                {/* Status Timeline Expansion */}
                 {isExpanded && (
-                  <div className="mt-5 pt-5 border-t border-stone-200 dark:border-stone-800 space-y-3">
-                    <h4 className="text-xs font-medium text-stone-500 dark:text-stone-400">
+                  <div className="mt-5 space-y-3 border-t border-stone-100 pt-5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#6E6259]">
                       Order progress timeline
                     </h4>
                     <StatusTimeline status={order.status} deliveryDate={order.deliveryDate} />
@@ -263,7 +269,6 @@ export default function CustomerOrdersPage() {
         </div>
       )}
 
-      {/* Cancellation Confirmation Modal */}
       <ConfirmModal
         isOpen={cancelModal.isOpen}
         loading={cancelModal.loading}

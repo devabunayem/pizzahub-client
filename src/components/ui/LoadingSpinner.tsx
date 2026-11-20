@@ -11,8 +11,8 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 }) => {
   const content = (
     <div className="flex flex-col items-center justify-center p-8 space-y-3">
-      <div className="w-5 h-5 rounded-full border-2 border-stone-300 dark:border-stone-700 border-t-stone-800 dark:border-t-stone-200 animate-spin" />
-      <p className="text-xs text-stone-500 dark:text-stone-400">
+      <div className="h-7 w-7 rounded-full border-[2.5px] border-stone-200 border-t-[#D91E18] animate-spin" />
+      <p className="text-sm font-medium text-[#6E6259]">
         {message}
       </p>
     </div>
@@ -20,7 +20,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
   if (fullScreen) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center bg-[#FAF7F2]/60">
         {content}
       </div>
     );

@@ -2,7 +2,10 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { ToastProvider } from '@/components/providers/ToastProvider';
+import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider';
 import { AuthProvider } from '@/context/AuthContext';
+import { SiteHeader } from '@/components/layout/SiteHeader';
+import { Footer } from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'PizzaHub — Authentic Pizza Ordering & Delivery Platform',
@@ -19,10 +22,20 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-white text-stone-900 antialiased">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          forcedTheme="light"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
           <AuthProvider>
-            <ToastProvider />
-            {children}
+            <SmoothScrollProvider>
+              <ToastProvider />
+              <SiteHeader />
+              {children}
+              <Footer />
+            </SmoothScrollProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

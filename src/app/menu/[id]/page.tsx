@@ -6,13 +6,12 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import {
   MapPin,
-  Calendar,
-  MessageSquare,
   ArrowLeft,
   AlertCircle,
-  Clock,
-  ShieldCheck,
-  Send,
+  Crown,
+  X,
+  ArrowUpRight,
+  Flame,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { ItemDetailSkeleton } from '@/components/ui/Skeleton';
@@ -30,7 +29,6 @@ export default function ItemDetailsPage() {
   const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Order Modal State
   const [orderModalOpen, setOrderModalOpen] = useState<boolean>(false);
   const [deliveryDate, setDeliveryDate] = useState<string>('');
   const [deliveryAddress, setDeliveryAddress] = useState<string>('');
@@ -66,26 +64,36 @@ export default function ItemDetailsPage() {
   }, [id]);
 
   if (authLoading || (loading && !errorMsg)) {
-    return <ItemDetailSkeleton />;
+    return (
+      <div className="min-h-[80vh] bg-[#FAF7F2]">
+        <ItemDetailSkeleton />
+      </div>
+    );
   }
 
   if (errorMsg || !item) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-20 text-center space-y-4">
-        <AlertCircle className="w-8 h-8 mx-auto text-stone-400" />
-        <h2 className="text-xl font-semibold text-stone-900 dark:text-white">
-          Item not found
-        </h2>
-        <p className="text-stone-500 text-xs">
-          {errorMsg || 'The menu item you are looking for does not exist or has been removed.'}
-        </p>
-        <Link
-          href="/menu"
-          className="inline-flex items-center px-4 py-2 rounded-lg bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-medium"
-        >
-          <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />
-          Back to menu
-        </Link>
+      <div className="min-h-[80vh] bg-[#FAF7F2] py-16">
+        <div className="site-container">
+          <div className="mx-auto max-w-md space-y-4 rounded-3xl border border-stone-200 bg-white p-10 text-center shadow-[0_18px_40px_-20px_rgba(24,18,14,0.16)]">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FAF7F2] text-[#D91E18]">
+              <AlertCircle className="h-6 w-6" />
+            </div>
+            <h2 className="font-display text-2xl uppercase text-[#18120E]">
+              Item Not Found
+            </h2>
+            <p className="text-sm text-[#6E6259]">
+              {errorMsg || 'The menu item you are looking for does not exist or has been removed.'}
+            </p>
+            <Link
+              href="/menu"
+              className="inline-flex items-center gap-2 rounded-full bg-[#18120E] px-6 py-3 text-xs font-bold text-white transition hover:bg-[#D91E18]"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              <span>Back to Browse Menu</span>
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -94,6 +102,10 @@ export default function ItemDetailsPage() {
   const isAdmin = user?.role === 'admin';
   const isCustomer = user?.role === 'customer';
   const isApproved = item.status === 'approved';
+  const isPremiumVendor =
+    item.vendorId?.subscriptionPlan === 'premium' &&
+    (!item.vendorId?.subscriptionExpiresAt ||
+      new Date(item.vendorId.subscriptionExpiresAt) > new Date());
 
   const handleOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,145 +145,166 @@ export default function ItemDetailsPage() {
     }
   };
 
-  const images = item.images && item.images.length > 0 ? item.images : ['https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80'];
+  const images =
+    item.images && item.images.length > 0
+      ? item.images
+      : ['/images/cat-classic.jpg'];
+
+  const vendorName = item.vendorId?.businessName || item.vendorId?.name || 'Local Kitchen';
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-8">
-      {/* Back Link */}
-      <Link
-        href="/menu"
-        className="inline-flex items-center space-x-1.5 text-xs text-stone-500 hover:text-stone-900 dark:hover:text-white transition-colors"
-      >
-        <ArrowLeft className="w-3.5 h-3.5" />
-        <span>Browse menu</span>
-      </Link>
+    <section className="min-h-[82vh] bg-[#FAF7F2] py-10 md:py-14">
+      <div className="site-container space-y-8">
+        {/* Back Link */}
+        <Link
+          href="/menu"
+          className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-4 py-2 text-xs font-bold text-[#18120E] transition hover:border-[#D91E18] hover:text-[#D91E18]"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          <span>Back to Browse Menu</span>
+        </Link>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-        {/* Images */}
-        <div className="lg:col-span-7 space-y-3">
-          <div className="aspect-[4/3] rounded-xl overflow-hidden bg-stone-100 dark:bg-stone-800 border border-black/[0.06] dark:border-white/[0.08]">
-            <img
-              src={images[activeImageIndex]}
-              alt={item.itemName}
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          {images.length > 1 && (
-            <div className="flex space-x-2 overflow-x-auto pb-1">
-              {images.map((img: string, idx: number) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveImageIndex(idx)}
-                  className={`w-16 h-16 rounded-lg overflow-hidden border transition-colors shrink-0 ${
-                    activeImageIndex === idx
-                      ? 'border-stone-900 dark:border-white'
-                      : 'border-black/[0.06] dark:border-white/[0.08] opacity-60'
-                  }`}
-                >
-                  <img src={img} alt={`view-${idx}`} className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Info */}
-        <div className="lg:col-span-5 space-y-6">
-          <div className="space-y-3">
-            <div className="space-y-1">
-              <span className="text-xs text-stone-500 uppercase tracking-wider font-medium">
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12">
+          {/* Left Gallery */}
+          <div className="space-y-3.5 lg:col-span-7">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-stone-200/90 bg-white shadow-[0_24px_48px_-22px_rgba(24,18,14,0.2)]">
+              <img
+                src={images[activeImageIndex]}
+                alt={item.itemName}
+                className="h-full w-full object-cover"
+              />
+              <span className="absolute left-4 top-4 rounded-full bg-[#18120E]/85 px-3.5 py-1.5 text-xs font-semibold text-[#FAF7F2] backdrop-blur-md">
                 {item.category}
               </span>
-              <h1 className="text-2xl font-semibold text-stone-900 dark:text-white tracking-tight">
-                {item.itemName}
-              </h1>
             </div>
 
-            <div className="text-2xl font-semibold tabular-nums text-stone-900 dark:text-white">
-              {formatPrice(item.price)}
-            </div>
-
-            <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed pt-1">
-              {item.description}
-            </p>
-          </div>
-
-          {/* Kitchen details */}
-          <div className="p-4 rounded-xl bg-stone-50 dark:bg-[#19191b] border border-black/[0.06] dark:border-white/[0.08] space-y-2 text-xs">
-            <div className="flex items-center justify-between">
-              <span className="font-medium text-stone-900 dark:text-white">
-                {item.vendorId?.businessName || item.vendorId?.name}
-              </span>
-              {item.vendorId?.subscriptionPlan === 'premium' && (
-                <span className="text-[11px] font-medium text-stone-600 dark:text-stone-400 bg-black/[0.04] dark:bg-white/[0.06] px-2 py-0.5 rounded">
-                  Premium kitchen
-                </span>
-              )}
-            </div>
-            <div className="flex items-center text-stone-500">
-              <MapPin className="w-3.5 h-3.5 mr-1 text-stone-400 shrink-0" />
-              <span>{item.location}</span>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="pt-2">
-            {!isApproved ? (
-              <div className="p-3 rounded-lg bg-stone-100 dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-xs text-stone-500">
-                This item is currently under review or inactive.
+            {images.length > 1 && (
+              <div className="flex gap-3 overflow-x-auto pb-1">
+                {images.map((img: string, idx: number) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveImageIndex(idx)}
+                    className={`h-20 w-24 shrink-0 overflow-hidden rounded-2xl border-2 transition cursor-pointer ${
+                      activeImageIndex === idx
+                        ? 'border-[#D91E18] shadow-sm'
+                        : 'border-stone-200 opacity-65 hover:opacity-100'
+                    }`}
+                  >
+                    <img src={img} alt={`view-${idx}`} className="h-full w-full object-cover" />
+                  </button>
+                ))}
               </div>
-            ) : isVendorOfItem ? (
-              <div className="p-3 rounded-lg bg-stone-100 dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-xs text-stone-500">
-                You own this listing. Vendors cannot order their own items.
-              </div>
-            ) : isAdmin ? (
-              <div className="p-3 rounded-lg bg-stone-100 dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-xs text-stone-500">
-                Administrator accounts cannot place customer food orders.
-              </div>
-            ) : isCustomer ? (
-              <button
-                onClick={() => setOrderModalOpen(true)}
-                className="w-full py-3 rounded-lg bg-[#b91c1c] hover:bg-[#991b1b] text-white font-medium text-xs transition-colors cursor-pointer"
-              >
-                Order for {formatPrice(item.price)}
-              </button>
-            ) : (
-              <button
-                onClick={() => router.push(`/signin?redirect=/menu/${item._id}`)}
-                className="w-full py-3 rounded-lg bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 font-medium text-xs text-center"
-              >
-                Sign in to place order
-              </button>
             )}
+          </div>
+
+          {/* Right Editorial Info Card */}
+          <div className="lg:col-span-5">
+            <div className="space-y-6 rounded-3xl border border-stone-200/90 bg-white p-7 sm:p-8 shadow-[0_20px_48px_-22px_rgba(24,18,14,0.14)]">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#9A4A12]">
+                  <Flame className="h-3.5 w-3.5 text-[#D91E18]" />
+                  <span>{item.category}</span>
+                </div>
+
+                <h1 className="font-display text-[clamp(2rem,3.4vw,2.75rem)] uppercase leading-[0.98] tracking-tight text-[#18120E]">
+                  {item.itemName}
+                </h1>
+
+                <div className="font-display text-3xl tracking-wide text-[#D91E18] tabular-nums">
+                  {formatPrice(item.price)}
+                </div>
+
+                <p className="pt-1 text-sm leading-relaxed text-[#6E6259]">
+                  {item.description}
+                </p>
+              </div>
+
+              {/* Kitchen Card */}
+              <div className="space-y-2.5 rounded-2xl border border-stone-200/80 bg-[#FAF7F2] p-4">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-sm font-extrabold text-[#18120E]">
+                    {vendorName}
+                  </span>
+                  {isPremiumVendor && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#9A4A12] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white">
+                      <Crown className="h-3 w-3 text-amber-200" />
+                      <span>Premium</span>
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center text-xs font-medium text-[#6E6259]">
+                  <MapPin className="mr-1.5 h-3.5 w-3.5 shrink-0 text-[#D91E18]" />
+                  <span>{item.location}</span>
+                </div>
+              </div>
+
+              {/* Order Actions */}
+              <div className="pt-1">
+                {!isApproved ? (
+                  <div className="rounded-2xl border border-stone-200 bg-[#FAF7F2] p-4 text-xs font-medium text-[#6E6259]">
+                    This item is currently under admin review or inactive.
+                  </div>
+                ) : isVendorOfItem ? (
+                  <div className="rounded-2xl border border-stone-200 bg-[#FAF7F2] p-4 text-xs font-medium text-[#6E6259]">
+                    You own this listing. Restaurant kitchens cannot order their own items.
+                  </div>
+                ) : isAdmin ? (
+                  <div className="rounded-2xl border border-stone-200 bg-[#FAF7F2] p-4 text-xs font-medium text-[#6E6259]">
+                    Administrator accounts cannot place customer food orders.
+                  </div>
+                ) : isCustomer ? (
+                  <button
+                    type="button"
+                    onClick={() => setOrderModalOpen(true)}
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#D91E18] py-4 text-sm font-bold text-white shadow-[0_16px_32px_-12px_rgba(217,30,24,0.5)] transition hover:bg-[#b81712] cursor-pointer"
+                  >
+                    <span>Order Now — {formatPrice(item.price)}</span>
+                    <ArrowUpRight className="h-4 w-4" />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => router.push(`/signin?redirect=/menu/${item._id}`)}
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#18120E] py-4 text-sm font-bold text-white transition hover:bg-[#D91E18] cursor-pointer"
+                  >
+                    <span>Sign In to Place Order</span>
+                    <ArrowUpRight className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Order Modal */}
       {orderModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-[#19191b] max-w-md w-full rounded-2xl p-6 shadow-xl border border-black/[0.06] dark:border-white/[0.08] space-y-5">
-            <div className="flex items-start justify-between border-b border-black/[0.06] dark:border-white/[0.08] pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#18120E]/55 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md space-y-5 rounded-3xl border border-stone-200 bg-white p-6 sm:p-7 shadow-[0_28px_60px_-20px_rgba(24,18,14,0.3)]">
+            <div className="flex items-start justify-between border-b border-stone-100 pb-4">
               <div>
-                <h3 className="text-base font-semibold text-stone-900 dark:text-white">
-                  Place order
+                <h3 className="text-lg font-extrabold tracking-tight text-[#18120E]">
+                  Place Your Order
                 </h3>
-                <p className="text-xs text-stone-500 mt-0.5">
-                  {item.itemName} — {formatPrice(item.price)}
+                <p className="mt-0.5 text-xs font-medium text-[#6E6259]">
+                  {item.itemName} —{' '}
+                  <span className="font-bold text-[#D91E18]">{formatPrice(item.price)}</span>
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => setOrderModalOpen(false)}
-                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 text-sm font-medium"
+                className="rounded-xl p-1.5 text-stone-400 transition hover:bg-[#FAF7F2] hover:text-[#18120E] cursor-pointer"
+                aria-label="Close modal"
               >
-                ✕
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            <form onSubmit={handleOrderSubmit} className="space-y-4 text-xs">
+            <form onSubmit={handleOrderSubmit} className="space-y-4">
               <div>
-                <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
                   Delivery date *
                 </label>
                 <input
@@ -280,12 +313,12 @@ export default function ItemDetailsPage() {
                   min={new Date().toISOString().split('T')[0]}
                   value={deliveryDate}
                   onChange={(e) => setDeliveryDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+                  className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm text-[#18120E] focus:border-[#D91E18] focus:bg-white focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
                   Delivery address *
                 </label>
                 <input
@@ -294,12 +327,12 @@ export default function ItemDetailsPage() {
                   placeholder="Street address, apartment or house number"
                   value={deliveryAddress}
                   onChange={(e) => setDeliveryAddress(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+                  className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm text-[#18120E] placeholder:text-stone-400 focus:border-[#D91E18] focus:bg-white focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
                   Special kitchen instructions (optional)
                 </label>
                 <textarea
@@ -307,34 +340,34 @@ export default function ItemDetailsPage() {
                   placeholder="e.g. Extra basil, well-done crust..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+                  className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm text-[#18120E] placeholder:text-stone-400 focus:border-[#D91E18] focus:bg-white focus:outline-none"
                 />
               </div>
 
-              <div className="p-3 rounded-lg bg-stone-100 dark:bg-white/[0.04] text-stone-600 dark:text-stone-400">
-                Payment is settled upon delivery directly with the restaurant.
+              <div className="rounded-2xl border border-stone-200/80 bg-[#FAF7F2] p-3.5 text-xs text-[#6E6259]">
+                Payment is settled upon delivery directly with the restaurant kitchen.
               </div>
 
-              <div className="flex space-x-2 pt-2">
+              <div className="flex gap-2.5 pt-2">
                 <button
                   type="button"
                   onClick={() => setOrderModalOpen(false)}
-                  className="flex-1 py-2.5 rounded-lg border border-black/[0.08] dark:border-white/[0.08] font-medium text-stone-600 dark:text-stone-400"
+                  className="flex-1 rounded-xl border border-stone-200 bg-[#FAF7F2] py-3 text-xs font-bold text-[#18120E] transition hover:bg-stone-100 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={ordering}
-                  className="flex-1 py-2.5 rounded-lg bg-[#b91c1c] hover:bg-[#991b1b] text-white font-medium disabled:opacity-50"
+                  className="flex-1 rounded-xl bg-[#D91E18] py-3 text-xs font-bold text-white transition hover:bg-[#b81712] disabled:opacity-50 cursor-pointer"
                 >
-                  {ordering ? 'Placing order...' : 'Confirm order'}
+                  {ordering ? 'Placing order...' : 'Confirm Order'}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 }

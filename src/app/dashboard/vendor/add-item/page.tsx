@@ -4,14 +4,11 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
-import {
-  UploadCloud,
-  Check,
-} from 'lucide-react';
+import { UploadCloud, Check, ArrowRight } from 'lucide-react';
 import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-const IMGBB_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY || 'ed9cd2830c7038c0b9ba40977ad448f4';
+const IMGBB_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY || '';
 
 const CATEGORIES = [
   'Classic Pizzas',
@@ -125,37 +122,41 @@ export default function AddMenuItemPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="pb-4 border-b border-black/[0.06] dark:border-white/[0.08]">
-        <h1 className="text-xl font-semibold text-stone-900 dark:text-white tracking-tight">
-          Add menu item
+    <div className="mx-auto max-w-2xl space-y-6">
+      <div className="border-b border-stone-200 pb-5">
+        <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#9A4A12]">
+          New Creation
+        </span>
+        <h1 className="font-display mt-1 text-3xl uppercase tracking-tight text-[#18120E]">
+          Add Menu Item
         </h1>
-        <p className="text-xs text-stone-500 mt-0.5">
-          Submitted items require administrator review before appearing on the public menu.
+        <p className="mt-1 text-sm text-[#6E6259]">
+          Submitted items require administrator approval before appearing on the public menu.
         </p>
       </div>
 
       {!isPremium && (
-        <div className="p-3.5 rounded-lg bg-stone-100 dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.08] text-xs text-stone-600 dark:text-stone-400 flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-white px-5 py-3.5 text-xs text-[#6E6259] shadow-sm">
           <span>Free tier allows up to 3 active menu items.</span>
           <Link
             href="/dashboard/vendor/subscription"
-            className="text-stone-900 dark:text-white font-medium hover:underline ml-2 shrink-0"
+            className="inline-flex items-center gap-1 font-bold text-[#D91E18] hover:underline"
           >
-            Upgrade plan →
+            <span>Upgrade Plan</span>
+            <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
       )}
 
       {limitReached && (
-        <div className="p-4 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 text-xs text-red-700 dark:text-red-300 space-y-2">
-          <p className="font-medium">Free plan limit reached (3 items maximum)</p>
-          <p className="text-red-600 dark:text-red-400">
+        <div className="space-y-2.5 rounded-2xl border border-red-200 bg-red-50 p-5 text-xs text-[#D91E18]">
+          <p className="text-sm font-extrabold">Free plan limit reached (3 items maximum)</p>
+          <p className="text-[#6E6259]">
             Upgrade your restaurant subscription to publish unlimited menu items.
           </p>
           <Link
             href="/dashboard/vendor/subscription"
-            className="inline-block px-3 py-1.5 rounded bg-stone-900 text-white font-medium"
+            className="inline-block rounded-full bg-[#D91E18] px-5 py-2 text-xs font-bold text-white transition hover:bg-[#b81712]"
           >
             Upgrade to Premium
           </Link>
@@ -164,10 +165,10 @@ export default function AddMenuItemPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="p-6 rounded-xl bg-white dark:bg-[#19191b] border border-black/[0.06] dark:border-white/[0.08] space-y-4 text-xs"
+        className="space-y-4 rounded-3xl border border-stone-200/90 bg-white p-6 sm:p-8 shadow-sm"
       >
         <div>
-          <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
             Item name *
           </label>
           <input
@@ -176,19 +177,19 @@ export default function AddMenuItemPage() {
             value={itemName}
             onChange={(e) => setItemName(e.target.value)}
             placeholder="e.g. Margherita D.O.P."
-            className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+            className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm text-[#18120E] placeholder:text-stone-400 focus:border-[#D91E18] focus:bg-white focus:outline-none"
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
           <div>
-            <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
               Category *
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none cursor-pointer"
+              className="w-full cursor-pointer rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm text-[#18120E] focus:border-[#D91E18] focus:bg-white focus:outline-none"
             >
               {CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>
@@ -199,7 +200,7 @@ export default function AddMenuItemPage() {
           </div>
 
           <div>
-            <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
               Price (USD) *
             </label>
             <input
@@ -210,13 +211,13 @@ export default function AddMenuItemPage() {
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               placeholder="18.50"
-              className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+              className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm text-[#18120E] placeholder:text-stone-400 focus:border-[#D91E18] focus:bg-white focus:outline-none"
             />
           </div>
         </div>
 
         <div>
-          <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
             Kitchen location (Area / City) *
           </label>
           <input
@@ -225,13 +226,13 @@ export default function AddMenuItemPage() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="e.g. Manhattan, New York"
-            className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+            className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm text-[#18120E] placeholder:text-stone-400 focus:border-[#D91E18] focus:bg-white focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
-            Description & ingredients *
+          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+            Description &amp; ingredients *
           </label>
           <textarea
             rows={3}
@@ -239,33 +240,35 @@ export default function AddMenuItemPage() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Detail sauce, dough fermentation, cheese and toppings..."
-            className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#232325] text-stone-900 dark:text-white focus:outline-none"
+            className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm text-[#18120E] placeholder:text-stone-400 focus:border-[#D91E18] focus:bg-white focus:outline-none"
           />
         </div>
 
         {/* ImgBB file upload */}
         <div>
-          <label className="block font-medium text-stone-700 dark:text-stone-300 mb-1">
+          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
             Photo (ImgBB upload) *
           </label>
 
-          <div className="p-4 rounded-lg border border-dashed border-black/[0.12] dark:border-white/[0.12] flex flex-col items-center justify-center space-y-2 text-center">
+          <div className="flex flex-col items-center justify-center space-y-2 rounded-2xl border-2 border-dashed border-stone-300 bg-[#FAF7F2] p-6 text-center transition hover:border-[#9A4A12]">
             {imageUrl ? (
-              <div className="space-y-2 flex flex-col items-center">
-                <img src={imageUrl} alt="Uploaded item" className="w-32 h-24 rounded-lg object-cover" />
-                <div className="flex items-center space-x-1.5 text-stone-600 dark:text-stone-400">
-                  <Check className="w-3.5 h-3.5 text-green-600" />
+              <div className="flex flex-col items-center space-y-2">
+                <img src={imageUrl} alt="Uploaded item" className="h-28 w-36 rounded-2xl border border-stone-200 object-cover" />
+                <div className="flex items-center space-x-1.5 text-xs font-semibold text-emerald-700">
+                  <Check className="h-4 w-4" />
                   <span>Hosted on ImgBB</span>
                 </div>
-                <label className="cursor-pointer text-stone-500 hover:underline">
+                <label className="cursor-pointer text-xs font-bold text-[#D91E18] hover:underline">
                   Replace image
                   <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
                 </label>
               </div>
             ) : (
               <>
-                <UploadCloud className="w-5 h-5 text-stone-400" />
-                <label className="cursor-pointer font-medium text-stone-900 dark:text-white hover:underline">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-[#9A4A12] shadow-sm">
+                  <UploadCloud className="h-5 w-5" />
+                </div>
+                <label className="cursor-pointer text-sm font-bold text-[#18120E] hover:text-[#D91E18] hover:underline">
                   {uploadingImage ? 'Uploading...' : 'Choose image file'}
                   <input
                     type="file"
@@ -275,19 +278,19 @@ export default function AddMenuItemPage() {
                     className="hidden"
                   />
                 </label>
-                <span className="text-[11px] text-stone-400">PNG, JPG, or WEBP up to 10MB</span>
+                <span className="text-xs text-[#6E6259]">PNG, JPG, or WEBP up to 10MB</span>
               </>
             )}
           </div>
         </div>
 
-        <div className="pt-2 flex justify-end">
+        <div className="flex justify-end border-t border-stone-100 pt-4">
           <button
             type="submit"
             disabled={submitting || uploadingImage || !imageUrl}
-            className="py-2.5 px-4 rounded-lg bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-white text-white dark:text-stone-900 font-medium transition-colors disabled:opacity-50"
+            className="cursor-pointer rounded-2xl bg-[#D91E18] px-6 py-3 text-xs font-bold text-white transition-colors hover:bg-[#b81712] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {submitting ? 'Submitting...' : 'Submit for review'}
+            {submitting ? 'Submitting...' : 'Submit for Review'}
           </button>
         </div>
       </form>

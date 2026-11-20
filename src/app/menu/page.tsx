@@ -1,15 +1,19 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import {
   Search,
   MapPin,
   RotateCcw,
+  Crown,
+  ArrowUpRight,
+  Pizza,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
-import { MenuGridSkeleton } from '@/components/ui/Skeleton';
+import { MenuGridSkeleton, BrowseMenuPageSkeleton } from '@/components/ui/Skeleton';
+import { BrushHighlight } from '@/components/ui/BrushHighlight';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -23,16 +27,32 @@ const CATEGORIES = [
   'Beverages & Desserts',
 ];
 
-export default function BrowseMenuPage() {
+function isVendorPremium(vendor: any): boolean {
+  if (!vendor || vendor.subscriptionPlan !== 'premium') return false;
+  if (!vendor.subscriptionExpiresAt) return true;
+  return new Date(vendor.subscriptionExpiresAt) > new Date();
+}
+
+function BrowseMenuContent() {
   const { user } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlCategory = searchParams.get('category');
+  const initialCategory =
+    urlCategory && CATEGORIES.includes(urlCategory) ? urlCategory : 'All';
 
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>('');
-  const [category, setCategory] = useState<string>('All');
+  const [category, setCategory] = useState<string>(initialCategory);
   const [location, setLocation] = useState<string>('');
   const [sort, setSort] = useState<string>('newest');
+
+  useEffect(() => {
+    if (urlCategory && CATEGORIES.includes(urlCategory)) {
+      setCategory(urlCategory);
+    }
+  }, [urlCategory]);
 
   const fetchItems = async () => {
     setLoading(true);
@@ -83,183 +103,240 @@ export default function BrowseMenuPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-8">
-      {/* Page Title */}
-      <div className="flex items-end justify-between border-b border-black/[0.06] dark:border-white/[0.08] pb-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
-            Browse menu
-          </h1>
-          <p className="text-xs sm:text-sm text-stone-500 mt-1">
-            Explore wood-fired pizzas, gourmet sides, and appetizers from neighborhood kitchens.
-          </p>
+    <section className="min-h-[85vh] bg-[#FAF7F2] py-10 md:py-14">
+      <div className="site-container space-y-8">
+        {/* Editorial Page Header */}
+        <div className="flex flex-col justify-between gap-4 border-b border-stone-200 pb-6 sm:flex-row sm:items-end">
+          <div>
+            <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.22em] text-[#9A4A12]">
+              <span className="h-2 w-2 rounded-full bg-[#D91E18]" />
+              <span>Wood-Fired Kitchens</span>
+            </div>
+            <h1 className="leading-[0.98] tracking-tight text-[#18120E]">
+              <span className="font-display text-[clamp(2.1rem,3.8vw,3.2rem)] uppercase">
+                BROWSE{' '}
+              </span>
+              <BrushHighlight immediate color="#D91E18" secondaryColor="#9A4A12" delay={0.18}>
+                <span className="font-editorial italic font-normal lowercase text-[#9A4A12] text-[clamp(2.3rem,4.2vw,3.5rem)]">
+                  artisan
+                </span>
+              </BrushHighlight>
+              <span className="font-display text-[clamp(2.1rem,3.8vw,3.2rem)] uppercase">
+                {' '}
+                MENU
+              </span>
+            </h1>
+            <p className="mt-2 text-sm text-[#6E6259]">
+              Explore wood-fired pizzas, gourmet specialties, sides, and handcrafted desserts.
+            </p>
+          </div>
+
+          <div className="inline-flex items-center self-start rounded-full border border-stone-200 bg-white px-4 py-2 text-xs font-bold text-[#18120E] tabular-nums shadow-sm sm:self-auto">
+            <span>{items.length} items available</span>
+          </div>
         </div>
 
-        <div className="text-xs text-stone-500 tabular-nums">
-          {items.length} items available
-        </div>
-      </div>
-
-      {/* Search & Control Bar */}
-      <div className="p-4 rounded-xl bg-white dark:bg-[#151517] border border-black/[0.08] dark:border-white/[0.08] space-y-3">
-        <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-          {/* Search Term */}
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name or topping"
-              className="w-full pl-9 pr-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#1c1c1f] text-stone-900 dark:text-stone-100 placeholder:text-stone-400 text-xs focus:outline-none focus:border-stone-900 dark:focus:border-white"
-            />
-          </div>
-
-          {/* Location Filter */}
-          <div className="relative w-full sm:w-44">
-            <MapPin className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Location"
-              className="w-full pl-8 pr-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#1c1c1f] text-stone-900 dark:text-stone-100 placeholder:text-stone-400 text-xs focus:outline-none focus:border-stone-900 dark:focus:border-white"
-            />
-          </div>
-
-          {/* Sort Selector */}
-          <div className="relative w-full sm:w-40">
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-stone-50 dark:bg-[#1c1c1f] text-stone-900 dark:text-stone-100 text-xs focus:outline-none focus:border-stone-900 dark:focus:border-white"
-            >
-              <option value="newest">Newest first</option>
-              <option value="price_asc">Price: Low to high</option>
-              <option value="price_desc">Price: High to low</option>
-            </select>
-          </div>
-
-          <button
-            type="submit"
-            className="px-4 py-2 rounded-lg bg-[#b91c1c] hover:bg-[#991b1b] text-white text-xs font-medium transition-colors"
+        {/* Search & Control Bar */}
+        <div className="space-y-4 rounded-3xl border border-stone-200/90 bg-white p-5 shadow-[0_14px_34px_-22px_rgba(24,18,14,0.14)]">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"
           >
-            Search
-          </button>
+            {/* Search Term */}
+            <div className="relative flex-1">
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search by pizza name or ingredient..."
+                className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2.5 pl-10 pr-4 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+              />
+            </div>
 
-          {(search || location || category !== 'All' || sort !== 'newest') && (
-            <button
-              type="button"
-              onClick={resetFilters}
-              title="Reset filters"
-              className="p-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] text-stone-500 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-            </button>
-          )}
-        </form>
+            {/* Location Filter */}
+            <div className="relative w-full sm:w-48">
+              <MapPin className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Location (e.g. Brooklyn)"
+                className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2.5 pl-10 pr-4 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+              />
+            </div>
 
-        {/* Category Pills */}
-        <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 pt-1 scrollbar-none text-xs">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setCategory(cat)}
-              className={`px-3 py-1 rounded-md text-xs transition-colors whitespace-nowrap cursor-pointer ${
-                category === cat
-                  ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 font-medium'
-                  : 'bg-stone-100 dark:bg-white/[0.04] text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Grid */}
-      {loading ? (
-        <MenuGridSkeleton count={8} />
-      ) : items.length === 0 ? (
-        <div className="text-center py-16 bg-white dark:bg-[#151517] rounded-xl border border-black/[0.08] dark:border-white/[0.08] space-y-3">
-          <p className="text-sm font-medium text-stone-800 dark:text-stone-200">
-            No matching pizzas found
-          </p>
-          <p className="text-xs text-stone-500 max-w-sm mx-auto">
-            Try adjusting your search keywords, clearing your location filter, or selecting a different category.
-          </p>
-          <button
-            onClick={resetFilters}
-            className="px-3.5 py-1.5 rounded-lg border border-black/[0.1] dark:border-white/[0.1] text-xs font-medium"
-          >
-            Clear filters
-          </button>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {items.map((item) => (
-              <div
-                key={item._id}
-                onClick={() => handleCardClick(item._id)}
-                className="group cursor-pointer flex flex-col bg-white dark:bg-[#151517] rounded-xl overflow-hidden border border-black/[0.08] dark:border-white/[0.08] transition-colors hover:border-black/[0.2] dark:hover:border-white/[0.2]"
+            {/* Sort Selector */}
+            <div className="w-full sm:w-44">
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="w-full cursor-pointer rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-sm font-medium text-[#18120E] transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
               >
-                {/* Photo */}
-                <div className="relative h-44 w-full bg-stone-100 dark:bg-stone-800 overflow-hidden">
-                  <img
-                    src={item.images?.[0] || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80'}
-                    alt={item.itemName}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-2.5 left-2.5 flex gap-1">
-                    <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-white/90 dark:bg-[#151517]/90 text-stone-800 dark:text-stone-200 backdrop-blur-sm border border-black/[0.04] dark:border-white/[0.08]">
-                      {item.category}
-                    </span>
-                    {item.vendorId?.subscriptionPlan === 'premium' && (
-                      <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900">
-                        Premium
-                      </span>
-                    )}
-                  </div>
-                </div>
+                <option value="newest">Newest first</option>
+                <option value="price_asc">Price: Low to high</option>
+                <option value="price_desc">Price: High to low</option>
+              </select>
+            </div>
 
-                {/* Body */}
-                <div className="p-4 flex-1 flex flex-col justify-between space-y-4">
-                  <div className="space-y-1.5">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-medium text-sm text-stone-900 dark:text-stone-100 line-clamp-1">
-                        {item.itemName}
-                      </h3>
-                      <span className="font-semibold text-sm tabular-nums text-stone-900 dark:text-stone-100 shrink-0">
-                        {formatPrice(item.price)}
-                      </span>
-                    </div>
-                    <p className="text-xs text-stone-500 line-clamp-2 leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
+            <button
+              type="submit"
+              className="rounded-xl bg-[#D91E18] px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#b81712] cursor-pointer"
+            >
+              Search
+            </button>
 
-                  <div className="pt-3 border-t border-black/[0.06] dark:border-white/[0.08] space-y-2.5">
-                    <div className="flex items-center justify-between text-[11px] text-stone-500">
-                      <span className="truncate max-w-[120px]">
-                        {item.vendorId?.businessName || item.vendorId?.name || 'Local Kitchen'}
-                      </span>
-                      <span className="flex items-center truncate max-w-[110px]">
-                        <MapPin className="w-3 h-3 mr-0.5 text-stone-400 shrink-0" />
-                        <span>{item.location}</span>
-                      </span>
-                    </div>
+            {(search || location || category !== 'All' || sort !== 'newest') && (
+              <button
+                type="button"
+                onClick={resetFilters}
+                title="Reset filters"
+                className="flex items-center justify-center rounded-xl border border-stone-200 bg-[#FAF7F2] p-2.5 text-[#6E6259] transition hover:border-[#D91E18] hover:text-[#D91E18] cursor-pointer"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </button>
+            )}
+          </form>
 
-                    <div className="w-full py-2 rounded-lg bg-stone-100 dark:bg-white/[0.05] group-hover:bg-stone-200 dark:group-hover:bg-white/[0.08] text-stone-900 dark:text-stone-100 font-medium text-xs text-center block transition-colors">
-                      View details
-                    </div>
-                  </div>
-                </div>
-              </div>
+          {/* Category Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setCategory(cat)}
+                className={`whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-bold transition-colors cursor-pointer ${
+                  category === cat
+                    ? 'bg-[#18120E] text-white'
+                    : 'border border-stone-200 bg-[#FAF7F2] text-[#6E6259] hover:border-stone-300 hover:text-[#18120E]'
+                }`}
+              >
+                {cat}
+              </button>
             ))}
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Menu Grid */}
+        {loading ? (
+          <MenuGridSkeleton count={6} />
+        ) : items.length === 0 ? (
+          <div className="rounded-3xl border border-stone-200 bg-white px-6 py-20 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FAF7F2] text-[#9A4A12]">
+              <Pizza className="h-6 w-6" />
+            </div>
+            <h3 className="font-display text-2xl uppercase text-[#18120E]">
+              No Matching Pizzas Found
+            </h3>
+            <p className="mt-1.5 text-sm text-[#6E6259]">
+              Try adjusting your search keywords, location filter, or selected category.
+            </p>
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="mt-5 rounded-full bg-[#18120E] px-6 py-2.5 text-xs font-bold text-white transition hover:bg-[#D91E18] cursor-pointer"
+            >
+              Reset All Filters
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((item) => {
+              const premium = isVendorPremium(item.vendorId);
+              const vendorName =
+                item.vendorId?.businessName || item.vendorId?.name || 'Local Kitchen';
+              const vendorInitial = vendorName.trim().charAt(0).toUpperCase();
+              const coverImage = item.images?.[0] || '/images/cat-classic.jpg';
+
+              return (
+                <article
+                  key={item._id}
+                  onClick={() => handleCardClick(item._id)}
+                  className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-stone-200/90 bg-white shadow-[0_12px_30px_-18px_rgba(24,18,14,0.14)] transition-all duration-300 hover:-translate-y-1 hover:border-[#9A4A12]/40 hover:shadow-[0_24px_48px_-20px_rgba(24,18,14,0.22)]"
+                >
+                  {/* 4:3 Image Frame */}
+                  <div className="skeleton-shimmer relative aspect-[4/3] w-full overflow-hidden">
+                    <img
+                      src={coverImage}
+                      alt={item.itemName}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = '/images/cat-classic.jpg';
+                      }}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+
+                    <span className="absolute left-3.5 top-3.5 rounded-full bg-[#18120E]/80 px-3 py-1 text-[11px] font-semibold text-[#FAF7F2] backdrop-blur-md">
+                      {item.category}
+                    </span>
+
+                    {premium && (
+                      <span className="absolute right-3.5 top-3.5 inline-flex items-center gap-1 rounded-full bg-[#9A4A12] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-sm">
+                        <Crown className="h-3 w-3 text-amber-200" />
+                        <span>Premium</span>
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Body */}
+                  <div className="flex flex-1 flex-col p-6">
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="line-clamp-1 text-lg font-extrabold tracking-tight text-[#18120E]">
+                        {item.itemName}
+                      </h3>
+                      <span className="font-display shrink-0 text-xl tracking-wide text-[#D91E18] tabular-nums">
+                        {formatPrice(item.price)}
+                      </span>
+                    </div>
+
+                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[#6E6259]">
+                      {item.description}
+                    </p>
+
+                    <div className="mt-auto pt-5">
+                      <div className="mb-4 flex items-center justify-between gap-2 border-t border-stone-100 pt-4 text-xs text-[#6E6259]">
+                        <div className="flex min-w-0 items-center gap-2">
+                          {item.vendorId?.image ? (
+                            <img
+                              src={item.vendorId.image}
+                              alt={vendorName}
+                              className="h-6 w-6 shrink-0 rounded-full object-cover ring-1 ring-stone-200"
+                            />
+                          ) : (
+                            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#FAF7F2] text-[10px] font-bold text-[#9A4A12] ring-1 ring-stone-200">
+                              {vendorInitial}
+                            </span>
+                          )}
+                          <span className="truncate font-semibold text-[#18120E]">
+                            {vendorName}
+                          </span>
+                        </div>
+
+                        <span className="flex shrink-0 items-center gap-1 text-[11px] font-medium text-[#6E6259]">
+                          <MapPin className="h-3.5 w-3.5 text-[#D91E18]" />
+                          <span className="max-w-[115px] truncate">{item.location}</span>
+                        </span>
+                      </div>
+
+                      <div className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#18120E] py-3 text-sm font-bold text-white transition-colors duration-200 group-hover:bg-[#D91E18]">
+                        <span>View Details</span>
+                        <ArrowUpRight className="h-4 w-4" />
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+export default function BrowseMenuPage() {
+  return (
+    <Suspense fallback={<BrowseMenuPageSkeleton />}>
+      <BrowseMenuContent />
+    </Suspense>
   );
 }

@@ -9,7 +9,6 @@ import {
   MessageSquare,
   CheckCircle2,
   XCircle,
-  Clock,
   User,
 } from 'lucide-react';
 import { formatPrice, formatDate } from '@/lib/utils';
@@ -73,7 +72,7 @@ export default function VendorOrdersPage() {
   };
 
   if (loading) {
-    return <OrderListSkeleton count={4} />;
+    return <OrderListSkeleton count={4} withFilterTabs />;
   }
 
   const filteredOrders =
@@ -82,26 +81,30 @@ export default function VendorOrdersPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-5">
+      <div className="flex flex-col justify-between gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-end">
         <div>
-          <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
-            Incoming orders
+          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#9A4A12]">
+            Kitchen Queue
+          </span>
+          <h1 className="font-display mt-1 text-3xl uppercase tracking-tight text-[#18120E]">
+            Incoming Orders
           </h1>
-          <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+          <p className="mt-1 text-sm text-[#6E6259]">
             Review incoming orders, verify scheduled delivery times, and update status.
           </p>
         </div>
 
         {/* Filter Tabs */}
-        <div className="inline-flex items-center gap-1 p-1 rounded-lg bg-stone-100 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 self-start sm:self-auto">
+        <div className="inline-flex items-center gap-1 self-start rounded-full border border-stone-200 bg-white p-1 shadow-sm sm:self-auto">
           {(['all', 'pending', 'accepted', 'rejected'] as const).map((tab) => (
             <button
               key={tab}
+              type="button"
               onClick={() => setFilter(tab)}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium capitalize transition-colors cursor-pointer ${
+              className={`cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-bold capitalize transition-colors ${
                 filter === tab
-                  ? 'bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 shadow-sm border border-stone-200 dark:border-stone-700'
-                  : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+                  ? 'bg-[#18120E] text-white'
+                  : 'text-[#6E6259] hover:text-[#18120E]'
               }`}
             >
               {tab}
@@ -112,62 +115,65 @@ export default function VendorOrdersPage() {
 
       {/* Orders List */}
       {filteredOrders.length === 0 ? (
-        <div className="text-center py-16 bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 space-y-2">
-          <div className="w-10 h-10 mx-auto rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-500 flex items-center justify-center">
-            <ShoppingBag className="w-5 h-5" />
+        <div className="space-y-2 rounded-3xl border border-stone-200 bg-white py-16 text-center shadow-sm">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FAF7F2] text-[#9A4A12]">
+            <ShoppingBag className="h-6 w-6" />
           </div>
-          <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100">
+          <h3 className="text-base font-extrabold text-[#18120E]">
             No {filter !== 'all' ? filter : ''} orders
           </h3>
-          <p className="text-xs text-stone-500 dark:text-stone-400">
+          <p className="text-xs text-[#6E6259]">
             {filter === 'pending'
               ? 'All incoming customer orders have been reviewed.'
               : 'Orders placed by customers will appear in this list.'}
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {filteredOrders.map((order) => (
             <div
               key={order._id}
-              className="p-5 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex flex-col lg:flex-row lg:items-center justify-between gap-5 transition-colors"
+              className="flex flex-col justify-between gap-5 rounded-3xl border border-stone-200/90 bg-white p-5 sm:p-6 shadow-sm transition-colors lg:flex-row lg:items-center"
             >
               {/* Order Info Left */}
-              <div className="flex items-start space-x-4 min-w-0">
+              <div className="flex min-w-0 items-start space-x-4">
                 <img
-                  src={order.itemId?.images?.[0] || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=200&q=80'}
+                  src={order.itemId?.images?.[0] || '/images/cat-classic.jpg'}
                   alt={order.itemId?.itemName}
-                  className="w-16 h-16 rounded-lg object-cover shrink-0 border border-stone-200 dark:border-stone-800 bg-stone-100 dark:bg-stone-800"
+                  className="h-16 w-16 shrink-0 rounded-2xl border border-stone-200 bg-[#FAF7F2] object-cover"
                 />
-                <div className="space-y-1.5 min-w-0">
+                <div className="min-w-0 space-y-1.5">
                   <div className="flex items-baseline space-x-3">
-                    <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">
+                    <h3 className="text-base font-extrabold text-[#18120E]">
                       {order.itemId?.itemName || 'Pizza order'}
                     </h3>
-                    <span className="font-mono text-xs font-semibold text-stone-900 dark:text-stone-100 tabular-nums">
+                    <span className="font-display text-lg text-[#D91E18] tabular-nums">
                       {formatPrice(order.itemId?.price || 0)}
                     </span>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-stone-500 dark:text-stone-400">
-                    <span className="flex items-center text-stone-700 dark:text-stone-300">
-                      <User className="w-3.5 h-3.5 mr-1 text-stone-400" />
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#6E6259]">
+                    <span className="flex items-center font-medium text-[#18120E]">
+                      <User className="mr-1.5 h-3.5 w-3.5 text-[#9A4A12]" />
                       {order.customerId?.name} ({order.customerId?.email})
                     </span>
                     <span className="flex items-center">
-                      <Calendar className="w-3.5 h-3.5 mr-1 text-stone-400" />
-                      Delivery: <span className="ml-1 font-medium text-stone-800 dark:text-stone-200">{formatDate(order.deliveryDate)}</span>
+                      <Calendar className="mr-1.5 h-3.5 w-3.5 text-stone-400" />
+                      Delivery:{' '}
+                      <span className="ml-1 font-semibold text-[#18120E]">
+                        {formatDate(order.deliveryDate)}
+                      </span>
                     </span>
                   </div>
 
-                  <p className="text-xs text-stone-600 dark:text-stone-300 flex items-start">
-                    <MapPin className="w-3.5 h-3.5 mr-1 text-stone-400 shrink-0 mt-0.5" />
+                  <p className="flex items-start text-xs text-[#6E6259]">
+                    <MapPin className="mr-1.5 mt-0.5 h-3.5 w-3.5 shrink-0 text-[#D91E18]" />
                     <span>{order.deliveryAddress}</span>
                   </p>
 
                   {order.message && (
-                    <div className="mt-1 p-2.5 rounded-lg bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300 flex items-start space-x-2">
-                      <MessageSquare className="w-3.5 h-3.5 text-stone-400 shrink-0 mt-0.5" />
+                    <div className="mt-1 flex items-start space-x-2 rounded-2xl border border-stone-200/80 bg-[#FAF7F2] p-3 text-xs text-[#6E6259]">
+                      <MessageSquare className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9A4A12]" />
                       <span>Note: &ldquo;{order.message}&rdquo;</span>
                     </div>
                   )}
@@ -175,24 +181,26 @@ export default function VendorOrdersPage() {
               </div>
 
               {/* Status & Actions Right */}
-              <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end justify-between gap-3 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-stone-100 dark:border-stone-800">
+              <div className="flex shrink-0 flex-col items-start justify-between gap-3 border-t border-stone-100 pt-3 sm:flex-row lg:flex-col lg:items-end lg:border-t-0 lg:pt-0">
                 <span
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border ${
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold ${
                     order.status === 'pending'
-                      ? 'bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800/40'
+                      ? 'border-amber-200 bg-amber-50 text-[#9A4A12]'
                       : order.status === 'accepted'
-                      ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/40'
+                      ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
                       : order.status === 'rejected'
-                      ? 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 border-stone-200 dark:border-stone-700'
-                      : 'bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800/40'
+                      ? 'border-stone-200 bg-[#FAF7F2] text-[#6E6259]'
+                      : 'border-red-200 bg-red-50 text-[#D91E18]'
                   }`}
                 >
                   <span
-                    className={`w-1.5 h-1.5 rounded-full ${
+                    className={`h-1.5 w-1.5 rounded-full ${
                       order.status === 'pending'
                         ? 'bg-amber-500'
                         : order.status === 'accepted'
                         ? 'bg-emerald-500'
+                        : order.status === 'cancelled'
+                        ? 'bg-[#D91E18]'
                         : 'bg-stone-400'
                     }`}
                   />
@@ -200,24 +208,26 @@ export default function VendorOrdersPage() {
                 </span>
 
                 {order.status === 'pending' ? (
-                  <div className="flex space-x-2 w-full sm:w-auto">
+                  <div className="flex w-full space-x-2 sm:w-auto">
                     <button
+                      type="button"
                       onClick={() => handleUpdateStatus(order._id, 'accepted')}
-                      className="px-3.5 py-1.5 rounded-lg bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-white text-white dark:text-stone-900 font-medium text-xs transition-colors flex items-center space-x-1.5 cursor-pointer"
+                      className="flex cursor-pointer items-center space-x-1.5 rounded-xl bg-[#18120E] px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-[#D91E18]"
                     >
-                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <CheckCircle2 className="h-3.5 w-3.5" />
                       <span>Accept</span>
                     </button>
                     <button
+                      type="button"
                       onClick={() => handleUpdateStatus(order._id, 'rejected')}
-                      className="px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/30 text-stone-700 dark:text-stone-300 font-medium text-xs transition-colors flex items-center space-x-1.5 cursor-pointer"
+                      className="flex cursor-pointer items-center space-x-1.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2 text-xs font-bold text-[#D91E18] transition-colors hover:bg-[#D91E18] hover:text-white"
                     >
-                      <XCircle className="w-3.5 h-3.5" />
+                      <XCircle className="h-3.5 w-3.5" />
                       <span>Reject</span>
                     </button>
                   </div>
                 ) : (
-                  <span className="text-xs text-stone-400">
+                  <span className="text-xs font-medium text-[#6E6259]">
                     Decision recorded
                   </span>
                 )}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, Check, X, AlertCircle } from 'lucide-react';
+import { Check, X, AlertCircle } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 
 interface StatusTimelineProps {
@@ -10,8 +10,8 @@ interface StatusTimelineProps {
 export const StatusTimeline: React.FC<StatusTimelineProps> = ({ status, deliveryDate }) => {
   if (status === 'cancelled') {
     return (
-      <div className="flex items-center p-3 rounded-lg bg-stone-100 dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-stone-600 dark:text-stone-400 text-xs">
-        <X className="w-4 h-4 mr-2 text-stone-500 shrink-0" />
+      <div className="flex items-center rounded-2xl border border-stone-200 bg-[#FAF7F2] p-3.5 text-xs font-medium text-[#6E6259]">
+        <X className="mr-2 h-4 w-4 shrink-0 text-[#D91E18]" />
         <span>This order was cancelled by customer.</span>
       </div>
     );
@@ -19,9 +19,9 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({ status, delivery
 
   if (status === 'rejected') {
     return (
-      <div className="flex items-center p-3 rounded-lg bg-stone-100 dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-stone-600 dark:text-stone-400 text-xs">
-        <AlertCircle className="w-4 h-4 mr-2 text-stone-500 shrink-0" />
-        <span>This order was declined by the restaurant.</span>
+      <div className="flex items-center rounded-2xl border border-stone-200 bg-[#FAF7F2] p-3.5 text-xs font-medium text-[#6E6259]">
+        <AlertCircle className="mr-2 h-4 w-4 shrink-0 text-[#9A4A12]" />
+        <span>This order was declined by the restaurant kitchen.</span>
       </div>
     );
   }
@@ -31,46 +31,40 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({ status, delivery
       id: 'pending',
       label: 'Order submitted',
       completed: true,
-      active: status === 'pending',
     },
     {
       id: 'accepted',
       label: 'Accepted by kitchen',
       completed: status === 'accepted',
-      active: status === 'accepted',
     },
     {
       id: 'delivery',
       label: deliveryDate ? `Scheduled for ${formatDate(deliveryDate)}` : 'Delivery scheduled',
       completed: status === 'accepted',
-      active: false,
     },
   ];
 
   return (
     <div className="py-2">
-      <div className="flex items-center space-x-2 text-xs">
+      <div className="flex flex-wrap items-center gap-2 text-xs sm:flex-nowrap">
         {steps.map((step, idx) => {
           const isDone = step.completed;
-          const isCurrent = step.active;
 
           return (
             <React.Fragment key={step.id}>
               <div className="flex items-center space-x-2">
                 <div
-                  className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-medium transition-colors ${
+                  className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold transition-colors ${
                     isDone
-                      ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900'
-                      : 'bg-stone-200 dark:bg-stone-800 text-stone-400'
+                      ? 'bg-[#D91E18] text-white shadow-sm'
+                      : 'border border-stone-300 bg-[#FAF7F2] text-[#6E6259]'
                   }`}
                 >
-                  {isDone ? <Check className="w-3 h-3 stroke-[2]" /> : idx + 1}
+                  {isDone ? <Check className="h-3.5 w-3.5 stroke-[2.5]" /> : idx + 1}
                 </div>
                 <span
-                  className={`font-medium ${
-                    isDone
-                      ? 'text-stone-900 dark:text-white'
-                      : 'text-stone-400 dark:text-stone-500'
+                  className={`font-semibold ${
+                    isDone ? 'text-[#18120E]' : 'text-[#6E6259]'
                   }`}
                 >
                   {step.label}
@@ -78,8 +72,8 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({ status, delivery
               </div>
               {idx < steps.length - 1 && (
                 <div
-                  className={`flex-1 h-px transition-colors ${
-                    isDone ? 'bg-stone-900 dark:bg-stone-100' : 'bg-stone-200 dark:bg-stone-800'
+                  className={`hidden sm:block h-[2px] flex-1 rounded-full transition-colors ${
+                    isDone ? 'bg-[#18120E]' : 'bg-stone-200'
                   }`}
                 />
               )}

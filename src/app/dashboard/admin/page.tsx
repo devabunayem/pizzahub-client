@@ -12,9 +12,13 @@ import {
   DollarSign,
   ArrowRight,
   Receipt,
+  Settings,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { DashboardOverviewSkeleton } from '@/components/ui/Skeleton';
+import { BrushHighlight } from '@/components/ui/BrushHighlight';
+import { StatusDonutChart, MetricBarChart } from '@/components/dashboard/DashboardCharts';
+import { PremiumStatCard, type StatTone } from '@/components/dashboard/PremiumStatCard';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -46,16 +50,32 @@ export default function AdminOverviewPage() {
   }, [token]);
 
   if (loading) {
-    return <DashboardOverviewSkeleton />;
+    return <DashboardOverviewSkeleton metricCount={6} />;
   }
 
-  const statCards = [
+  const statCards: {
+    title: string;
+    value: string | number;
+    desc: string;
+    icon: React.ComponentType<{ className?: string }>;
+    tone: StatTone;
+    href: string;
+    highlight?: boolean;
+  }[] = [
+    {
+      title: 'Total Revenue',
+      value: formatPrice(stats?.totalRevenue || 0),
+      desc: `${stats?.totalTransactions || 0} Stripe transactions`,
+      icon: DollarSign,
+      tone: 'dark',
+      href: '/dashboard/admin/transactions',
+    },
     {
       title: 'Total Users',
       value: stats?.totalUsers || 0,
       desc: 'All registered platform accounts',
       icon: Users,
-      color: 'bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400',
+      tone: 'espresso',
       href: '/dashboard/admin/users',
     },
     {
@@ -63,7 +83,7 @@ export default function AdminOverviewPage() {
       value: stats?.totalVendors || 0,
       desc: 'Active pizzeria kitchen owners',
       icon: Store,
-      color: 'bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400',
+      tone: 'amber',
       href: '/dashboard/admin/users?role=vendor',
     },
     {
@@ -71,7 +91,7 @@ export default function AdminOverviewPage() {
       value: stats?.totalCustomers || 0,
       desc: 'Registered food lovers',
       icon: UserCheck,
-      color: 'bg-green-100 text-green-600 dark:bg-green-950/60 dark:text-green-400',
+      tone: 'emerald',
       href: '/dashboard/admin/users?role=customer',
     },
     {
@@ -79,124 +99,162 @@ export default function AdminOverviewPage() {
       value: stats?.totalMenuItems || 0,
       desc: 'Submitted across all categories',
       icon: UtensilsCrossed,
-      color: 'bg-pizza-100 text-pizza-600 dark:bg-pizza-950/60 dark:text-pizza-400',
+      tone: 'crimson',
       href: '/dashboard/admin/menu',
     },
     {
-      title: 'Pending Menu Approvals',
+      title: 'Pending Approvals',
       value: stats?.pendingMenuItems || 0,
       desc: 'Requires admin moderation',
       icon: Clock,
-      color: 'bg-red-100 text-red-600 dark:bg-red-950/60 dark:text-red-400',
+      tone: 'amber',
       href: '/dashboard/admin/menu?status=pending',
-      highlight: stats?.pendingMenuItems > 0,
-    },
-    {
-      title: 'Total Revenue',
-      value: formatPrice(stats?.totalRevenue || 0),
-      desc: `${stats?.totalTransactions || 0} subscription transactions`,
-      icon: DollarSign,
-      color: 'bg-purple-100 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400',
-      href: '/dashboard/admin/transactions',
+      highlight: (stats?.pendingMenuItems || 0) > 0,
     },
   ];
 
+  const totalVendors = stats?.totalVendors || 0;
+  const totalCustomers = stats?.totalCustomers || 0;
+  const otherAdmins = Math.max(0, (stats?.totalUsers || 0) - totalVendors - totalCustomers);
+
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-5">
-        <div>
-          <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
-            Platform administration
-          </h1>
-          <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-            System overview, user moderation, menu approvals, and subscription transactions.
-          </p>
-        </div>
+      {/* Bold Charred Espresso Admin Command Banner */}
+      <div className="relative overflow-hidden rounded-3xl border border-stone-800 bg-[#18120E] p-7 sm:p-9 text-[#FAF7F2] shadow-[0_24px_56px_-22px_rgba(24,18,14,0.38)]">
+        <img
+          src="/images/cat-gourmet.jpg"
+          alt="Artisan gourmet truffle burrata pizza"
+          className="pointer-events-none absolute right-0 top-0 hidden h-full w-1/2 object-cover opacity-20 md:block"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#18120E] via-[#18120E]/92 to-[#18120E]/70" />
 
-        {stats?.pendingMenuItems > 0 && (
-          <Link
-            href="/dashboard/admin/menu?status=pending"
-            className="px-3.5 py-2 rounded-lg bg-pizza-700 hover:bg-pizza-800 text-white font-medium text-xs transition-colors flex items-center space-x-2 shrink-0 self-start sm:self-auto cursor-pointer"
-          >
-            <Clock className="w-3.5 h-3.5" />
-            <span>Review pending items ({stats.pendingMenuItems})</span>
-          </Link>
-        )}
-      </div>
-
-      {/* Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {statCards.map((card) => {
-          const Icon = card.icon;
-
-          return (
-            <Link
-              key={card.title}
-              href={card.href}
-              className={`p-5 rounded-xl bg-white dark:bg-stone-900 border transition-colors space-y-3 block ${
-                card.highlight
-                  ? 'border-amber-300 dark:border-amber-800/60 bg-amber-50/20'
-                  : 'border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-stone-500 dark:text-stone-400">
-                  {card.title}
+        <div className="relative z-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+          <div className="space-y-3">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#D97706]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#E50916]" />
+              Global Governance Console
+            </span>
+            <h1 className="leading-[0.96] tracking-tight text-white">
+              <span className="font-display text-[clamp(2rem,3.6vw,3rem)] uppercase">
+                PLATFORM{' '}
+              </span>
+              <BrushHighlight immediate color="#E50916" secondaryColor="#D97706" delay={0.15}>
+                <span className="font-editorial text-[clamp(2.2rem,3.8vw,3.2rem)] italic font-normal lowercase text-[#FAF7F2]">
+                  control
                 </span>
-                <div className="w-8 h-8 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 flex items-center justify-center">
-                  <Icon className="w-4 h-4" />
-                </div>
-              </div>
-              <div className="text-2xl font-semibold text-stone-900 dark:text-stone-100 font-mono tabular-nums">
-                {card.value}
-              </div>
-              <div className="flex items-center justify-between text-xs text-stone-500 pt-1 border-t border-stone-100 dark:border-stone-800/80">
-                <span>{card.desc}</span>
-                <ArrowRight className="w-3.5 h-3.5 text-stone-400" />
-              </div>
+              </BrushHighlight>
+            </h1>
+            <p className="max-w-xl text-sm text-stone-300">
+              Monitor Stripe subscription revenue, moderate new restaurant dishes, and oversee user accounts.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            {stats?.pendingMenuItems > 0 && (
+              <Link
+                href="/dashboard/admin/menu?status=pending"
+                className="inline-flex items-center gap-2 rounded-full bg-[#E50916] px-6 py-3 text-xs font-bold text-white shadow-[0_12px_28px_-10px_rgba(229,9,22,0.7)] transition hover:bg-[#c80814]"
+              >
+                <Clock className="h-4 w-4" />
+                <span>Review Pending ({stats.pendingMenuItems})</span>
+              </Link>
+            )}
+            <Link
+              href="/dashboard/profile"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-bold text-white transition hover:bg-white/20"
+            >
+              <Settings className="h-3.5 w-3.5" />
+              <span>Admin Profile</span>
             </Link>
-          );
-        })}
+          </div>
+        </div>
       </div>
 
-      {/* Quick Links & Shortcuts */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Bento 6-Card Metrics Grid */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {statCards.map((card, idx) => (
+          <PremiumStatCard
+            key={card.title}
+            tone={card.tone}
+            label={card.title}
+            value={card.value}
+            subtitle={card.desc}
+            icon={card.icon}
+            href={card.href}
+            highlight={card.highlight}
+            sparkline={[18 + idx * 3, 28, 34, 48 - idx * 2, 56, 72]}
+          />
+        ))}
+      </div>
+
+      {/* Visual Platform Analytics Row */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <StatusDonutChart
+          title="Platform Account Mix"
+          subtitle="Ratio of customers, kitchen vendors, and admins"
+          centerLabel="Users"
+          segments={[
+            { label: 'Customers', value: totalCustomers, color: '#D91E18' },
+            { label: 'Kitchen Vendors', value: totalVendors, color: '#9A4A12' },
+            { label: 'Administrators', value: otherAdmins, color: '#18120E' },
+          ]}
+        />
+
+        <MetricBarChart
+          title="Platform Scale Overview"
+          subtitle="Live system counts across core resources"
+          data={[
+            { label: 'Total Accounts', value: stats?.totalUsers || 0, color: '#18120E' },
+            { label: 'Menu Listings', value: stats?.totalMenuItems || 0, color: '#D91E18' },
+            { label: 'Pending Reviews', value: stats?.pendingMenuItems || 0, color: '#D97706' },
+            { label: 'Stripe Settlements', value: stats?.totalTransactions || 0, color: '#15803D' },
+          ]}
+        />
+      </div>
+
+      {/* Quick Action Directory Cards */}
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
         <Link
           href="/dashboard/admin/users"
-          className="p-5 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 transition-colors space-y-2 group"
+          className="group space-y-2.5 rounded-3xl border border-stone-200/90 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#D91E18]/40"
         >
-          <div className="w-8 h-8 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 flex items-center justify-center">
-            <Users className="w-4 h-4" />
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FAF7F2] text-[#9A4A12]">
+            <Users className="h-5 w-5" />
           </div>
-          <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">User directory</h3>
-          <p className="text-xs text-stone-500 leading-relaxed">
+          <h3 className="text-base font-extrabold text-[#18120E] group-hover:text-[#D91E18]">
+            User directory
+          </h3>
+          <p className="text-xs leading-relaxed text-[#6E6259]">
             Search accounts by name or email, filter by customer or vendor role, and manage access permissions.
           </p>
         </Link>
 
         <Link
           href="/dashboard/admin/menu"
-          className="p-5 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 transition-colors space-y-2 group"
+          className="group space-y-2.5 rounded-3xl border border-stone-200/90 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#D91E18]/40"
         >
-          <div className="w-8 h-8 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 flex items-center justify-center">
-            <UtensilsCrossed className="w-4 h-4" />
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FAF7F2] text-[#9A4A12]">
+            <UtensilsCrossed className="h-5 w-5" />
           </div>
-          <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">Menu moderation</h3>
-          <p className="text-xs text-stone-500 leading-relaxed">
+          <h3 className="text-base font-extrabold text-[#18120E] group-hover:text-[#D91E18]">
+            Menu moderation
+          </h3>
+          <p className="text-xs leading-relaxed text-[#6E6259]">
             Review submitted dishes, approve or reject listings, and maintain catalogue standards.
           </p>
         </Link>
 
         <Link
           href="/dashboard/admin/transactions"
-          className="p-5 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 transition-colors space-y-2 group"
+          className="group space-y-2.5 rounded-3xl border border-stone-200/90 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#D91E18]/40"
         >
-          <div className="w-8 h-8 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 flex items-center justify-center">
-            <Receipt className="w-4 h-4" />
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FAF7F2] text-[#9A4A12]">
+            <Receipt className="h-5 w-5" />
           </div>
-          <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">Transaction ledger</h3>
-          <p className="text-xs text-stone-500 leading-relaxed">
+          <h3 className="text-base font-extrabold text-[#18120E] group-hover:text-[#D91E18]">
+            Transaction ledger
+          </h3>
+          <p className="text-xs leading-relaxed text-[#6E6259]">
             Read-only Stripe subscription records, verified transaction amounts, and plan histories.
           </p>
         </Link>

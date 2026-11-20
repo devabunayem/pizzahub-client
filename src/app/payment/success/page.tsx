@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { CheckCircle2, ArrowRight, ShieldCheck, Pizza } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { PaymentStatusSkeleton } from '@/components/ui/Skeleton';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -17,14 +17,13 @@ function PaymentSuccessContent() {
   const [checking, setChecking] = useState<boolean>(true);
 
   useEffect(() => {
-    // Fire confetti celebration
     try {
       confetti({
         particleCount: 100,
         spread: 70,
         origin: { y: 0.6 },
       });
-    } catch (e) {
+    } catch {
       // safe fallback
     }
 
@@ -35,21 +34,14 @@ function PaymentSuccessContent() {
       }
 
       try {
-        // Read-only status verification: frontend redirect does NOT activate premium.
-        // It strictly polls whether the Stripe Webhook has finished processing.
         const res = await fetch(`${API_BASE}/subscription/session-status/${sessionId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        const data = await res.json();
-        if (data.success && data.processedByWebhook) {
-          await refreshUser();
-        } else {
-          // Refresh user session state
-          await refreshUser();
-        }
+        await res.json();
+        await refreshUser();
       } catch (err) {
         console.error('Status check error:', err);
       } finally {
@@ -61,54 +53,59 @@ function PaymentSuccessContent() {
   }, [sessionId, token, refreshUser]);
 
   if (checking) {
-    return <LoadingSpinner fullScreen message="Confirming Stripe webhook event processing..." />;
+    return <PaymentStatusSkeleton />;
   }
 
   return (
-    <div className="max-w-md mx-auto px-4 py-16 text-center space-y-6">
-      <div className="w-12 h-12 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 flex items-center justify-center">
-        <CheckCircle2 className="w-6 h-6" />
-      </div>
+    <section className="flex min-h-[78vh] items-center justify-center bg-[#FAF7F2] px-4 py-16">
+      <div className="w-full max-w-md space-y-6 rounded-3xl border border-stone-200/90 bg-white p-8 sm:p-10 text-center shadow-[0_24px_48px_-22px_rgba(24,18,14,0.16)]">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 text-emerald-700">
+          <CheckCircle2 className="h-7 w-7" />
+        </div>
 
-      <div className="space-y-1.5">
-        <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
-          Payment confirmed
-        </h1>
-        <p className="text-xs text-stone-500 dark:text-stone-400 max-w-sm mx-auto leading-relaxed">
-          Your payment was processed by Stripe. Premium access is activated strictly through the verified Stripe webhook.
-        </p>
-      </div>
+        <div className="space-y-2">
+          <span className="block text-[11px] font-bold uppercase tracking-[0.22em] text-[#9A4A12]">
+            Stripe Verified
+          </span>
+          <h1 className="font-display text-3xl uppercase tracking-tight text-[#18120E]">
+            Payment Confirmed
+          </h1>
+          <p className="mx-auto max-w-sm text-sm leading-relaxed text-[#6E6259]">
+            Your payment was processed by Stripe. Premium partner access is activated via the verified Stripe webhook.
+          </p>
+        </div>
 
-      <div className="p-3 rounded-lg bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300 flex items-center justify-center space-x-2">
-        <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-        <span className="font-mono text-[11px] text-stone-500">
-          Session: {sessionId ? `${sessionId.slice(0, 18)}...` : 'Confirmed'}
-        </span>
-      </div>
+        <div className="flex items-center justify-center space-x-2 rounded-2xl border border-stone-200 bg-[#FAF7F2] p-3.5 text-xs text-[#6E6259]">
+          <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-600" />
+          <span className="font-mono text-xs text-[#18120E]">
+            Session: {sessionId ? `${sessionId.slice(0, 18)}...` : 'Confirmed'}
+          </span>
+        </div>
 
-      <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2.5">
-        <Link
-          href="/dashboard/vendor"
-          className="w-full sm:w-auto px-4 py-2 rounded-lg bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-white text-white dark:text-stone-900 font-medium text-xs transition-colors flex items-center justify-center space-x-1.5"
-        >
-          <span>Kitchen overview</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
-        <Link
-          href="/dashboard/vendor/add-item"
-          className="w-full sm:w-auto px-4 py-2 rounded-lg border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-800 dark:text-stone-200 font-medium text-xs transition-colors flex items-center justify-center space-x-1.5"
-        >
-          <Pizza className="w-3.5 h-3.5" />
-          <span>Publish dish</span>
-        </Link>
+        <div className="flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row">
+          <Link
+            href="/dashboard/vendor"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-[#18120E] px-6 py-3 text-xs font-bold text-white transition hover:bg-[#D91E18] sm:w-auto"
+          >
+            <span>Kitchen Overview</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+          <Link
+            href="/dashboard/vendor/add-item"
+            className="flex w-full items-center justify-center gap-2 rounded-full border border-stone-200 bg-[#FAF7F2] px-6 py-3 text-xs font-bold text-[#18120E] transition hover:border-[#D91E18] hover:text-[#D91E18] sm:w-auto"
+          >
+            <Pizza className="h-3.5 w-3.5" />
+            <span>Publish Dish</span>
+          </Link>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
 export default function PaymentSuccessPage() {
   return (
-    <Suspense fallback={<LoadingSpinner fullScreen message="Loading payment confirmation..." />}>
+    <Suspense fallback={<PaymentStatusSkeleton />}>
       <PaymentSuccessContent />
     </Suspense>
   );

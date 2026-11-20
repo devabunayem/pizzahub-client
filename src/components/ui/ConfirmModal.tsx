@@ -39,17 +39,14 @@ export function ConfirmModal({
   if (!isOpen) return null;
 
   const confirmColors = {
-    danger:
-      'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500/30',
-    warning:
-      'bg-amber-600 hover:bg-amber-700 text-white focus:ring-amber-500/30',
-    primary:
-      'bg-stone-900 hover:bg-stone-800 text-white dark:bg-stone-100 dark:hover:bg-white dark:text-stone-900',
+    danger: 'bg-[#D91E18] hover:bg-[#b81712] text-white',
+    warning: 'bg-[#9A4A12] hover:bg-[#7d3b0d] text-white',
+    primary: 'bg-[#18120E] hover:bg-[#D91E18] text-white',
   }[variant];
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#18120E]/55 p-4 backdrop-blur-sm animate-in fade-in duration-200"
       onClick={() => {
         if (!loading) onClose();
       }}
@@ -57,30 +54,32 @@ export function ConfirmModal({
       role="dialog"
     >
       <div
-        className="bg-white dark:bg-[#19191b] border border-black/[0.08] dark:border-white/[0.08] rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 animate-in zoom-in-95 duration-200"
+        className="w-full max-w-md space-y-5 rounded-3xl border border-stone-200 bg-white p-6 sm:p-7 shadow-[0_24px_56px_-18px_rgba(24,18,14,0.28)] animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3.5">
             <div
-              className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border ${
                 variant === 'danger'
-                  ? 'bg-red-500/10 text-red-600 dark:text-red-400'
-                  : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                  ? 'border-red-100 bg-red-50 text-[#D91E18]'
+                  : variant === 'warning'
+                  ? 'border-amber-200 bg-[#FAF7F2] text-[#9A4A12]'
+                  : 'border-stone-200 bg-[#FAF7F2] text-[#18120E]'
               }`}
             >
               {variant === 'danger' ? (
-                <Trash2 className="w-5 h-5" />
+                <Trash2 className="h-5 w-5" />
               ) : (
-                <AlertTriangle className="w-5 h-5" />
+                <AlertTriangle className="h-5 w-5" />
               )}
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-stone-900 dark:text-white">
+              <h3 className="text-base font-extrabold tracking-tight text-[#18120E]">
                 {title}
               </h3>
-              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                Action confirmation
+              <p className="mt-0.5 text-xs font-medium text-[#6E6259]">
+                Please confirm this action
               </p>
             </div>
           </div>
@@ -88,23 +87,23 @@ export function ConfirmModal({
           <button
             onClick={onClose}
             disabled={loading}
-            className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 p-1 rounded-lg transition-colors cursor-pointer"
+            className="rounded-xl p-1.5 text-stone-400 transition-colors hover:bg-[#FAF7F2] hover:text-[#18120E] cursor-pointer"
             aria-label="Close dialog"
           >
-            <X className="w-4 h-4" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
-        <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
+        <p className="text-sm leading-relaxed text-[#6E6259]">
           {message}
         </p>
 
-        <div className="flex items-center justify-end space-x-2.5 pt-3 border-t border-black/[0.06] dark:border-white/[0.06]">
+        <div className="flex items-center justify-end space-x-2.5 border-t border-stone-100 pt-4">
           <button
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="px-3.5 py-2 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#232325] hover:bg-stone-100 dark:hover:bg-[#2a2a2d] text-stone-700 dark:text-stone-300 text-xs font-medium transition-colors cursor-pointer disabled:opacity-50"
+            className="rounded-xl border border-stone-200 bg-[#FAF7F2] px-4 py-2.5 text-xs font-semibold text-[#18120E] transition-colors hover:bg-stone-100 cursor-pointer disabled:opacity-50"
           >
             {cancelText}
           </button>
@@ -112,7 +111,7 @@ export function ConfirmModal({
             type="button"
             onClick={onConfirm}
             disabled={loading}
-            className={`px-3.5 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer disabled:opacity-50 ${confirmColors}`}
+            className={`rounded-xl px-4 py-2.5 text-xs font-bold transition-colors cursor-pointer disabled:opacity-50 ${confirmColors}`}
           >
             {loading ? 'Processing...' : confirmText}
           </button>
