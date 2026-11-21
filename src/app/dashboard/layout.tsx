@@ -20,6 +20,7 @@ import {
   Receipt,
   ArrowUpRight,
   ChevronRight,
+  Heart,
 } from 'lucide-react';
 
 export default function DashboardLayout({
@@ -75,6 +76,7 @@ export default function DashboardLayout({
     navItems = [
       { name: 'Overview', href: '/dashboard/customer', icon: LayoutDashboard },
       { name: 'My orders', href: '/dashboard/customer/orders', icon: ShoppingBag },
+      { name: 'Favorites', href: '/dashboard/customer/favorites', icon: Heart },
       { name: 'Browse menu', href: '/menu', icon: UtensilsCrossed },
       { name: 'Profile Settings', href: '/dashboard/profile', icon: Settings },
     ];

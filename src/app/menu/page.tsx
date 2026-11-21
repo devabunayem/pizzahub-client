@@ -9,8 +9,11 @@ import {
   RotateCcw,
   Crown,
   ArrowUpRight,
+  Heart,
+  Star,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import { useFavorites } from '@/hooks/useFavorites';
 import { MenuGridSkeleton, BrowseMenuPageSkeleton } from '@/components/ui/Skeleton';
 import { BrushHighlight } from '@/components/ui/BrushHighlight';
 
@@ -34,6 +37,7 @@ function isVendorPremium(vendor: any): boolean {
 
 function BrowseMenuContent() {
   const { user } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlCategory = searchParams.get('category');
@@ -264,6 +268,7 @@ function BrowseMenuContent() {
                 item.vendorId?.businessName || item.vendorId?.name || 'Local Kitchen';
               const vendorInitial = vendorName.trim().charAt(0).toUpperCase();
               const coverImage = item.images?.[0] || '/images/cat-classic.jpg';
+              const favorited = isFavorite(item._id);
 
               return (
                 <article
@@ -286,10 +291,36 @@ function BrowseMenuContent() {
                       {item.category}
                     </span>
 
-                    {premium && (
-                      <span className="absolute right-3.5 top-3.5 inline-flex items-center gap-1 rounded-full bg-[#9A4A12] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-sm">
-                        <Crown className="h-3 w-3 text-amber-200" />
-                        <span>Premium</span>
+                    <div className="absolute right-3.5 top-3.5 flex items-center gap-1.5">
+                      {premium && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[#9A4A12] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-sm">
+                          <Crown className="h-3 w-3 text-amber-200" />
+                          <span>Premium</span>
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toggleFavorite(item._id, item.itemName);
+                        }}
+                        aria-label={favorited ? 'Remove from favorites' : 'Save to favorites'}
+                        className={`flex h-8 w-8 items-center justify-center rounded-full backdrop-blur-md transition cursor-pointer ${
+                          favorited
+                            ? 'bg-white text-[#E50916] shadow-sm'
+                            : 'bg-[#18120E]/65 text-white hover:bg-white hover:text-[#E50916]'
+                        }`}
+                      >
+                        <Heart className={`h-4 w-4 ${favorited ? 'fill-[#E50916]' : ''}`} />
+                      </button>
+                    </div>
+
+                    {item.reviewCount > 0 && (
+                      <span className="absolute bottom-3 left-3.5 inline-flex items-center gap-1 rounded-full bg-[#18120E]/80 px-2.5 py-0.5 text-[11px] font-bold text-[#FAF7F2] backdrop-blur-md tabular-nums">
+                        <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                        <span>{Number(item.averageRating || 0).toFixed(1)}</span>
+                        <span className="text-stone-300">({item.reviewCount})</span>
                       </span>
                     )}
                   </div>

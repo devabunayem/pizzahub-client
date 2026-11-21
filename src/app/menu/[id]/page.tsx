@@ -12,16 +12,21 @@ import {
   X,
   ArrowUpRight,
   Flame,
+  Heart,
+  Star,
+  MessageSquare,
 } from 'lucide-react';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, formatDate } from '@/lib/utils';
 import { ItemDetailSkeleton } from '@/components/ui/Skeleton';
 import { toast } from '@/lib/toast';
+import { useFavorites } from '@/hooks/useFavorites';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function ItemDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const { user, token, isLoading: authLoading } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const router = useRouter();
 
   const [item, setItem] = useState<any>(null);
@@ -34,6 +39,11 @@ export default function ItemDetailsPage() {
   const [deliveryAddress, setDeliveryAddress] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [ordering, setOrdering] = useState<boolean>(false);
+
+  const [reviewRating, setReviewRating] = useState<number>(5);
+  const [hoverRating, setHoverRating] = useState<number>(0);
+  const [reviewComment, setReviewComment] = useState<string>('');
+  const [submittingReview, setSubmittingReview] = useState<boolean>(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -68,6 +78,17 @@ export default function ItemDetailsPage() {
 
     fetchItem();
   }, [id, token, user, authLoading]);
+
+  useEffect(() => {
+    if (!item || !user) return;
+    const existingReview = (item.reviews || []).find(
+      (r: any) => String(r.userId) === String(user._id)
+    );
+    if (existingReview) {
+      setReviewRating(existingReview.rating);
+      setReviewComment(existingReview.comment);
+    }
+  }, [item, user]);
 
   if (authLoading || (loading && !errorMsg)) {
     return (
@@ -175,6 +196,51 @@ export default function ItemDetailsPage() {
       : ['/images/cat-classic.jpg'];
 
   const vendorName = item.vendorId?.businessName || item.vendorId?.name || 'Local Kitchen';
+  const favorited = isFavorite(item._id);
+  const reviews: any[] = Array.isArray(item.reviews)
+    ? [...item.reviews].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
+    : [];
+  const hasReviewed = Boolean(
+    user && reviews.some((r) => String(r.userId) === String(user._id))
+  );
+
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanComment = reviewComment.trim();
+    if (!cleanComment) {
+      toast.error('Please write a comment before submitting your review.');
+      return;
+    }
+
+    setSubmittingReview(true);
+    try {
+      const res = await fetch(`${API_BASE}/menu/${item._id}/reviews`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          rating: reviewRating,
+          comment: cleanComment,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        toast.error(data.message || 'Could not submit review.');
+      } else {
+        setItem(data.item);
+        toast.success(hasReviewed ? 'Your review was updated.' : 'Thanks for reviewing!');
+      }
+    } catch {
+      toast.error('Network error while submitting review.');
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
 
   return (
     <section className="min-h-[78vh] bg-[#FAF7F2] py-7 md:py-10">
@@ -228,17 +294,43 @@ export default function ItemDetailsPage() {
           <div className="lg:col-span-6">
             <div className="space-y-5 rounded-2xl border border-stone-200/90 bg-white p-6 shadow-[0_18px_40px_-22px_rgba(24,18,14,0.14)]">
               <div className="space-y-2.5">
-                <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#9A4A12]">
-                  <Flame className="h-3.5 w-3.5 text-[#D91E18]" />
-                  <span>{item.category}</span>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#9A4A12]">
+                    <Flame className="h-3.5 w-3.5 text-[#D91E18]" />
+                    <span>{item.category}</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleFavorite(item._id, item.itemName)}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold transition cursor-pointer ${
+                      favorited
+                        ? 'border-[#E50916]/30 bg-rose-50 text-[#E50916]'
+                        : 'border-stone-200 bg-[#FAF7F2] text-[#6E6259] hover:border-[#E50916]/40 hover:text-[#E50916]'
+                    }`}
+                  >
+                    <Heart className={`h-3.5 w-3.5 ${favorited ? 'fill-[#E50916]' : ''}`} />
+                    <span>{favorited ? 'Saved' : 'Save'}</span>
+                  </button>
                 </div>
 
                 <h1 className="font-display text-[clamp(1.75rem,2.8vw,2.3rem)] uppercase leading-[1.02] tracking-tight text-[#18120E]">
                   {item.itemName}
                 </h1>
 
-                <div className="font-display text-2xl tracking-wide text-[#D91E18] tabular-nums">
-                  {formatPrice(item.price)}
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="font-display text-2xl tracking-wide text-[#D91E18] tabular-nums">
+                    {formatPrice(item.price)}
+                  </div>
+                  {(item.reviewCount ?? 0) > 0 && (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-bold text-[#9A4A12] tabular-nums">
+                      <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                      <span>{Number(item.averageRating || 0).toFixed(1)}</span>
+                      <span className="font-medium text-[#6E6259]">
+                        ({item.reviewCount} {item.reviewCount === 1 ? 'review' : 'reviews'})
+                      </span>
+                    </span>
+                  )}
                 </div>
 
                 <p className="pt-0.5 text-sm leading-relaxed text-[#6E6259]">
@@ -303,6 +395,207 @@ export default function ItemDetailsPage() {
                   </button>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Customer Reviews & Ratings */}
+        <div className="mx-auto max-w-5xl rounded-2xl border border-stone-200/90 bg-white p-6 shadow-[0_18px_40px_-22px_rgba(24,18,14,0.14)]">
+          <div className="flex flex-col justify-between gap-4 border-b border-stone-100 pb-5 sm:flex-row sm:items-center">
+            <div>
+              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#9A4A12]">
+                <MessageSquare className="h-3.5 w-3.5 text-[#D91E18]" />
+                <span>Verified Diner Feedback</span>
+              </div>
+              <h2 className="font-display mt-1 text-2xl uppercase text-[#18120E]">
+                Customer Reviews &amp; Ratings
+              </h2>
+            </div>
+
+            <div className="flex items-center gap-3 rounded-2xl border border-stone-200/80 bg-[#FAF7F2] px-4 py-2.5">
+              <div className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`h-4 w-4 ${
+                      star <= Math.round(item.averageRating || 0)
+                        ? 'fill-amber-400 text-amber-400'
+                        : 'text-stone-300'
+                    }`}
+                  />
+                ))}
+              </div>
+              <div className="text-xs font-bold text-[#18120E] tabular-nums">
+                {item.reviewCount > 0 ? (
+                  <>
+                    <span>{Number(item.averageRating || 0).toFixed(1)} / 5</span>
+                    <span className="ml-1.5 font-medium text-[#6E6259]">
+                      ({item.reviewCount})
+                    </span>
+                  </>
+                ) : (
+                  <span className="font-medium text-[#6E6259]">No ratings yet</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 grid grid-cols-1 gap-7 lg:grid-cols-12">
+            {/* Write / Update Review Form (Customers on approved items) */}
+            <div className="lg:col-span-5">
+              {isCustomer && isApproved ? (
+                <form
+                  onSubmit={handleReviewSubmit}
+                  className="space-y-4 rounded-2xl border border-stone-200/80 bg-[#FAF7F2] p-5"
+                >
+                  <div>
+                    <h3 className="text-sm font-extrabold text-[#18120E]">
+                      {hasReviewed ? 'Update your review' : 'Rate this dish'}
+                    </h3>
+                    <p className="mt-0.5 text-xs text-[#6E6259]">
+                      {hasReviewed
+                        ? 'Adjust your stars or tasting note anytime.'
+                        : 'Help fellow diners pick their next wood-fired favorite.'}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                      Your rating
+                    </label>
+                    <div className="flex items-center gap-1.5">
+                      {[1, 2, 3, 4, 5].map((star) => {
+                        const active = star <= (hoverRating || reviewRating);
+                        return (
+                          <button
+                            key={star}
+                            type="button"
+                            onMouseEnter={() => setHoverRating(star)}
+                            onMouseLeave={() => setHoverRating(0)}
+                            onClick={() => setReviewRating(star)}
+                            aria-label={`Rate ${star} stars`}
+                            className="rounded-lg p-1 transition hover:scale-110 cursor-pointer"
+                          >
+                            <Star
+                              className={`h-6 w-6 transition-colors ${
+                                active ? 'fill-amber-400 text-amber-400' : 'text-stone-300'
+                              }`}
+                            />
+                          </button>
+                        );
+                      })}
+                      <span className="ml-2 text-xs font-bold text-[#18120E] tabular-nums">
+                        {reviewRating} / 5
+                      </span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="mb-1.5 flex items-center justify-between">
+                      <label className="text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                        Tasting note *
+                      </label>
+                      <span className="text-[11px] text-[#6E6259] tabular-nums">
+                        {reviewComment.length}/500
+                      </span>
+                    </div>
+                    <textarea
+                      rows={3}
+                      maxLength={500}
+                      required
+                      placeholder="How was the crust, blistered char, and toppings?"
+                      value={reviewComment}
+                      onChange={(e) => setReviewComment(e.target.value)}
+                      className="w-full rounded-xl border border-stone-200 bg-white px-3.5 py-2.5 text-sm text-[#18120E] placeholder:text-stone-400 focus:border-[#D91E18] focus:outline-none"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={submittingReview}
+                    className="w-full rounded-xl bg-[#18120E] py-2.5 text-xs font-bold text-white transition hover:bg-[#D91E18] disabled:opacity-50 cursor-pointer"
+                  >
+                    {submittingReview
+                      ? 'Saving review...'
+                      : hasReviewed
+                      ? 'Update Review'
+                      : 'Submit Review'}
+                  </button>
+                </form>
+              ) : (
+                <div className="rounded-2xl border border-stone-200/80 bg-[#FAF7F2] p-5 text-xs leading-relaxed text-[#6E6259]">
+                  {!isApproved
+                    ? 'Reviews open once this dish is approved and active.'
+                    : 'Customer accounts can leave star ratings and tasting notes on any approved pizza.'}
+                </div>
+              )}
+            </div>
+
+            {/* Review Feed */}
+            <div className="space-y-3 lg:col-span-7">
+              {reviews.length === 0 ? (
+                <div className="flex min-h-[180px] flex-col items-center justify-center rounded-2xl border border-dashed border-stone-200 bg-[#FAF7F2]/60 px-6 py-10 text-center">
+                  <Star className="mb-2 h-6 w-6 text-amber-400" />
+                  <p className="text-sm font-bold text-[#18120E]">
+                    No reviews yet
+                  </p>
+                  <p className="mt-1 text-xs text-[#6E6259]">
+                    Be the first customer to taste this wood-fired pie and leave a rating.
+                  </p>
+                </div>
+              ) : (
+                reviews.map((rev: any, idx: number) => {
+                  const initial = (rev.userName || 'D').trim().charAt(0).toUpperCase();
+                  return (
+                    <div
+                      key={rev._id || `${rev.userId}-${idx}`}
+                      className="rounded-2xl border border-stone-200/80 bg-[#FAF7F2]/70 p-4"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-2.5">
+                          {rev.userImage ? (
+                            <img
+                              src={rev.userImage}
+                              alt={rev.userName}
+                              className="h-8 w-8 rounded-full object-cover ring-1 ring-stone-200"
+                            />
+                          ) : (
+                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs font-bold text-[#9A4A12] ring-1 ring-stone-200">
+                              {initial}
+                            </span>
+                          )}
+                          <div>
+                            <p className="text-sm font-bold text-[#18120E]">
+                              {rev.userName || 'Customer'}
+                            </p>
+                            {rev.createdAt && (
+                              <p className="text-[11px] text-[#6E6259]">
+                                {formatDate(rev.createdAt)}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-0.5">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Star
+                              key={s}
+                              className={`h-3.5 w-3.5 ${
+                                s <= rev.rating
+                                  ? 'fill-amber-400 text-amber-400'
+                                  : 'text-stone-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="mt-2.5 text-sm leading-relaxed text-[#6E6259]">
+                        {rev.comment}
+                      </p>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
