@@ -4,7 +4,7 @@ import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { CheckCircle2, ArrowRight, ShieldCheck, Pizza } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Pizza } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { PaymentStatusSkeleton } from '@/components/ui/Skeleton';
 
@@ -81,13 +81,6 @@ function PaymentSuccessContent() {
           <p className="mx-auto max-w-sm text-sm leading-relaxed text-[#6E6259]">
             Your payment was processed by Stripe. Premium partner access is activated via the verified Stripe webhook.
           </p>
-        </div>
-
-        <div className="flex items-center justify-center space-x-2 rounded-2xl border border-stone-200 bg-[#FAF7F2] p-3.5 text-xs text-[#6E6259]">
-          <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-600" />
-          <span className="font-mono text-xs text-[#18120E]">
-            Session: {sessionId ? `${sessionId.slice(0, 18)}...` : 'Confirmed'}
-          </span>
         </div>
 
         <div className="flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row">
