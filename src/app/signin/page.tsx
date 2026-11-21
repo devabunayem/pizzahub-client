@@ -82,11 +82,11 @@ function SignInContent() {
   };
 
   return (
-    <section className="min-h-[calc(100vh-88px)] bg-[#FAF7F2] py-8 md:py-12">
+    <section className="flex min-h-[calc(100vh-88px)] items-center bg-[#FAF7F2] py-8 md:py-12">
       <div className="site-container">
-        <div className="mx-auto grid max-w-4xl grid-cols-1 overflow-hidden rounded-3xl border border-stone-200/90 bg-white shadow-[0_24px_52px_-24px_rgba(24,18,14,0.18)] lg:min-h-[580px] lg:grid-cols-12">
+        <div className="mx-auto grid w-full max-w-4xl grid-cols-1 overflow-hidden rounded-3xl border border-[#18120E]/[0.08] bg-white shadow-[0_12px_36px_-18px_rgba(24,18,14,0.14)] lg:min-h-[580px] lg:grid-cols-12">
           {/* Left Editorial Wood-Fired Panel */}
-          <div className="relative flex flex-col justify-between overflow-hidden bg-[#18120E] p-7 text-[#FAF7F2] sm:p-8 lg:col-span-5">
+          <div className="relative flex flex-col justify-between overflow-hidden bg-[#18120E] p-8 text-[#FAF7F2] lg:col-span-5">
             <img
               src="/images/woodfire-craft.jpg"
               alt="Wood-fired brick pizza oven"
@@ -95,9 +95,9 @@ function SignInContent() {
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#18120E] via-[#18120E]/85 to-[#18120E]/75" />
 
             <div className="relative z-10 space-y-5">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#D97706] backdrop-blur-md">
-                <Flame className="h-3.5 w-3.5 text-[#E50916]" />
-                <span>480°C Hearth Access</span>
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/10 px-3 py-1 text-xs font-medium text-amber-200/90">
+                <Flame className="h-3.5 w-3.5 stroke-[1.75] text-[#E50916]" />
+                <span>480°C hearth access</span>
               </div>
 
               <div>
@@ -121,17 +121,17 @@ function SignInContent() {
               </div>
             </div>
 
-            <div className="relative z-10 mt-8 space-y-2.5 border-t border-white/15 pt-5 text-xs text-stone-300">
+            <div className="relative z-10 mt-8 space-y-2.5 border-t border-white/10 pt-5 text-xs text-stone-300">
               <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-[#E50916]" />
+                <CheckCircle2 className="h-4 w-4 shrink-0 stroke-[1.75] text-[#E50916]" />
                 <span>Real-time kitchen to doorstep order tracking</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-[#E50916]" />
+                <CheckCircle2 className="h-4 w-4 shrink-0 stroke-[1.75] text-[#E50916]" />
                 <span>Verified local pizzerias &amp; Stripe Premium tier</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-[#E50916]" />
+                <CheckCircle2 className="h-4 w-4 shrink-0 stroke-[1.75] text-[#E50916]" />
                 <span>Role-based Customer, Kitchen &amp; Admin portals</span>
               </div>
             </div>
@@ -139,12 +139,12 @@ function SignInContent() {
 
           {/* Right Form Panel */}
           <div className="flex flex-col justify-center p-6 sm:p-8 lg:col-span-7">
-            <div className="mb-5 flex items-center justify-between gap-4">
+            <div className="mb-6 flex items-center justify-between gap-4">
               <div>
-                <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#9A4A12]">
-                  Member Sign In
+                <span className="text-xs font-medium text-[#9A4A12]">
+                  Member sign in
                 </span>
-                <h2 className="mt-1 text-xl font-extrabold tracking-tight text-[#18120E]">
+                <h2 className="mt-1 text-[22px] font-semibold leading-tight tracking-tight text-[#18120E]">
                   Sign in to PizzaHub
                 </h2>
               </div>
@@ -156,29 +156,29 @@ function SignInContent() {
             </div>
 
             {/* Quick Demo Credentials */}
-            <div className="mb-4 rounded-2xl border border-stone-200/90 bg-[#FAF7F2] p-3.5">
-              <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-[#6E6259]">
-                Quick Demo Credentials
+            <div className="mb-4 rounded-xl border border-[#18120E]/[0.08] bg-[#FAF7F2] p-3">
+              <p className="mb-2 text-xs font-medium text-[#6E6259]">
+                Demo accounts
               </p>
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => fillQuickDemo('admin')}
-                  className="rounded-xl border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-[#18120E] transition hover:border-[#D91E18] hover:text-[#D91E18] cursor-pointer"
+                  className="h-8 cursor-pointer rounded-lg border border-[#18120E]/10 bg-white px-3 text-xs font-medium text-[#18120E] transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#D91E18]/50 hover:text-[#D91E18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D91E18]/25"
                 >
                   Admin
                 </button>
                 <button
                   type="button"
                   onClick={() => fillQuickDemo('vendor')}
-                  className="rounded-xl border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-[#18120E] transition hover:border-[#9A4A12] hover:text-[#9A4A12] cursor-pointer"
+                  className="h-8 cursor-pointer rounded-lg border border-[#18120E]/10 bg-white px-3 text-xs font-medium text-[#18120E] transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#D91E18]/50 hover:text-[#D91E18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D91E18]/25"
                 >
                   Vendor (Mario&apos;s)
                 </button>
                 <button
                   type="button"
                   onClick={() => fillQuickDemo('customer')}
-                  className="rounded-xl border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-[#18120E] transition hover:border-[#D91E18] hover:text-[#D91E18] cursor-pointer"
+                  className="h-8 cursor-pointer rounded-lg border border-[#18120E]/10 bg-white px-3 text-xs font-medium text-[#18120E] transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#D91E18]/50 hover:text-[#D91E18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D91E18]/25"
                 >
                   Customer
                 </button>
@@ -190,7 +190,7 @@ function SignInContent() {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={googleLoading || submitting}
-              className="mb-4 flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-stone-200/90 bg-white px-4 py-2.5 text-sm font-bold text-[#18120E] shadow-sm transition hover:border-[#18120E] hover:bg-[#FAF7F2] disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-lg border border-[#18120E]/12 bg-white px-4 text-sm font-medium text-[#18120E] shadow-[0_1px_2px_rgba(24,18,14,0.05)] transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#18120E]/30 hover:bg-[#FAF7F2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#18120E]/20 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
                 <path
@@ -213,23 +213,23 @@ function SignInContent() {
               <span>{googleLoading ? 'Connecting to Google...' : 'Continue with Google'}</span>
             </button>
 
-            <div className="relative mb-4 flex items-center justify-center">
-              <div className="w-full border-t border-stone-200" />
-              <span className="bg-white px-3 text-[11px] font-bold uppercase tracking-wider text-stone-400">
-                or email
+            <div className="my-5 flex items-center gap-3">
+              <div className="h-px flex-1 bg-stone-200/80" />
+              <span className="shrink-0 whitespace-nowrap text-xs font-medium text-[#7B7266]">
+                or continue with email
               </span>
-              <div className="w-full border-t border-stone-200" />
+              <div className="h-px flex-1 bg-stone-200/80" />
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-3.5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                <label className="mb-1.5 block text-xs font-medium text-[#5E554A]">
                   Email address
                 </label>
                 <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                    <Mail className="h-4 w-4" />
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8075]">
+                    <Mail className="h-4 w-4 stroke-[1.75]" />
                   </div>
                   <input
                     type="email"
@@ -237,18 +237,18 @@ function SignInContent() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2.5 pl-10 pr-4 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+                    className="h-10 w-full rounded-lg border border-[#18120E]/12 bg-[#FAF7F2]/80 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-[#8A8075] transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] focus:border-[#D91E18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#D91E18]/15"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                <label className="mb-1.5 block text-xs font-medium text-[#5E554A]">
                   Password
                 </label>
                 <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                    <Lock className="h-4 w-4" />
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8075]">
+                    <Lock className="h-4 w-4 stroke-[1.75]" />
                   </div>
                   <input
                     type="password"
@@ -256,7 +256,7 @@ function SignInContent() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2.5 pl-10 pr-4 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+                    className="h-10 w-full rounded-lg border border-[#18120E]/12 bg-[#FAF7F2]/80 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-[#8A8075] transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] focus:border-[#D91E18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#D91E18]/15"
                   />
                 </div>
               </div>
@@ -264,7 +264,7 @@ function SignInContent() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-[#18120E] px-6 py-3 text-sm font-bold text-white shadow-[0_14px_28px_-12px_rgba(24,18,14,0.45)] transition hover:bg-[#D91E18] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                className="mt-2 flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#18120E] px-6 text-sm font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_2px_6px_rgba(24,18,14,0.14)] transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#D91E18] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D91E18]/30 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {submitting ? (
                   <>
@@ -274,17 +274,17 @@ function SignInContent() {
                 ) : (
                   <>
                     <span>Sign In to Account</span>
-                    <ArrowUpRight className="h-4 w-4" />
+                    <ArrowUpRight className="h-4 w-4 stroke-[1.75]" />
                   </>
                 )}
               </button>
             </form>
 
-            <p className="mt-5 border-t border-stone-100 pt-4 text-center text-sm text-[#6E6259]">
+            <p className="mt-6 border-t border-[#18120E]/[0.07] pt-4 text-center text-sm text-[#6E6259]">
               Don&apos;t have an account?{' '}
               <Link
                 href="/signup"
-                className="font-bold text-[#D91E18] underline decoration-[#D91E18]/40 underline-offset-4 hover:decoration-[#D91E18]"
+                className="font-medium text-[#D91E18] underline decoration-[#D91E18]/40 underline-offset-4 transition-colors duration-150 hover:decoration-[#D91E18]"
               >
                 Create an account
               </Link>

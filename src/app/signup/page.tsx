@@ -12,7 +12,8 @@ import {
   ArrowUpRight,
   Image as ImageIcon,
   CheckCircle2,
-  Sparkles,
+  Flame,
+  Check,
 } from 'lucide-react';
 import { toast } from '@/lib/toast';
 import { BrushHighlight } from '@/components/ui/BrushHighlight';
@@ -113,11 +114,11 @@ function SignUpContent() {
   };
 
   return (
-    <section className="min-h-[calc(100vh-88px)] bg-[#FAF7F2] py-8 md:py-12">
+    <section className="flex min-h-[calc(100vh-88px)] items-center bg-[#FAF7F2] py-8 md:py-12">
       <div className="site-container">
-        <div className="mx-auto grid max-w-4xl grid-cols-1 overflow-hidden rounded-3xl border border-stone-200/90 bg-white shadow-[0_24px_52px_-24px_rgba(24,18,14,0.18)] lg:min-h-[580px] lg:grid-cols-12">
+        <div className="mx-auto grid w-full max-w-4xl grid-cols-1 overflow-hidden rounded-3xl border border-[#18120E]/[0.08] bg-white shadow-[0_12px_36px_-18px_rgba(24,18,14,0.14)] lg:min-h-[580px] lg:grid-cols-12">
           {/* Left Editorial Showcase Panel */}
-          <div className="relative flex flex-col justify-between overflow-hidden bg-[#18120E] p-7 text-[#FAF7F2] sm:p-8 lg:col-span-5">
+          <div className="relative flex flex-col justify-between overflow-hidden bg-[#18120E] p-8 text-[#FAF7F2] lg:col-span-5">
             <img
               src="/images/cat-gourmet.jpg"
               alt="Artisan wood-fired truffle burrata pizza"
@@ -126,9 +127,9 @@ function SignUpContent() {
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#18120E] via-[#18120E]/88 to-[#18120E]/80" />
 
             <div className="relative z-10 space-y-5">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#D97706] backdrop-blur-md">
-                <Sparkles className="h-3.5 w-3.5 text-[#E50916]" />
-                <span>Join PizzaHub Today</span>
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/10 px-3 py-1 text-xs font-medium text-amber-200/90">
+                <Flame className="h-3.5 w-3.5 stroke-[1.75] text-[#E50916]" />
+                <span>Wood-fired kitchen network</span>
               </div>
 
               <div>
@@ -152,17 +153,17 @@ function SignUpContent() {
               </div>
             </div>
 
-            <div className="relative z-10 mt-8 space-y-2.5 border-t border-white/15 pt-5 text-xs text-stone-300">
+            <div className="relative z-10 mt-8 space-y-2.5 border-t border-white/10 pt-5 text-xs text-stone-300">
               <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-[#E50916]" />
-                <span>Instant onboarding for Customers &amp; Local Kitchens</span>
+                <CheckCircle2 className="h-4 w-4 shrink-0 stroke-[1.75] text-[#E50916]" />
+                <span>Fast setup for diners and local kitchens</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-[#E50916]" />
+                <CheckCircle2 className="h-4 w-4 shrink-0 stroke-[1.75] text-[#E50916]" />
                 <span>Free vendor tier (3 items) or Stripe Premium unlimited</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-[#E50916]" />
+                <CheckCircle2 className="h-4 w-4 shrink-0 stroke-[1.75] text-[#E50916]" />
                 <span>Live delivery status timeline inside every dashboard</span>
               </div>
             </div>
@@ -170,12 +171,12 @@ function SignUpContent() {
 
           {/* Right Registration Form Panel */}
           <div className="flex flex-col justify-center p-6 sm:p-8 lg:col-span-7">
-            <div className="mb-4 flex items-center justify-between gap-4">
+            <div className="mb-5 flex items-center justify-between gap-4">
               <div>
-                <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#9A4A12]">
-                  New Account
+                <span className="text-xs font-medium text-[#9A4A12]">
+                  New account
                 </span>
-                <h2 className="mt-0.5 text-xl font-extrabold tracking-tight text-[#18120E]">
+                <h2 className="mt-1 text-[22px] font-semibold leading-tight tracking-tight text-[#18120E]">
                   Create an account
                 </h2>
               </div>
@@ -187,43 +188,43 @@ function SignUpContent() {
             </div>
 
             {/* Compact Role Selection */}
-            <div className="mb-3.5 space-y-1.5">
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#6E6259]">
-                Account Role
+            <div className="mb-4 space-y-2">
+              <label className="block text-xs font-medium text-[#5E554A]">
+                Account role
               </label>
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setRole('customer')}
-                  className={`flex flex-row items-center justify-center gap-2 rounded-xl border px-3 py-2.5 transition-all cursor-pointer ${
+                  className={`flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg border px-3 transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D91E18]/25 ${
                     role === 'customer'
-                      ? 'border-[#D91E18] bg-[#FAF7F2] text-[#18120E] ring-1 ring-[#D91E18]/25'
-                      : 'border-stone-200 bg-white text-[#6E6259] hover:border-stone-300 hover:text-[#18120E]'
+                      ? 'border-[#D91E18] bg-[#FAF7F2] text-[#18120E] ring-1 ring-[#D91E18]/20'
+                      : 'border-[#18120E]/12 bg-white text-[#6E6259] hover:border-[#18120E]/25 hover:text-[#18120E]'
                   }`}
                 >
                   <User
-                    className={`h-4 w-4 shrink-0 ${
-                      role === 'customer' ? 'text-[#D91E18]' : 'text-stone-400'
+                    className={`h-4 w-4 shrink-0 stroke-[1.75] ${
+                      role === 'customer' ? 'text-[#D91E18]' : 'text-[#8A8075]'
                     }`}
                   />
-                  <span className="text-xs font-bold">Customer</span>
+                  <span className="text-xs font-medium">Customer</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setRole('vendor')}
-                  className={`flex flex-row items-center justify-center gap-2 rounded-xl border px-3 py-2.5 transition-all cursor-pointer ${
+                  className={`flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg border px-3 transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D91E18]/25 ${
                     role === 'vendor'
-                      ? 'border-[#D91E18] bg-[#FAF7F2] text-[#18120E] ring-1 ring-[#D91E18]/25'
-                      : 'border-stone-200 bg-white text-[#6E6259] hover:border-stone-300 hover:text-[#18120E]'
+                      ? 'border-[#D91E18] bg-[#FAF7F2] text-[#18120E] ring-1 ring-[#D91E18]/20'
+                      : 'border-[#18120E]/12 bg-white text-[#6E6259] hover:border-[#18120E]/25 hover:text-[#18120E]'
                   }`}
                 >
                   <Store
-                    className={`h-4 w-4 shrink-0 ${
-                      role === 'vendor' ? 'text-[#D91E18]' : 'text-stone-400'
+                    className={`h-4 w-4 shrink-0 stroke-[1.75] ${
+                      role === 'vendor' ? 'text-[#D91E18]' : 'text-[#8A8075]'
                     }`}
                   />
-                  <span className="text-xs font-bold">Restaurant</span>
+                  <span className="text-xs font-medium">Restaurant</span>
                 </button>
               </div>
             </div>
@@ -233,7 +234,7 @@ function SignUpContent() {
               type="button"
               onClick={handleGoogleSignUp}
               disabled={googleLoading || submitting}
-              className="mb-3.5 flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-stone-200/90 bg-white px-4 py-2.5 text-sm font-bold text-[#18120E] shadow-sm transition hover:border-[#18120E] hover:bg-[#FAF7F2] disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-lg border border-[#18120E]/12 bg-white px-4 text-sm font-medium text-[#18120E] shadow-[0_1px_2px_rgba(24,18,14,0.05)] transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#18120E]/30 hover:bg-[#FAF7F2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#18120E]/20 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
                 <path
@@ -260,42 +261,42 @@ function SignUpContent() {
               </span>
             </button>
 
-            <div className="relative mb-3.5 flex items-center justify-center">
-              <div className="w-full border-t border-stone-200" />
-              <span className="bg-white px-3 text-[11px] font-bold uppercase tracking-wider text-stone-400">
+            <div className="my-4 flex items-center gap-3">
+              <div className="h-px flex-1 bg-stone-200/80" />
+              <span className="shrink-0 whitespace-nowrap text-xs font-medium text-[#7B7266]">
                 or register with email
               </span>
-              <div className="w-full border-t border-stone-200" />
+              <div className="h-px flex-1 bg-stone-200/80" />
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                  <label className="mb-1.5 block text-xs font-medium text-[#5E554A]">
                     Full name
                   </label>
                   <div className="relative">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                      <User className="h-4 w-4" />
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8075]">
+                      <User className="h-4 w-4 stroke-[1.75]" />
                     </div>
                     <input
                       type="text"
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="John Doe"
-                      className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+                      placeholder="Marco Bellini"
+                      className="h-10 w-full rounded-lg border border-[#18120E]/12 bg-[#FAF7F2]/80 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-[#8A8075] transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] focus:border-[#D91E18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#D91E18]/15"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                  <label className="mb-1.5 block text-xs font-medium text-[#5E554A]">
                     Email address
                   </label>
                   <div className="relative">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                      <Mail className="h-4 w-4" />
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8075]">
+                      <Mail className="h-4 w-4 stroke-[1.75]" />
                     </div>
                     <input
                       type="email"
@@ -303,7 +304,7 @@ function SignUpContent() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="name@example.com"
-                      className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+                      className="h-10 w-full rounded-lg border border-[#18120E]/12 bg-[#FAF7F2]/80 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-[#8A8075] transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] focus:border-[#D91E18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#D91E18]/15"
                     />
                   </div>
                 </div>
@@ -311,12 +312,12 @@ function SignUpContent() {
 
               {role === 'vendor' && (
                 <div>
-                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                  <label className="mb-1.5 block text-xs font-medium text-[#5E554A]">
                     Restaurant brand name
                   </label>
                   <div className="relative">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                      <Store className="h-4 w-4" />
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8075]">
+                      <Store className="h-4 w-4 stroke-[1.75]" />
                     </div>
                     <input
                       type="text"
@@ -324,7 +325,7 @@ function SignUpContent() {
                       value={businessName}
                       onChange={(e) => setBusinessName(e.target.value)}
                       placeholder="Napoli Woodfire Pizza"
-                      className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+                      className="h-10 w-full rounded-lg border border-[#18120E]/12 bg-[#FAF7F2]/80 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-[#8A8075] transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] focus:border-[#D91E18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#D91E18]/15"
                     />
                   </div>
                 </div>
@@ -332,12 +333,12 @@ function SignUpContent() {
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                  <label className="mb-1.5 block text-xs font-medium text-[#5E554A]">
                     Password
                   </label>
                   <div className="relative">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                      <Lock className="h-4 w-4" />
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8075]">
+                      <Lock className="h-4 w-4 stroke-[1.75]" />
                     </div>
                     <input
                       type="password"
@@ -345,53 +346,59 @@ function SignUpContent() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+                      className="h-10 w-full rounded-lg border border-[#18120E]/12 bg-[#FAF7F2]/80 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-[#8A8075] transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] focus:border-[#D91E18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#D91E18]/15"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                  <label className="mb-1.5 block text-xs font-medium text-[#5E554A]">
                     Profile image URL (optional)
                   </label>
                   <div className="relative">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                      <ImageIcon className="h-4 w-4" />
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8A8075]">
+                      <ImageIcon className="h-4 w-4 stroke-[1.75]" />
                     </div>
                     <input
                       type="url"
                       value={image}
                       onChange={(e) => setImage(e.target.value)}
                       placeholder="https://example.com/photo.jpg"
-                      className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+                      className="h-10 w-full rounded-lg border border-[#18120E]/12 bg-[#FAF7F2]/80 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-[#8A8075] transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] focus:border-[#D91E18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#D91E18]/15"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Compact Inline Password Checklist */}
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-xl border border-stone-200/80 bg-[#FAF7F2] px-3 py-2 text-[11px]">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 rounded-lg border border-[#18120E]/[0.08] bg-[#FAF7F2] px-3 py-2 text-xs">
                 <div className="flex items-center gap-1.5">
-                  <span className={isLengthValid ? 'font-bold text-emerald-700' : 'text-stone-400'}>
-                    {isLengthValid ? '✓' : '○'}
-                  </span>
-                  <span className={isLengthValid ? 'font-semibold text-emerald-800' : 'text-[#6E6259]'}>
+                  {isLengthValid ? (
+                    <Check className="h-3.5 w-3.5 stroke-[2] text-emerald-700" />
+                  ) : (
+                    <span className="h-1.5 w-1.5 rounded-full bg-stone-300" />
+                  )}
+                  <span className={isLengthValid ? 'font-medium text-emerald-800' : 'text-[#6E6259]'}>
                     6+ chars
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className={hasUpperCase ? 'font-bold text-emerald-700' : 'text-stone-400'}>
-                    {hasUpperCase ? '✓' : '○'}
-                  </span>
-                  <span className={hasUpperCase ? 'font-semibold text-emerald-800' : 'text-[#6E6259]'}>
+                  {hasUpperCase ? (
+                    <Check className="h-3.5 w-3.5 stroke-[2] text-emerald-700" />
+                  ) : (
+                    <span className="h-1.5 w-1.5 rounded-full bg-stone-300" />
+                  )}
+                  <span className={hasUpperCase ? 'font-medium text-emerald-800' : 'text-[#6E6259]'}>
                     1 uppercase (A-Z)
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className={hasLowerCase ? 'font-bold text-emerald-700' : 'text-stone-400'}>
-                    {hasLowerCase ? '✓' : '○'}
-                  </span>
-                  <span className={hasLowerCase ? 'font-semibold text-emerald-800' : 'text-[#6E6259]'}>
+                  {hasLowerCase ? (
+                    <Check className="h-3.5 w-3.5 stroke-[2] text-emerald-700" />
+                  ) : (
+                    <span className="h-1.5 w-1.5 rounded-full bg-stone-300" />
+                  )}
+                  <span className={hasLowerCase ? 'font-medium text-emerald-800' : 'text-[#6E6259]'}>
                     1 lowercase (a-z)
                   </span>
                 </div>
@@ -400,7 +407,7 @@ function SignUpContent() {
               <button
                 type="submit"
                 disabled={submitting || !isPasswordValid || !isNameValid || !isBusinessValid}
-                className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-[#18120E] px-6 py-3 text-sm font-bold text-white shadow-[0_14px_28px_-12px_rgba(24,18,14,0.45)] transition hover:bg-[#D91E18] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                className="mt-2 flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#18120E] px-6 text-sm font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_2px_6px_rgba(24,18,14,0.14)] transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#D91E18] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D91E18]/30 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {submitting ? (
                   <>
@@ -410,17 +417,17 @@ function SignUpContent() {
                 ) : (
                   <>
                     <span>Register as {role === 'vendor' ? 'Restaurant' : 'Customer'}</span>
-                    <ArrowUpRight className="h-4 w-4" />
+                    <ArrowUpRight className="h-4 w-4 stroke-[1.75]" />
                   </>
                 )}
               </button>
             </form>
 
-            <p className="mt-5 border-t border-stone-100 pt-4 text-center text-sm text-[#6E6259]">
+            <p className="mt-5 border-t border-[#18120E]/[0.07] pt-4 text-center text-sm text-[#6E6259]">
               Already have an account?{' '}
               <Link
                 href="/signin"
-                className="font-bold text-[#D91E18] underline decoration-[#D91E18]/40 underline-offset-4 hover:decoration-[#D91E18]"
+                className="font-medium text-[#D91E18] underline decoration-[#D91E18]/40 underline-offset-4 transition-colors duration-150 hover:decoration-[#D91E18]"
               >
                 Sign in
               </Link>
