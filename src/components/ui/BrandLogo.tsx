@@ -39,28 +39,21 @@ export const BrandLogo = ({
   }
 
   const sizeClass = ICON_SIZE_CLASSES[size];
-  const iconNode =
-    theme === 'dark' ? (
-      <span
-        className={`flex shrink-0 items-center justify-center rounded-xl bg-[#FAF7F2] p-1 shadow-sm ${sizeClass} ${
-          variant === 'icon' ? className : ''
-        }`}
-      >
-        <img
-          src="/images/logo-icon.png"
-          alt="PizzaHub"
-          className="h-full w-full object-contain"
-        />
-      </span>
-    ) : (
+  const wrapperThemeClass =
+    theme === 'dark' ? 'rounded-xl bg-[#FAF7F2] p-1 shadow-sm' : '';
+  const iconNode = (
+    <span
+      className={`flex shrink-0 items-center justify-center ${wrapperThemeClass} ${sizeClass} ${
+        variant === 'icon' ? className : ''
+      }`}
+    >
       <img
         src="/images/logo-icon.png"
         alt="PizzaHub"
-        className={`shrink-0 object-contain ${sizeClass} ${
-          variant === 'icon' ? className : ''
-        }`}
+        className="h-full w-full object-contain"
       />
-    );
+    </span>
+  );
 
   if (variant === 'icon') {
     return iconNode;
