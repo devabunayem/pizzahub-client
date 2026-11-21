@@ -75,7 +75,7 @@ export default function DashboardLayout({
     navItems = [
       { name: 'Overview', href: '/dashboard/customer', icon: LayoutDashboard },
       { name: 'My orders', href: '/dashboard/customer/orders', icon: ShoppingBag },
-      { name: 'Browse menu', href: '/menu', icon: Pizza },
+      { name: 'Browse menu', href: '/menu', icon: UtensilsCrossed },
       { name: 'Profile Settings', href: '/dashboard/profile', icon: Settings },
     ];
   }
