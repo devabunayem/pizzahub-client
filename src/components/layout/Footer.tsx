@@ -4,35 +4,17 @@ import { Pizza, Mail, Phone, MapPin, Instagram, Facebook, Github } from 'lucide-
 
 export const Footer = () => {
   return (
-    <footer className="bg-stone-100 dark:bg-[#0a0a0c] text-stone-600 dark:text-stone-400 border-t-2 border-stone-800/80 pt-14 pb-12 text-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        {/* Bold Manifesto Top Banner */}
-        <div className="border-b-2 border-stone-200 dark:border-stone-800 pb-10 mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div>
-            <h3 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-stone-900 dark:text-white">
-              EAT REAL PIZZA. SUPPORT LOCAL ARTISANS.
-            </h3>
-            <p className="text-xs text-stone-600 dark:text-stone-400 mt-1 font-medium">
-              Authentic wood-fired pizzas baked at 480°C by independent neighborhood pizzerias.
-            </p>
-          </div>
-          <Link
-            href="/menu"
-            className="px-6 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase tracking-wider self-start sm:self-auto shrink-0 transition-all shadow-lg shadow-red-600/20"
-          >
-            ORDER A SLICE NOW →
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-10 border-b border-stone-200 dark:border-stone-800">
+    <footer className="bg-stone-50 dark:bg-[#0f0f10] text-stone-600 dark:text-stone-400 border-t border-black/[0.06] dark:border-white/[0.08] pt-14 pb-10 text-xs">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-10 border-b border-black/[0.06] dark:border-white/[0.08]">
           {/* Brand */}
           <div className="lg:col-span-2 space-y-3">
             <Link href="/" className="inline-flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center text-white shadow-md shadow-red-600/30">
+              <div className="w-8 h-8 rounded-lg bg-[#b91c1c] flex items-center justify-center text-white">
                 <Pizza className="w-4 h-4 text-white" />
               </div>
-              <span className="font-black text-base tracking-tighter uppercase text-stone-900 dark:text-white">
-                PIZZA<span className="text-red-600">HUB</span>
+              <span className="font-semibold text-sm tracking-tight text-stone-900 dark:text-stone-100">
+                Pizza<span className="text-[#b91c1c]">Hub</span>
               </span>
             </Link>
             <p className="text-stone-500 text-xs leading-relaxed max-w-sm">
