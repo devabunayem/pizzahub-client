@@ -9,6 +9,9 @@ import { toast } from '@/lib/toast';
 import { BrushHighlight } from '@/components/ui/BrushHighlight';
 import { AuthPageSkeleton } from '@/components/ui/Skeleton';
 
+const isSafeInternalPath = (path: string | null | undefined): path is string =>
+  Boolean(path && path.startsWith('/') && !path.startsWith('//') && !path.startsWith('/\\'));
+
 function SignInContent() {
   const { login, loginWithGoogle, user, isLoading } = useAuth();
   const router = useRouter();
@@ -32,7 +35,7 @@ function SignInContent() {
 
   useEffect(() => {
     if (!isLoading && user) {
-      if (redirectTo && redirectTo.startsWith('/')) {
+      if (isSafeInternalPath(redirectTo)) {
         router.replace(redirectTo);
       } else if (user.role === 'admin') {
         router.push('/dashboard/admin');
@@ -56,7 +59,7 @@ function SignInContent() {
     setSubmitting(true);
     try {
       const ok = await login(email.trim(), password);
-      if (ok && redirectTo && redirectTo.startsWith('/')) {
+      if (ok && isSafeInternalPath(redirectTo)) {
         router.replace(redirectTo);
       }
     } finally {

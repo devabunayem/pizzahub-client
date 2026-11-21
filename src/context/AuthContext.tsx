@@ -116,7 +116,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               document.cookie = `token=${syncData.token}; path=/; max-age=604800; SameSite=Lax`;
               toast.success(syncData.message || `Signed in as ${syncData.user.name}`);
 
-              if (meta.redirectTo && meta.redirectTo.startsWith('/')) {
+              if (
+                meta.redirectTo &&
+                meta.redirectTo.startsWith('/') &&
+                !meta.redirectTo.startsWith('//') &&
+                !meta.redirectTo.startsWith('/\\')
+              ) {
                 router.replace(meta.redirectTo);
               }
             } else if (!syncRes.ok && syncData?.message) {
