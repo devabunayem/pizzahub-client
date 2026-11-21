@@ -46,9 +46,9 @@ export const Navbar = () => {
             className="flex shrink-0 items-center gap-2 text-base font-black tracking-tight text-stone-900 dark:text-white"
           >
             <img
-              src="/images/logo-icon.png"
+              src="/images/logo-icon.svg"
               alt="PizzaHub"
-              className="h-7 w-7 object-contain"
+              className="h-9 w-9 object-contain"
             />
             <span>
               Pizza<span className="text-emerald-500 dark:text-emerald-400">Hub</span>

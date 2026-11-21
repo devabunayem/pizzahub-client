@@ -119,7 +119,7 @@ export default function DashboardLayout({
                 <Link href="/" className="inline-flex items-center">
                   <BrandLogo variant="horizontal" theme="dark" size="md" />
                 </Link>
-                <p className="mt-1.5 pl-11 text-[10px] font-bold uppercase tracking-[0.22em] text-[#D97706]">
+                <p className="mt-1.5 pl-[54px] text-[10px] font-bold uppercase tracking-[0.22em] text-[#D97706]">
                   {consoleLabel}
                 </p>
               </div>

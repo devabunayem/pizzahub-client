@@ -180,9 +180,9 @@ function SignUpContent() {
                 </h2>
               </div>
               <img
-                src="/images/logo-icon.png"
+                src="/images/logo-icon.svg"
                 alt="PizzaHub"
-                className="h-10 w-10 shrink-0 object-contain"
+                className="h-11 w-11 shrink-0 object-contain"
               />
             </div>
 

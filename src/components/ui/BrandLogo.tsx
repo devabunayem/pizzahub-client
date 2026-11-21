@@ -8,19 +8,19 @@ export interface BrandLogoProps {
 }
 
 const ICON_SIZE_CLASSES: Record<'sm' | 'md' | 'lg', string> = {
-  sm: 'h-8 w-8',
-  md: 'h-9 w-9',
-  lg: 'h-10 w-10',
+  sm: 'h-10 w-10',
+  md: 'h-11 w-11',
+  lg: 'h-12 w-12',
 };
 
 const WORDMARK_SIZE_CLASSES: Record<'sm' | 'md' | 'lg', string> = {
-  sm: 'text-lg',
+  sm: 'text-xl',
   md: 'text-xl',
   lg: 'text-2xl',
 };
 
 /**
- * Unified PizzaHub brand mark using the custom brick-oven & flame logo assets.
+ * Unified PizzaHub brand mark using the custom brick-oven & flame SVG logo assets.
  */
 export const BrandLogo = ({
   variant = 'horizontal',
@@ -31,7 +31,7 @@ export const BrandLogo = ({
   if (variant === 'full') {
     return (
       <img
-        src="/images/logo-full.png"
+        src="/images/logo-full.svg"
         alt="PizzaHub"
         className={`object-contain ${className || 'h-24 w-auto'}`}
       />
@@ -40,7 +40,7 @@ export const BrandLogo = ({
 
   const sizeClass = ICON_SIZE_CLASSES[size];
   const wrapperThemeClass =
-    theme === 'dark' ? 'rounded-xl bg-[#FAF7F2] p-1 shadow-sm' : '';
+    theme === 'dark' ? 'rounded-xl bg-[#FAF7F2] p-1.5 shadow-sm' : '';
   const iconNode = (
     <span
       className={`flex shrink-0 items-center justify-center ${wrapperThemeClass} ${sizeClass} ${
@@ -48,7 +48,7 @@ export const BrandLogo = ({
       }`}
     >
       <img
-        src="/images/logo-icon.png"
+        src="/images/logo-icon.svg"
         alt="PizzaHub"
         className="h-full w-full object-contain"
       />
@@ -64,7 +64,7 @@ export const BrandLogo = ({
 
   return (
     <span
-      className={`inline-flex items-center gap-2 font-black tracking-tight ${textSizeClass} ${className}`}
+      className={`inline-flex items-center gap-2.5 font-black tracking-tight ${textSizeClass} ${className}`}
     >
       {iconNode}
       <span>

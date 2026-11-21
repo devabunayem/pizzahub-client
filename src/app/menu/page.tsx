@@ -237,9 +237,9 @@ function BrowseMenuContent() {
           <div className="rounded-3xl border border-stone-200 bg-white px-6 py-20 text-center">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FAF7F2]">
               <img
-                src="/images/logo-icon.png"
+                src="/images/logo-icon.svg"
                 alt="PizzaHub"
-                className="h-8 w-8 object-contain"
+                className="h-9 w-9 object-contain"
               />
             </div>
             <h3 className="font-display text-2xl uppercase text-[#18120E]">

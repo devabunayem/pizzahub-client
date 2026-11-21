@@ -273,7 +273,7 @@ const CardNav = ({
     '--cn-inset': '8px',
     '--cn-gap': '8px',
     '--cn-radius': '18px',
-    '--cn-logo': '28px',
+    '--cn-logo': '40px',
     '--cn-card': `${cardHeight}px`,
   };
   if (surface === 'glass') vars['--cn-blur'] = 'blur(20px) saturate(1.6)';
