@@ -54,14 +54,24 @@ function BrowseMenuContent() {
     }
   }, [urlCategory]);
 
-  const fetchItems = async () => {
+  const fetchItems = async (overrides?: {
+    search?: string;
+    category?: string;
+    location?: string;
+    sort?: string;
+  }) => {
     setLoading(true);
     try {
+      const activeSearch = overrides?.search !== undefined ? overrides.search : search;
+      const activeCategory = overrides?.category !== undefined ? overrides.category : category;
+      const activeLocation = overrides?.location !== undefined ? overrides.location : location;
+      const activeSort = overrides?.sort !== undefined ? overrides.sort : sort;
+
       const params = new URLSearchParams();
-      if (search.trim()) params.append('search', search.trim());
-      if (category && category !== 'All') params.append('category', category);
-      if (location.trim()) params.append('location', location.trim());
-      if (sort) params.append('sort', sort);
+      if (activeSearch.trim()) params.append('search', activeSearch.trim());
+      if (activeCategory && activeCategory !== 'All') params.append('category', activeCategory);
+      if (activeLocation.trim()) params.append('location', activeLocation.trim());
+      if (activeSort) params.append('sort', activeSort);
 
       const res = await fetch(`${API_BASE}/menu?${params.toString()}`);
       const data = await res.json();
@@ -88,10 +98,14 @@ function BrowseMenuContent() {
   };
 
   const resetFilters = () => {
+    const needsManualFetch = category === 'All' && sort === 'newest';
     setSearch('');
     setCategory('All');
     setLocation('');
     setSort('newest');
+    if (needsManualFetch) {
+      fetchItems({ search: '', category: 'All', location: '', sort: 'newest' });
+    }
   };
 
   const handleCardClick = (itemId: string) => {

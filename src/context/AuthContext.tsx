@@ -210,10 +210,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithGoogle = async (options?: GoogleLoginOptions): Promise<void> => {
     try {
       localStorage.setItem('pizzahub_oauth_meta', JSON.stringify(options || {}));
-      await authClient.signIn.social({
+      const res = await authClient.signIn.social({
         provider: 'google',
         callbackURL: '/signin?oauth=google',
       });
+      if ((res as any)?.error) {
+        toast.error((res as any).error.message || 'Unable to start Google sign-in.');
+      }
     } catch (err) {
       console.error('Google sign-in error:', err);
       toast.error('Unable to start Google sign-in.');

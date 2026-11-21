@@ -19,11 +19,15 @@ function SignInContent() {
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const submittingRef = React.useRef(false);
 
   const handleGoogleSignIn = async () => {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setGoogleLoading(true);
     await loginWithGoogle({ redirectTo });
     setGoogleLoading(false);
+    submittingRef.current = false;
   };
 
   useEffect(() => {
@@ -42,17 +46,22 @@ function SignInContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
+    if (submittingRef.current || submitting) return;
+    if (!email.trim() || !password) {
       toast.error('Please enter both email and password.');
       return;
     }
 
+    submittingRef.current = true;
     setSubmitting(true);
-    const ok = await login(email, password);
-    setSubmitting(false);
-
-    if (ok && redirectTo && redirectTo.startsWith('/')) {
-      router.replace(redirectTo);
+    try {
+      const ok = await login(email.trim(), password);
+      if (ok && redirectTo && redirectTo.startsWith('/')) {
+        router.replace(redirectTo);
+      }
+    } finally {
+      setSubmitting(false);
+      submittingRef.current = false;
     }
   };
 

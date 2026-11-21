@@ -35,14 +35,18 @@ function SignUpContent() {
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const submittingRef = React.useRef(false);
 
   const handleGoogleSignUp = async () => {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setGoogleLoading(true);
     await loginWithGoogle({
       role,
-      businessName: role === 'vendor' ? businessName || undefined : undefined,
+      businessName: role === 'vendor' ? businessName.trim() || undefined : undefined,
     });
     setGoogleLoading(false);
+    submittingRef.current = false;
   };
 
   useEffect(() => {
@@ -65,30 +69,48 @@ function SignUpContent() {
   const hasUpperCase = /[A-Z]/.test(password);
   const hasLowerCase = /[a-z]/.test(password);
   const isPasswordValid = isLengthValid && hasUpperCase && hasLowerCase;
+  const isNameValid = name.trim().length > 0;
+  const isBusinessValid = role !== 'vendor' || businessName.trim().length > 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submittingRef.current || submitting) return;
+
+    if (!name.trim()) {
+      toast.error('Please enter your full name.');
+      return;
+    }
+
+    if (!email.trim()) {
+      toast.error('Please enter a valid email address.');
+      return;
+    }
 
     if (!isPasswordValid) {
       toast.error('Password must have at least 6 characters, 1 uppercase, and 1 lowercase letter.');
       return;
     }
 
-    if (role === 'vendor' && !businessName) {
+    if (role === 'vendor' && !businessName.trim()) {
       toast.error('Please provide your Restaurant / Business Name.');
       return;
     }
 
+    submittingRef.current = true;
     setSubmitting(true);
-    await register({
-      name,
-      email,
-      password,
-      role,
-      businessName: role === 'vendor' ? businessName : undefined,
-      image: image || undefined,
-    });
-    setSubmitting(false);
+    try {
+      await register({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+        role,
+        businessName: role === 'vendor' ? businessName.trim() : undefined,
+        image: image.trim() || undefined,
+      });
+    } finally {
+      setSubmitting(false);
+      submittingRef.current = false;
+    }
   };
 
   return (
@@ -374,7 +396,7 @@ function SignUpContent() {
 
               <button
                 type="submit"
-                disabled={submitting || !isPasswordValid}
+                disabled={submitting || !isPasswordValid || !isNameValid || !isBusinessValid}
                 className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#18120E] px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_28px_-12px_rgba(24,18,14,0.45)] transition hover:bg-[#D91E18] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
               >
                 {submitting ? (

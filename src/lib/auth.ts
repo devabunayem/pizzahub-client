@@ -15,14 +15,14 @@ declare global {
   var _mongoClient: MongoClient | undefined;
 }
 
-if (process.env.NODE_ENV === 'development') {
-  if (!global._mongoClient) {
-    global._mongoClient = new MongoClient(uri);
-  }
-  client = global._mongoClient;
-} else {
-  client = new MongoClient(uri);
+if (!global._mongoClient) {
+  global._mongoClient = new MongoClient(uri, {
+    maxPoolSize: 5,
+    serverSelectionTimeoutMS: 8000,
+    connectTimeoutMS: 8000,
+  });
 }
+client = global._mongoClient;
 
 const db = client.db(process.env.DB_NAME || 'pizzahub');
 
@@ -30,6 +30,12 @@ export const auth = betterAuth({
   database: mongodbAdapter(db),
   secret: process.env.BETTER_AUTH_SECRET || 'dev_secret_only_for_local_development_placeholder_key',
   baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
+  trustedOrigins: [
+    'http://localhost:3000',
+    'https://pizzahub-client-smoky.vercel.app',
+    'https://pizzahub-client-etarnity.vercel.app',
+    ...(process.env.BETTER_AUTH_URL ? [process.env.BETTER_AUTH_URL] : []),
+  ],
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 6,
