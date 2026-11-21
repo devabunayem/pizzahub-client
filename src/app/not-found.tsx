@@ -1,13 +1,12 @@
 import Link from 'next/link';
-import { Pizza, Home, ArrowUpRight } from 'lucide-react';
+import { Home, ArrowUpRight } from 'lucide-react';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 
 export default function NotFound() {
   return (
     <section className="flex min-h-[75vh] items-center justify-center bg-[#FAF7F2] px-4 py-16">
       <div className="w-full max-w-md space-y-6 rounded-3xl border border-stone-200/90 bg-white p-8 sm:p-10 text-center shadow-[0_24px_48px_-22px_rgba(24,18,14,0.16)]">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#D91E18] text-white shadow-sm">
-          <Pizza className="h-7 w-7" />
-        </div>
+        <BrandLogo variant="full" className="mx-auto h-24 w-auto" />
 
         <div className="space-y-2">
           <span className="block text-[11px] font-bold uppercase tracking-[0.22em] text-[#9A4A12]">

@@ -4,7 +4,7 @@ import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { CheckCircle2, ArrowRight, Pizza } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Flame } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { PaymentStatusSkeleton } from '@/components/ui/Skeleton';
 
@@ -95,7 +95,7 @@ function PaymentSuccessContent() {
             href="/dashboard/vendor/add-item"
             className="flex w-full items-center justify-center gap-2 rounded-full border border-stone-200 bg-[#FAF7F2] px-6 py-3 text-xs font-bold text-[#18120E] transition hover:border-[#D91E18] hover:text-[#D91E18] sm:w-auto"
           >
-            <Pizza className="h-3.5 w-3.5" />
+            <Flame className="h-3.5 w-3.5" />
             <span>Publish Dish</span>
           </Link>
         </div>

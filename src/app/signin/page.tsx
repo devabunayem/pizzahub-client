@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Pizza, Mail, Lock, ArrowUpRight, CheckCircle2, Flame } from 'lucide-react';
+import { Mail, Lock, ArrowUpRight, CheckCircle2, Flame } from 'lucide-react';
 import { toast } from '@/lib/toast';
 import { BrushHighlight } from '@/components/ui/BrushHighlight';
 import { AuthPageSkeleton } from '@/components/ui/Skeleton';
@@ -148,9 +148,11 @@ function SignInContent() {
                   Sign in to PizzaHub
                 </h2>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e50916] text-white shadow-sm">
-                <Pizza className="h-5 w-5" />
-              </div>
+              <img
+                src="/images/logo-icon.png"
+                alt="PizzaHub"
+                className="h-10 w-10 shrink-0 object-contain"
+              />
             </div>
 
             {/* Quick Demo Credentials */}

@@ -8,7 +8,7 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  Pizza,
+  Flame,
   ArrowRight,
   ArrowUpRight,
   Settings,
@@ -103,7 +103,7 @@ export default function CustomerOverviewPage() {
               href="/menu"
               className="inline-flex items-center gap-2 rounded-full bg-[#E50916] px-5 py-2.5 text-xs font-bold text-white shadow-[0_10px_24px_-10px_rgba(229,9,22,0.7)] transition hover:bg-[#c80814]"
             >
-              <Pizza className="h-3.5 w-3.5" />
+              <Flame className="h-3.5 w-3.5" />
               <span>Order Fresh Pizza</span>
               <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>

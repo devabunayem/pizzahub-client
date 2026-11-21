@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { DashboardShellSkeleton } from '@/components/ui/Skeleton';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 import {
-  Pizza,
   LayoutDashboard,
   UtensilsCrossed,
   PlusCircle,
@@ -116,16 +116,8 @@ export default function DashboardLayout({
             {/* Brand Mark + Console Subtitle */}
             <div className="flex items-start justify-between">
               <div>
-                <Link
-                  href="/"
-                  className="inline-flex items-center gap-2.5 text-xl font-black tracking-tight text-white"
-                >
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#e50916] text-white shadow-[0_8px_20px_-6px_rgba(229,9,22,0.7)]">
-                    <Pizza className="h-5 w-5" />
-                  </span>
-                  <span>
-                    Pizza<span className="text-[#e50916]">Hub</span>
-                  </span>
+                <Link href="/" className="inline-flex items-center">
+                  <BrandLogo variant="horizontal" theme="dark" size="md" />
                 </Link>
                 <p className="mt-1.5 pl-11 text-[10px] font-bold uppercase tracking-[0.22em] text-[#D97706]">
                   {consoleLabel}

@@ -8,7 +8,7 @@ import {
   Calendar,
   MapPin,
   XCircle,
-  Pizza,
+  Flame,
   Store,
   ChevronDown,
   ChevronUp,
@@ -156,7 +156,7 @@ export default function CustomerOrdersPage() {
           href="/menu"
           className="inline-flex shrink-0 items-center space-x-2 self-start rounded-full bg-[#D91E18] px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-[#b81712] sm:self-auto"
         >
-          <Pizza className="h-3.5 w-3.5" />
+          <Flame className="h-3.5 w-3.5" />
           <span>Browse Menu</span>
         </Link>
       </div>

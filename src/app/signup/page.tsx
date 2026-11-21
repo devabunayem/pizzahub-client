@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import {
-  Pizza,
   Mail,
   Lock,
   User,
@@ -180,9 +179,11 @@ function SignUpContent() {
                   Create an account
                 </h2>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e50916] text-white shadow-sm">
-                <Pizza className="h-5 w-5" />
-              </div>
+              <img
+                src="/images/logo-icon.png"
+                alt="PizzaHub"
+                className="h-10 w-10 shrink-0 object-contain"
+              />
             </div>
 
             {/* Compact Role Selection */}

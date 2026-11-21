@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import {
-  Pizza,
   Menu,
   X,
   LogOut,
@@ -46,7 +45,11 @@ export const Navbar = () => {
             aria-label="PizzaHub home"
             className="flex shrink-0 items-center gap-2 text-base font-black tracking-tight text-stone-900 dark:text-white"
           >
-            <Pizza className="w-5 h-5 text-emerald-500" />
+            <img
+              src="/images/logo-icon.png"
+              alt="PizzaHub"
+              className="h-7 w-7 object-contain"
+            />
             <span>
               Pizza<span className="text-emerald-500 dark:text-emerald-400">Hub</span>
             </span>

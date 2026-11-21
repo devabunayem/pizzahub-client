@@ -9,7 +9,6 @@ import {
   RotateCcw,
   Crown,
   ArrowUpRight,
-  Pizza,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { MenuGridSkeleton, BrowseMenuPageSkeleton } from '@/components/ui/Skeleton';
@@ -236,8 +235,12 @@ function BrowseMenuContent() {
           <MenuGridSkeleton count={6} />
         ) : items.length === 0 ? (
           <div className="rounded-3xl border border-stone-200 bg-white px-6 py-20 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FAF7F2] text-[#9A4A12]">
-              <Pizza className="h-6 w-6" />
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FAF7F2]">
+              <img
+                src="/images/logo-icon.png"
+                alt="PizzaHub"
+                className="h-8 w-8 object-contain"
+              />
             </div>
             <h3 className="font-display text-2xl uppercase text-[#18120E]">
               No Matching Pizzas Found

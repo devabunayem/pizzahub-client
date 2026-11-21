@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  Pizza,
   ChevronDown,
   LayoutDashboard,
   Settings,
@@ -13,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import CardNav, { type CardNavItem } from './CardNav';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 
 export const SiteHeader = () => {
   const { user, logout, isLoading } = useAuth();
@@ -71,16 +71,7 @@ export const SiteHeader = () => {
           { label: 'My Orders', href: '/dashboard/customer/orders' },
         ];
 
-  const pizzaHubLogo = (
-    <span className="inline-flex items-center gap-2 font-black text-lg tracking-tight text-stone-900">
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#e50916] text-white">
-        <Pizza className="h-[18px] w-[18px]" />
-      </span>
-      <span>
-        Pizza<span className="text-[#e50916]">Hub</span>
-      </span>
-    </span>
-  );
+  const pizzaHubLogo = <BrandLogo variant="horizontal" theme="light" size="sm" />;
 
   const items: CardNavItem[] = [
     {

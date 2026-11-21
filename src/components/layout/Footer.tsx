@@ -3,8 +3,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Pizza, ArrowUpRight, Mail, Phone, MapPin, Instagram, Facebook, Github } from 'lucide-react';
+import { ArrowUpRight, Mail, Phone, MapPin, Instagram, Facebook, Github } from 'lucide-react';
 import { BrushHighlight } from '@/components/ui/BrushHighlight';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 
 const CATEGORY_LINKS = [
   'Classic Pizzas',
@@ -73,13 +74,8 @@ export const Footer = () => {
         <div className={`grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-12 ${isAuthRoute ? 'pb-8' : 'py-8'}`}>
           {/* Brand Column */}
           <div className="lg:col-span-4">
-            <Link href="/" className="inline-flex items-center gap-2.5 text-xl font-black tracking-tight text-white">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#e50916] text-white shadow-sm">
-                <Pizza className="h-5 w-5" />
-              </span>
-              <span>
-                Pizza<span className="text-[#e50916]">Hub</span>
-              </span>
+            <Link href="/" className="inline-flex items-center">
+              <BrandLogo variant="horizontal" theme="dark" size="md" />
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-stone-400">
               Hand-stretched 72-hour fermented dough, San Marzano DOP tomatoes, and neighborhood
