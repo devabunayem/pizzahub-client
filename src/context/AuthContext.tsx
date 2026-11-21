@@ -140,6 +140,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     initAuth();
   }, [router]);
 
+  // Keep auth state synchronized across browser tabs on login/logout
+  useEffect(() => {
+    const handleStorage = async (event: StorageEvent) => {
+      if (event.key !== 'pizzahub_token') return;
+
+      if (!event.newValue) {
+        document.cookie = 'token=; path=/; max-age=0';
+        setToken(null);
+        setUser(null);
+        if (window.location.pathname.startsWith('/dashboard')) {
+          router.replace(`/signin?redirect=${encodeURIComponent(window.location.pathname)}`);
+        }
+        return;
+      }
+
+      setToken(event.newValue);
+      try {
+        const res = await fetch(`${API_BASE}/auth/me`, {
+          headers: { Authorization: `Bearer ${event.newValue}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.user) {
+            setUser(data.user);
+            return;
+          }
+        }
+      } catch {
+        // Ignore network failure during cross-tab sync
+      }
+      localStorage.removeItem('pizzahub_token');
+      document.cookie = 'token=; path=/; max-age=0';
+      setToken(null);
+      setUser(null);
+    };
+
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, [router]);
+
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       const res = await fetch(`${API_BASE}/auth/login`, {

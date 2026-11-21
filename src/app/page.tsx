@@ -197,7 +197,7 @@ export default function HomePage() {
     let active = true;
     const loadFeatured = async () => {
       try {
-        const res = await fetch(`${API_BASE}/menu/featured`);
+        const res = await fetch(`${API_BASE}/menu/featured`, { cache: 'no-store' });
         const data = await res.json();
         if (active && data.success && Array.isArray(data.items)) {
           setFeaturedItems(data.items);
@@ -498,7 +498,7 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {featuredItems.slice(0, 6).map((item, idx) => {
+              {featuredItems.slice(0, 9).map((item, idx) => {
                 const premium = isVendorPremium(item.vendorId);
                 const vendorName =
                   item.vendorId?.businessName || item.vendorId?.name || 'Local Kitchen';

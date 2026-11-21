@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import {
@@ -20,12 +20,24 @@ import { toast } from '@/lib/toast';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
+const CATEGORIES = [
+  'Classic Pizzas',
+  'Vegetarian Pizzas',
+  'Meat Lovers',
+  'Specialty / Gourmet Pizzas',
+  'Sides & Appetizers',
+  'Beverages & Desserts',
+];
+
 export default function AdminManageMenuPage() {
   const { token } = useAuth();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
+  const [categoryFilter, setCategoryFilter] = useState<string>('All');
+  const inFlightRef = useRef<Set<string>>(new Set());
+  const [updatingIds, setUpdatingIds] = useState<Record<string, boolean>>({});
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
     itemId: string;
@@ -39,13 +51,17 @@ export default function AdminManageMenuPage() {
   });
 
   const fetchItems = async () => {
+    const liveToken =
+      typeof window !== 'undefined' ? localStorage.getItem('pizzahub_token') : token;
+    if (!liveToken) return;
     try {
       const params = new URLSearchParams();
       if (search.trim()) params.append('search', search.trim());
       if (statusFilter !== 'All') params.append('status', statusFilter);
+      if (categoryFilter !== 'All') params.append('category', categoryFilter);
 
       const res = await fetch(`${API_BASE}/admin/menu-items?${params.toString()}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${liveToken}` },
       });
       const data = await res.json();
       if (data.success) {
@@ -63,7 +79,7 @@ export default function AdminManageMenuPage() {
     if (token) {
       fetchItems();
     }
-  }, [token, statusFilter]);
+  }, [token, statusFilter, categoryFilter]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,6 +87,16 @@ export default function AdminManageMenuPage() {
   };
 
   const handleUpdateStatus = async (itemId: string, status: string) => {
+    const liveToken =
+      typeof window !== 'undefined' ? localStorage.getItem('pizzahub_token') : token;
+    if (!liveToken) {
+      toast.error('Session expired. Please sign in again.');
+      return;
+    }
+    if (inFlightRef.current.has(itemId)) return;
+
+    inFlightRef.current.add(itemId);
+    setUpdatingIds((prev) => ({ ...prev, [itemId]: true }));
     const toastId = toast.loading(`Updating status to ${status}...`);
 
     try {
@@ -78,7 +104,7 @@ export default function AdminManageMenuPage() {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${liveToken}`,
         },
         body: JSON.stringify({ status }),
       });
@@ -86,24 +112,38 @@ export default function AdminManageMenuPage() {
       const data = await res.json();
       if (data.success) {
         toast.success(`Item status updated to ${status}!`, { id: toastId });
-        fetchItems();
+        await fetchItems();
       } else {
         toast.error(data.message || 'Failed to update item.', { id: toastId });
       }
     } catch (err) {
       toast.error('Network error updating item status.', { id: toastId });
+    } finally {
+      inFlightRef.current.delete(itemId);
+      setUpdatingIds((prev) => {
+        const next = { ...prev };
+        delete next[itemId];
+        return next;
+      });
     }
   };
 
   const confirmDelete = async () => {
     if (!deleteModal.itemId) return;
+    const liveToken =
+      typeof window !== 'undefined' ? localStorage.getItem('pizzahub_token') : token;
+    if (!liveToken) {
+      toast.error('Session expired. Please sign in again.');
+      setDeleteModal({ isOpen: false, itemId: '', name: '', loading: false });
+      return;
+    }
 
     setDeleteModal((prev) => ({ ...prev, loading: true }));
     const toastId = toast.loading('Deleting menu item...');
     try {
       const res = await fetch(`${API_BASE}/menu/${deleteModal.itemId}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${liveToken}` },
       });
 
       const data = await res.json();
@@ -155,9 +195,26 @@ export default function AdminManageMenuPage() {
           />
         </form>
 
-        <div className="flex w-full items-center space-x-2 sm:w-auto">
-          <Filter className="h-4 w-4 shrink-0 text-[#9A4A12]" />
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+          <div className="flex items-center space-x-2">
+            <Filter className="h-4 w-4 shrink-0 text-[#9A4A12]" />
+            <select
+              aria-label="Filter by category"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="w-full cursor-pointer rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-xs font-bold text-[#18120E] focus:border-[#D91E18] focus:bg-white focus:outline-none sm:w-auto"
+            >
+              <option value="All">All categories</option>
+              {CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <select
+            aria-label="Filter by status"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="w-full cursor-pointer rounded-xl border border-stone-200 bg-[#FAF7F2] px-3.5 py-2.5 text-xs font-bold text-[#18120E] focus:border-[#D91E18] focus:bg-white focus:outline-none sm:w-auto"
@@ -260,16 +317,18 @@ export default function AdminManageMenuPage() {
                         <>
                           <button
                             type="button"
+                            disabled={Boolean(updatingIds[item._id])}
                             onClick={() => handleUpdateStatus(item._id, 'approved')}
-                            className="inline-flex cursor-pointer items-center space-x-1 rounded-xl bg-[#18120E] px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-[#D91E18]"
+                            className="inline-flex cursor-pointer items-center space-x-1 rounded-xl bg-[#18120E] px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-[#D91E18] disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             <CheckCircle2 className="h-3.5 w-3.5" />
                             <span>Approve</span>
                           </button>
                           <button
                             type="button"
+                            disabled={Boolean(updatingIds[item._id])}
                             onClick={() => handleUpdateStatus(item._id, 'rejected')}
-                            className="inline-flex cursor-pointer items-center space-x-1 rounded-xl border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-bold text-[#D91E18] transition-colors hover:bg-[#D91E18] hover:text-white"
+                            className="inline-flex cursor-pointer items-center space-x-1 rounded-xl border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-bold text-[#D91E18] transition-colors hover:bg-[#D91E18] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             <XCircle className="h-3.5 w-3.5" />
                             <span>Reject</span>
@@ -280,8 +339,9 @@ export default function AdminManageMenuPage() {
                       {item.status === 'approved' && (
                         <button
                           type="button"
+                          disabled={Boolean(updatingIds[item._id])}
                           onClick={() => handleUpdateStatus(item._id, 'inactive')}
-                          className="cursor-pointer rounded-xl border border-stone-200 bg-[#FAF7F2] px-3 py-1.5 text-xs font-bold text-[#6E6259] hover:border-[#18120E] hover:text-[#18120E]"
+                          className="cursor-pointer rounded-xl border border-stone-200 bg-[#FAF7F2] px-3 py-1.5 text-xs font-bold text-[#6E6259] hover:border-[#18120E] hover:text-[#18120E] disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           Deactivate
                         </button>
@@ -290,8 +350,9 @@ export default function AdminManageMenuPage() {
                       {item.status === 'inactive' && (
                         <button
                           type="button"
+                          disabled={Boolean(updatingIds[item._id])}
                           onClick={() => handleUpdateStatus(item._id, 'approved')}
-                          className="cursor-pointer rounded-xl border border-stone-200 bg-[#FAF7F2] px-3 py-1.5 text-xs font-bold text-[#18120E] hover:border-emerald-600 hover:text-emerald-700"
+                          className="cursor-pointer rounded-xl border border-stone-200 bg-[#FAF7F2] px-3 py-1.5 text-xs font-bold text-[#18120E] hover:border-emerald-600 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           Reactivate
                         </button>
