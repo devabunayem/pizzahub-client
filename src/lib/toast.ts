@@ -3,22 +3,26 @@ import { sileo, type SileoOptions } from 'sileo';
 type ToastInput = string | SileoOptions;
 type ExtraOptions = { id?: string; duration?: number; description?: string } | string;
 
+let toastSeq = 0;
+
 function parseArgs(input: ToastInput, extra?: ExtraOptions): SileoOptions {
+  const id = `pizzahub-toast-${++toastSeq}`;
   if (typeof input === 'string') {
     if (typeof extra === 'string') {
-      return { title: input, description: extra };
+      return { id, title: input, description: extra } as SileoOptions;
     }
     if (extra && typeof extra === 'object') {
       const { description, duration } = extra;
       return {
+        id,
         title: input,
-        description: description,
-        duration: duration,
-      };
+        description,
+        duration,
+      } as SileoOptions;
     }
-    return { title: input };
+    return { id, title: input } as SileoOptions;
   }
-  return input;
+  return { id, ...input } as SileoOptions;
 }
 
 export const toast = {

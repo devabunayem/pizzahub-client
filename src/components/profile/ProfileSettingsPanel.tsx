@@ -89,11 +89,14 @@ export function ProfileSettingsPanel({ inDashboard = false }: ProfileSettingsPan
       });
 
       const data = await res.json();
-      if (data.success && data.data?.url) {
+      if (res.ok && data.success && data.data?.url) {
         setImage(data.data.url);
         toast.success('Photo ready — click Save Changes to apply!', { id: toastId });
       } else {
-        toast.error('Failed to upload image to ImgBB.', { id: toastId });
+        toast.error(
+          data?.error?.message || 'Failed to upload image to ImgBB. Please try a valid image file.',
+          { id: toastId }
+        );
       }
     } catch (err) {
       console.error('Avatar upload error:', err);
@@ -105,6 +108,26 @@ export function ProfileSettingsPanel({ inDashboard = false }: ProfileSettingsPan
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const cleanName = name.trim();
+    const cleanImage = image.trim();
+    const cleanBusinessName = businessName.trim();
+
+    if (!cleanName) {
+      toast.error('Full name cannot be empty.');
+      return;
+    }
+
+    if (user.role === 'vendor' && !cleanBusinessName) {
+      toast.error('Restaurant brand name cannot be empty.');
+      return;
+    }
+
+    if (cleanImage && !/^https?:\/\//i.test(cleanImage)) {
+      toast.error('Profile image URL must start with http:// or https://.');
+      return;
+    }
+
     setSaving(true);
     const toastId = toast.loading('Saving profile changes...');
 
@@ -116,9 +139,9 @@ export function ProfileSettingsPanel({ inDashboard = false }: ProfileSettingsPan
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          name,
-          image,
-          businessName: user.role === 'vendor' ? businessName : undefined,
+          name: cleanName,
+          image: cleanImage,
+          businessName: user.role === 'vendor' ? cleanBusinessName : undefined,
         }),
       });
 

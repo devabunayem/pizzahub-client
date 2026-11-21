@@ -82,6 +82,21 @@ export default function MyMenuItemsPage() {
     e.preventDefault();
     if (!editModal.item) return;
 
+    const cleanName = editForm.itemName.trim();
+    const cleanDescription = editForm.description.trim();
+    const cleanLocation = editForm.location.trim();
+    const numPrice = parseFloat(editForm.price);
+
+    if (!cleanName || !cleanDescription || !cleanLocation) {
+      toast.error('Item name, location, and description cannot be blank.');
+      return;
+    }
+
+    if (!Number.isFinite(numPrice) || numPrice <= 0 || numPrice > 10000) {
+      toast.error('Price must be between $0.01 and $10,000.');
+      return;
+    }
+
     setEditModal((prev) => ({ ...prev, loading: true }));
     const toastId = toast.loading('Updating menu item...');
 
@@ -93,11 +108,11 @@ export default function MyMenuItemsPage() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          itemName: editForm.itemName,
-          description: editForm.description,
-          price: parseFloat(editForm.price),
+          itemName: cleanName,
+          description: cleanDescription,
+          price: numPrice,
           category: editForm.category,
-          location: editForm.location,
+          location: cleanLocation,
         }),
       });
 
@@ -402,6 +417,7 @@ export default function MyMenuItemsPage() {
                     type="number"
                     step="0.01"
                     min="1"
+                    max="10000"
                     required
                     value={editForm.price}
                     onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}

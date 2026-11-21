@@ -61,11 +61,14 @@ export default function AddMenuItemPage() {
 
       const data = await res.json();
 
-      if (data.success && data.data?.url) {
+      if (res.ok && data.success && data.data?.url) {
         setImageUrl(data.data.url);
         toast.success('Image uploaded.', { id: toastId });
       } else {
-        toast.error('Failed to upload image to ImgBB.', { id: toastId });
+        toast.error(
+          data?.error?.message || 'Failed to upload image to ImgBB. Please try a valid image file.',
+          { id: toastId }
+        );
       }
     } catch (err) {
       console.error('ImgBB upload error:', err);
@@ -77,6 +80,21 @@ export default function AddMenuItemPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const cleanName = itemName.trim();
+    const cleanLocation = location.trim();
+    const cleanDescription = description.trim();
+    const numPrice = parseFloat(price);
+
+    if (!cleanName || !cleanLocation || !cleanDescription) {
+      toast.error('Item name, kitchen location, and description cannot be blank.');
+      return;
+    }
+
+    if (!Number.isFinite(numPrice) || numPrice <= 0 || numPrice > 10000) {
+      toast.error('Price must be between $0.01 and $10,000.');
+      return;
+    }
 
     if (!imageUrl) {
       toast.error('Please upload an image file.');
@@ -92,11 +110,11 @@ export default function AddMenuItemPage() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          itemName,
+          itemName: cleanName,
           category,
-          description,
-          price: parseFloat(price),
-          location,
+          description: cleanDescription,
+          price: numPrice,
+          location: cleanLocation,
           images: [imageUrl],
         }),
       });
@@ -207,6 +225,7 @@ export default function AddMenuItemPage() {
               type="number"
               step="0.01"
               min="1"
+              max="10000"
               required
               value={price}
               onChange={(e) => setPrice(e.target.value)}

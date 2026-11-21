@@ -42,9 +42,17 @@ export default function ItemDetailsPage() {
   }, [user, authLoading, router, id]);
 
   useEffect(() => {
+    if (authLoading || !user || !id) return;
+
     const fetchItem = async () => {
+      setErrorMsg(null);
+      setLoading(true);
       try {
-        const res = await fetch(`${API_BASE}/menu/${id}`);
+        const headers: HeadersInit = {};
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+        const res = await fetch(`${API_BASE}/menu/${id}`, { headers });
         const data = await res.json();
         if (data.success && data.item) {
           setItem(data.item);
@@ -58,10 +66,8 @@ export default function ItemDetailsPage() {
       }
     };
 
-    if (id) {
-      fetchItem();
-    }
-  }, [id]);
+    fetchItem();
+  }, [id, token, user, authLoading]);
 
   if (authLoading || (loading && !errorMsg)) {
     return (
