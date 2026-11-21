@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import {
@@ -12,6 +12,8 @@ import {
   Store,
   ChevronDown,
   ChevronUp,
+  CreditCard,
+  CheckCircle2,
 } from 'lucide-react';
 import { formatPrice, formatDate } from '@/lib/utils';
 import { OrderListSkeleton } from '@/components/ui/Skeleton';
@@ -26,6 +28,9 @@ export default function CustomerOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const inFlightCancelRef = useRef<boolean>(false);
+  const inFlightPayRef = useRef<Set<string>>(new Set());
+  const [payingIds, setPayingIds] = useState<Record<string, boolean>>({});
   const [cancelModal, setCancelModal] = useState<{
     isOpen: boolean;
     orderId: string;
@@ -60,12 +65,14 @@ export default function CustomerOrdersPage() {
   }, [token]);
 
   const confirmCancelOrder = async () => {
-    if (!cancelModal.orderId) return;
+    const targetId = cancelModal.orderId;
+    if (!targetId || inFlightCancelRef.current) return;
 
+    inFlightCancelRef.current = true;
     setCancelModal((prev) => ({ ...prev, loading: true }));
     const toastId = toast.loading('Cancelling order...');
     try {
-      const res = await fetch(`${API_BASE}/orders/${cancelModal.orderId}/cancel`, {
+      const res = await fetch(`${API_BASE}/orders/${targetId}/cancel`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -73,8 +80,11 @@ export default function CustomerOrdersPage() {
       const data = await res.json();
       if (data.success) {
         toast.success('Order has been cancelled.', { id: toastId });
+        setOrders((prev) =>
+          prev.map((o) => (o._id === targetId ? { ...o, status: 'cancelled' } : o))
+        );
         setCancelModal({ isOpen: false, orderId: '', loading: false });
-        fetchOrders();
+        await fetchOrders();
       } else {
         toast.error(data.message || 'Failed to cancel order.', { id: toastId });
         setCancelModal((prev) => ({ ...prev, loading: false }));
@@ -82,6 +92,43 @@ export default function CustomerOrdersPage() {
     } catch (err) {
       toast.error('Network error cancelling order.', { id: toastId });
       setCancelModal((prev) => ({ ...prev, loading: false }));
+    } finally {
+      inFlightCancelRef.current = false;
+    }
+  };
+
+  const handlePayOrder = async (orderId: string) => {
+    if (!token || inFlightPayRef.current.has(orderId)) return;
+
+    inFlightPayRef.current.add(orderId);
+    setPayingIds((prev) => ({ ...prev, [orderId]: true }));
+    const toastId = toast.loading('Recording payment...');
+
+    try {
+      const res = await fetch(`${API_BASE}/orders/${orderId}/pay`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Order payment marked as paid!', { id: toastId });
+        setOrders((prev) =>
+          prev.map((o) => (o._id === orderId ? { ...o, paymentStatus: 'paid' } : o))
+        );
+        await fetchOrders();
+      } else {
+        toast.error(data.message || 'Failed to complete payment.', { id: toastId });
+      }
+    } catch (err) {
+      toast.error('Network error completing payment.', { id: toastId });
+    } finally {
+      inFlightPayRef.current.delete(orderId);
+      setPayingIds((prev) => {
+        const next = { ...prev };
+        delete next[orderId];
+        return next;
+      });
     }
   };
 
@@ -145,13 +192,13 @@ export default function CustomerOrdersPage() {
               >
                 <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
                   {/* Left Info */}
-                  <div className="flex min-w-0 items-start space-x-4">
+                  <div className="flex min-w-0 flex-1 items-start space-x-4">
                     <img
                       src={order.itemId?.images?.[0] || '/images/cat-classic.jpg'}
                       alt={order.itemId?.itemName}
                       className="h-16 w-16 shrink-0 rounded-2xl border border-stone-200 bg-[#FAF7F2] object-cover"
                     />
-                    <div className="min-w-0 space-y-1">
+                    <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex items-baseline space-x-3">
                         <h3 className="text-base font-extrabold text-[#18120E]">
                           {order.itemId?.itemName || 'Artisanal Pizza'}
@@ -162,8 +209,8 @@ export default function CustomerOrdersPage() {
                       </div>
 
                       <p className="flex items-center text-xs font-medium text-[#6E6259]">
-                        <Store className="mr-1.5 h-3.5 w-3.5 text-[#9A4A12]" />
-                        <span>{order.vendorId?.businessName || order.vendorId?.name}</span>
+                        <Store className="mr-1.5 h-3.5 w-3.5 shrink-0 text-[#9A4A12]" />
+                        <span className="truncate">{order.vendorId?.businessName || order.vendorId?.name}</span>
                       </p>
 
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-0.5 text-xs text-[#6E6259]">
@@ -181,11 +228,13 @@ export default function CustomerOrdersPage() {
 
                       <p className="flex items-start pt-0.5 text-xs text-[#6E6259]">
                         <MapPin className="mr-1.5 mt-0.5 h-3.5 w-3.5 shrink-0 text-[#D91E18]" />
-                        <span>{order.deliveryAddress}</span>
+                        <span className="min-w-0 flex-1 break-words [overflow-wrap:anywhere]">
+                          {order.deliveryAddress}
+                        </span>
                       </p>
 
                       {order.message && (
-                        <p className="pt-0.5 text-xs italic text-[#6E6259]">
+                        <p className="pt-0.5 text-xs italic text-[#6E6259] break-words [overflow-wrap:anywhere]">
                           Note: &ldquo;{order.message}&rdquo;
                         </p>
                       )}
@@ -194,32 +243,54 @@ export default function CustomerOrdersPage() {
 
                   {/* Right Status & Action */}
                   <div className="flex shrink-0 flex-col items-start justify-between gap-3 border-t border-stone-100 pt-3 sm:flex-row lg:flex-col lg:items-end lg:border-t-0 lg:pt-0">
-                    <span
-                      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold ${
-                        order.status === 'pending'
-                          ? 'border-amber-200 bg-amber-50 text-[#9A4A12]'
-                          : order.status === 'accepted'
-                          ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-                          : order.status === 'rejected'
-                          ? 'border-stone-200 bg-[#FAF7F2] text-[#6E6259]'
-                          : 'border-red-200 bg-red-50 text-[#D91E18]'
-                      }`}
-                    >
+                    <div className="flex flex-wrap items-center gap-2">
                       <span
-                        className={`h-1.5 w-1.5 rounded-full ${
+                        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold ${
                           order.status === 'pending'
-                            ? 'bg-amber-500'
+                            ? 'border-amber-200 bg-amber-50 text-[#9A4A12]'
                             : order.status === 'accepted'
-                            ? 'bg-emerald-500'
-                            : order.status === 'cancelled'
-                            ? 'bg-[#D91E18]'
-                            : 'bg-stone-400'
+                            ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                            : order.status === 'rejected'
+                            ? 'border-stone-200 bg-[#FAF7F2] text-[#6E6259]'
+                            : 'border-red-200 bg-red-50 text-[#D91E18]'
                         }`}
-                      />
-                      <span className="capitalize">{order.status}</span>
-                    </span>
+                      >
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${
+                            order.status === 'pending'
+                              ? 'bg-amber-500'
+                              : order.status === 'accepted'
+                              ? 'bg-emerald-500'
+                              : order.status === 'cancelled'
+                              ? 'bg-[#D91E18]'
+                              : 'bg-stone-400'
+                          }`}
+                        />
+                        <span className="capitalize">{order.status}</span>
+                      </span>
 
-                    <div className="flex items-center space-x-2">
+                      {order.paymentStatus === 'paid' && (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-800">
+                          <CheckCircle2 className="h-3 w-3" />
+                          <span>Paid</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      {(order.status === 'pending' || order.status === 'accepted') &&
+                        order.paymentStatus !== 'paid' && (
+                          <button
+                            type="button"
+                            disabled={Boolean(payingIds[order._id])}
+                            onClick={() => handlePayOrder(order._id)}
+                            className="flex cursor-pointer items-center space-x-1.5 rounded-xl bg-[#18120E] px-3.5 py-2 text-xs font-bold text-white transition-colors hover:bg-[#D91E18] disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <CreditCard className="h-3.5 w-3.5" />
+                            <span>{payingIds[order._id] ? 'Paying...' : 'Pay Now'}</span>
+                          </button>
+                        )}
+
                       <button
                         type="button"
                         onClick={() =>

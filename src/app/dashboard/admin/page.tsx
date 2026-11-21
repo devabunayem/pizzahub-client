@@ -120,7 +120,7 @@ export default function AdminOverviewPage() {
   return (
     <div className="space-y-8">
       {/* Bold Charred Espresso Admin Command Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-stone-800 bg-[#18120E] p-7 sm:p-9 text-[#FAF7F2] shadow-[0_24px_56px_-22px_rgba(24,18,14,0.38)]">
+      <div className="relative overflow-hidden rounded-2xl border border-stone-800 bg-[#18120E] p-5 sm:p-6 text-[#FAF7F2] shadow-[0_20px_44px_-22px_rgba(24,18,14,0.34)]">
         <img
           src="/images/cat-gourmet.jpg"
           alt="Artisan gourmet truffle burrata pizza"
@@ -128,40 +128,40 @@ export default function AdminOverviewPage() {
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#18120E] via-[#18120E]/92 to-[#18120E]/70" />
 
-        <div className="relative z-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <div className="space-y-3">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#D97706]">
+        <div className="relative z-10 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
+          <div className="space-y-2">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#D97706]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#E50916]" />
               Global Governance Console
             </span>
-            <h1 className="leading-[0.96] tracking-tight text-white">
-              <span className="font-display text-[clamp(2rem,3.6vw,3rem)] uppercase">
+            <h1 className="leading-[0.98] tracking-tight text-white">
+              <span className="font-display text-[clamp(1.5rem,2.5vw,2.15rem)] uppercase">
                 PLATFORM{' '}
               </span>
               <BrushHighlight immediate color="#E50916" secondaryColor="#D97706" delay={0.15}>
-                <span className="font-editorial text-[clamp(2.2rem,3.8vw,3.2rem)] italic font-normal lowercase text-[#FAF7F2]">
+                <span className="font-editorial text-[clamp(1.6rem,2.6vw,2.2rem)] italic font-normal lowercase text-[#FAF7F2]">
                   control
                 </span>
               </BrushHighlight>
             </h1>
-            <p className="max-w-xl text-sm text-stone-300">
+            <p className="max-w-xl text-xs sm:text-sm text-stone-300">
               Monitor Stripe subscription revenue, moderate new restaurant dishes, and oversee user accounts.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
             {stats?.pendingMenuItems > 0 && (
               <Link
                 href="/dashboard/admin/menu?status=pending"
-                className="inline-flex items-center gap-2 rounded-full bg-[#E50916] px-6 py-3 text-xs font-bold text-white shadow-[0_12px_28px_-10px_rgba(229,9,22,0.7)] transition hover:bg-[#c80814]"
+                className="inline-flex items-center gap-2 rounded-full bg-[#E50916] px-5 py-2.5 text-xs font-bold text-white shadow-[0_10px_24px_-10px_rgba(229,9,22,0.7)] transition hover:bg-[#c80814]"
               >
-                <Clock className="h-4 w-4" />
+                <Clock className="h-3.5 w-3.5" />
                 <span>Review Pending ({stats.pendingMenuItems})</span>
               </Link>
             )}
             <Link
               href="/dashboard/profile"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-bold text-white transition hover:bg-white/20"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-white/20"
             >
               <Settings className="h-3.5 w-3.5" />
               <span>Admin Profile</span>

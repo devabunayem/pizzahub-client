@@ -114,11 +114,11 @@ function SignUpContent() {
   };
 
   return (
-    <section className="min-h-[calc(100vh-88px)] bg-[#FAF7F2] py-10 md:py-16">
+    <section className="min-h-[calc(100vh-88px)] bg-[#FAF7F2] py-8 md:py-12">
       <div className="site-container">
-        <div className="mx-auto grid max-w-5xl grid-cols-1 overflow-hidden rounded-3xl border border-stone-200/90 bg-white shadow-[0_28px_60px_-24px_rgba(24,18,14,0.18)] lg:grid-cols-12">
+        <div className="mx-auto grid max-w-4xl grid-cols-1 overflow-hidden rounded-3xl border border-stone-200/90 bg-white shadow-[0_24px_52px_-24px_rgba(24,18,14,0.18)] lg:min-h-[580px] lg:grid-cols-12">
           {/* Left Editorial Showcase Panel */}
-          <div className="relative flex flex-col justify-between overflow-hidden bg-[#18120E] p-8 text-[#FAF7F2] sm:p-10 lg:col-span-5">
+          <div className="relative flex flex-col justify-between overflow-hidden bg-[#18120E] p-7 text-[#FAF7F2] sm:p-8 lg:col-span-5">
             <img
               src="/images/cat-gourmet.jpg"
               alt="Artisan wood-fired truffle burrata pizza"
@@ -126,18 +126,18 @@ function SignUpContent() {
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#18120E] via-[#18120E]/88 to-[#18120E]/80" />
 
-            <div className="relative z-10 space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#D97706] backdrop-blur-md">
+            <div className="relative z-10 space-y-5">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#D97706] backdrop-blur-md">
                 <Sparkles className="h-3.5 w-3.5 text-[#E50916]" />
                 <span>Join PizzaHub Today</span>
               </div>
 
               <div>
                 <h1 className="leading-[0.96] tracking-tight text-white">
-                  <span className="font-display block text-[clamp(2.2rem,3.5vw,3.1rem)] uppercase">
+                  <span className="font-display block text-[clamp(1.75rem,2.6vw,2.35rem)] uppercase">
                     CRAFT OR ORDER
                   </span>
-                  <span className="mt-1 block text-[clamp(2.2rem,3.5vw,3rem)]">
+                  <span className="mt-1 block text-[clamp(1.75rem,2.6vw,2.35rem)]">
                     <span className="font-display uppercase">WOOD-FIRED </span>
                     <BrushHighlight immediate color="#E50916" secondaryColor="#D97706" delay={0.2}>
                       <span className="font-editorial italic font-normal lowercase text-[#FAF7F2]">
@@ -146,14 +146,14 @@ function SignUpContent() {
                     </BrushHighlight>
                   </span>
                 </h1>
-                <p className="mt-4 text-sm leading-relaxed text-stone-300">
+                <p className="mt-3 text-sm leading-relaxed text-stone-300">
                   Create a customer account to order neighborhood pizzas, or launch your own
                   brick-oven storefront as a restaurant partner.
                 </p>
               </div>
             </div>
 
-            <div className="relative z-10 mt-10 space-y-3 border-t border-white/15 pt-6 text-xs text-stone-300">
+            <div className="relative z-10 mt-8 space-y-2.5 border-t border-white/15 pt-5 text-xs text-stone-300">
               <div className="flex items-center gap-2.5">
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-[#E50916]" />
                 <span>Instant onboarding for Customers &amp; Local Kitchens</span>
@@ -170,61 +170,59 @@ function SignUpContent() {
           </div>
 
           {/* Right Registration Form Panel */}
-          <div className="p-8 sm:p-10 lg:col-span-7 lg:p-12">
-            <div className="mb-6 flex items-center justify-between gap-4">
+          <div className="flex flex-col justify-center p-6 sm:p-8 lg:col-span-7">
+            <div className="mb-4 flex items-center justify-between gap-4">
               <div>
                 <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#9A4A12]">
                   New Account
                 </span>
-                <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-[#18120E]">
+                <h2 className="mt-0.5 text-xl font-extrabold tracking-tight text-[#18120E]">
                   Create an account
                 </h2>
               </div>
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e50916] text-white shadow-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e50916] text-white shadow-sm">
                 <Pizza className="h-5 w-5" />
               </div>
             </div>
 
-            {/* Role Selection */}
-            <div className="mb-5 space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+            {/* Compact Role Selection */}
+            <div className="mb-3.5 space-y-1.5">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#6E6259]">
                 Account Role
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5">
                 <button
                   type="button"
                   onClick={() => setRole('customer')}
-                  className={`flex flex-col items-center justify-center space-y-1 rounded-2xl border p-4 transition-all cursor-pointer ${
+                  className={`flex flex-row items-center justify-center gap-2 rounded-xl border px-3 py-2.5 transition-all cursor-pointer ${
                     role === 'customer'
                       ? 'border-[#D91E18] bg-[#FAF7F2] text-[#18120E] ring-1 ring-[#D91E18]/25'
                       : 'border-stone-200 bg-white text-[#6E6259] hover:border-stone-300 hover:text-[#18120E]'
                   }`}
                 >
                   <User
-                    className={`h-5 w-5 ${
+                    className={`h-4 w-4 shrink-0 ${
                       role === 'customer' ? 'text-[#D91E18]' : 'text-stone-400'
                     }`}
                   />
-                  <span className="text-sm font-bold">Customer</span>
-                  <span className="text-xs text-[#6E6259]">Order fresh pizza</span>
+                  <span className="text-xs font-bold">Customer</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setRole('vendor')}
-                  className={`flex flex-col items-center justify-center space-y-1 rounded-2xl border p-4 transition-all cursor-pointer ${
+                  className={`flex flex-row items-center justify-center gap-2 rounded-xl border px-3 py-2.5 transition-all cursor-pointer ${
                     role === 'vendor'
                       ? 'border-[#D91E18] bg-[#FAF7F2] text-[#18120E] ring-1 ring-[#D91E18]/25'
                       : 'border-stone-200 bg-white text-[#6E6259] hover:border-stone-300 hover:text-[#18120E]'
                   }`}
                 >
                   <Store
-                    className={`h-5 w-5 ${
+                    className={`h-4 w-4 shrink-0 ${
                       role === 'vendor' ? 'text-[#D91E18]' : 'text-stone-400'
                     }`}
                   />
-                  <span className="text-sm font-bold">Restaurant</span>
-                  <span className="text-xs text-[#6E6259]">Manage kitchen</span>
+                  <span className="text-xs font-bold">Restaurant</span>
                 </button>
               </div>
             </div>
@@ -234,7 +232,7 @@ function SignUpContent() {
               type="button"
               onClick={handleGoogleSignUp}
               disabled={googleLoading || submitting}
-              className="mb-5 flex w-full cursor-pointer items-center justify-center gap-3 rounded-2xl border border-stone-200/90 bg-white px-5 py-3.5 text-sm font-bold text-[#18120E] shadow-sm transition hover:border-[#18120E] hover:bg-[#FAF7F2] disabled:cursor-not-allowed disabled:opacity-50"
+              className="mb-3.5 flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-stone-200/90 bg-white px-4 py-2.5 text-sm font-bold text-[#18120E] shadow-sm transition hover:border-[#18120E] hover:bg-[#FAF7F2] disabled:cursor-not-allowed disabled:opacity-50"
             >
               <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
                 <path
@@ -261,7 +259,7 @@ function SignUpContent() {
               </span>
             </button>
 
-            <div className="relative mb-5 flex items-center justify-center">
+            <div className="relative mb-3.5 flex items-center justify-center">
               <div className="w-full border-t border-stone-200" />
               <span className="bg-white px-3 text-[11px] font-bold uppercase tracking-wider text-stone-400">
                 or register with email
@@ -269,29 +267,50 @@ function SignUpContent() {
               <div className="w-full border-t border-stone-200" />
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
-                  Full name
-                </label>
-                <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                    <User className="h-4 w-4" />
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                    Full name
+                  </label>
+                  <div className="relative">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                      <User className="h-4 w-4" />
+                    </div>
+                    <input
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="John Doe"
+                      className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+                    />
                   </div>
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="John Doe"
-                    className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2.5 pl-10 pr-4 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
-                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                    Email address
+                  </label>
+                  <div className="relative">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                      <Mail className="h-4 w-4" />
+                    </div>
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@example.com"
+                      className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+                    />
+                  </div>
                 </div>
               </div>
 
               {role === 'vendor' && (
                 <div>
-                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
                     Restaurant brand name
                   </label>
                   <div className="relative">
@@ -304,100 +323,83 @@ function SignUpContent() {
                       value={businessName}
                       onChange={(e) => setBusinessName(e.target.value)}
                       placeholder="Napoli Woodfire Pizza"
-                      className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2.5 pl-10 pr-4 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+                      className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
                     />
                   </div>
                 </div>
               )}
 
-              <div>
-                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
-                  Email address
-                </label>
-                <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                    <Mail className="h-4 w-4" />
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                      <Lock className="h-4 w-4" />
+                    </div>
+                    <input
+                      type="password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+                    />
                   </div>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@example.com"
-                    className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2.5 pl-10 pr-4 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
-                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
+                    Profile image URL (optional)
+                  </label>
+                  <div className="relative">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
+                      <ImageIcon className="h-4 w-4" />
+                    </div>
+                    <input
+                      type="url"
+                      value={image}
+                      onChange={(e) => setImage(e.target.value)}
+                      placeholder="https://example.com/photo.jpg"
+                      className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2 pl-10 pr-3 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
-                  Profile image URL (optional)
-                </label>
-                <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                    <ImageIcon className="h-4 w-4" />
-                  </div>
-                  <input
-                    type="url"
-                    value={image}
-                    onChange={(e) => setImage(e.target.value)}
-                    placeholder="https://example.com/photo.jpg"
-                    className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2.5 pl-10 pr-4 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
-                  />
+              {/* Compact Inline Password Checklist */}
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-xl border border-stone-200/80 bg-[#FAF7F2] px-3 py-2 text-[11px]">
+                <div className="flex items-center gap-1.5">
+                  <span className={isLengthValid ? 'font-bold text-emerald-700' : 'text-stone-400'}>
+                    {isLengthValid ? '✓' : '○'}
+                  </span>
+                  <span className={isLengthValid ? 'font-semibold text-emerald-800' : 'text-[#6E6259]'}>
+                    6+ chars
+                  </span>
                 </div>
-              </div>
-
-              <div>
-                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6E6259]">
-                  Password
-                </label>
-                <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
-                    <Lock className="h-4 w-4" />
-                  </div>
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full rounded-xl border border-stone-200 bg-[#FAF7F2] py-2.5 pl-10 pr-4 text-sm text-[#18120E] placeholder:text-stone-400 transition focus:border-[#D91E18] focus:bg-white focus:outline-none"
-                  />
+                <div className="flex items-center gap-1.5">
+                  <span className={hasUpperCase ? 'font-bold text-emerald-700' : 'text-stone-400'}>
+                    {hasUpperCase ? '✓' : '○'}
+                  </span>
+                  <span className={hasUpperCase ? 'font-semibold text-emerald-800' : 'text-[#6E6259]'}>
+                    1 uppercase (A-Z)
+                  </span>
                 </div>
-
-                {/* Password Checklist */}
-                <div className="mt-2.5 space-y-1.5 rounded-2xl border border-stone-200/80 bg-[#FAF7F2] p-3.5 text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className={isLengthValid ? 'font-bold text-emerald-700' : 'text-stone-400'}>
-                      {isLengthValid ? '✓' : '○'}
-                    </span>
-                    <span className={isLengthValid ? 'font-semibold text-emerald-800' : 'text-[#6E6259]'}>
-                      Minimum 6 characters
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className={hasUpperCase ? 'font-bold text-emerald-700' : 'text-stone-400'}>
-                      {hasUpperCase ? '✓' : '○'}
-                    </span>
-                    <span className={hasUpperCase ? 'font-semibold text-emerald-800' : 'text-[#6E6259]'}>
-                      At least one uppercase letter (A-Z)
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className={hasLowerCase ? 'font-bold text-emerald-700' : 'text-stone-400'}>
-                      {hasLowerCase ? '✓' : '○'}
-                    </span>
-                    <span className={hasLowerCase ? 'font-semibold text-emerald-800' : 'text-[#6E6259]'}>
-                      At least one lowercase letter (a-z)
-                    </span>
-                  </div>
+                <div className="flex items-center gap-1.5">
+                  <span className={hasLowerCase ? 'font-bold text-emerald-700' : 'text-stone-400'}>
+                    {hasLowerCase ? '✓' : '○'}
+                  </span>
+                  <span className={hasLowerCase ? 'font-semibold text-emerald-800' : 'text-[#6E6259]'}>
+                    1 lowercase (a-z)
+                  </span>
                 </div>
               </div>
 
               <button
                 type="submit"
                 disabled={submitting || !isPasswordValid || !isNameValid || !isBusinessValid}
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#18120E] px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_28px_-12px_rgba(24,18,14,0.45)] transition hover:bg-[#D91E18] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-[#18120E] px-6 py-3 text-sm font-bold text-white shadow-[0_14px_28px_-12px_rgba(24,18,14,0.45)] transition hover:bg-[#D91E18] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
               >
                 {submitting ? (
                   <>
@@ -413,7 +415,7 @@ function SignUpContent() {
               </button>
             </form>
 
-            <p className="mt-6 border-t border-stone-100 pt-5 text-center text-sm text-[#6E6259]">
+            <p className="mt-5 border-t border-stone-100 pt-4 text-center text-sm text-[#6E6259]">
               Already have an account?{' '}
               <Link
                 href="/signin"

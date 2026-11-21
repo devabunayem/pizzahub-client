@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import {
   ShoppingBag,
@@ -22,6 +22,8 @@ export default function VendorOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'accepted' | 'rejected'>('all');
+  const inFlightRef = useRef<Set<string>>(new Set());
+  const [updatingIds, setUpdatingIds] = useState<Record<string, boolean>>({});
 
   const fetchOrders = async () => {
     try {
@@ -47,6 +49,10 @@ export default function VendorOrdersPage() {
   }, [token]);
 
   const handleUpdateStatus = async (orderId: string, status: 'accepted' | 'rejected') => {
+    if (!token || inFlightRef.current.has(orderId)) return;
+
+    inFlightRef.current.add(orderId);
+    setUpdatingIds((prev) => ({ ...prev, [orderId]: true }));
     const toastId = toast.loading(`Marking order as ${status}...`);
 
     try {
@@ -62,12 +68,22 @@ export default function VendorOrdersPage() {
       const data = await res.json();
       if (data.success) {
         toast.success(`Order #${orderId.slice(-6)} has been ${status}!`, { id: toastId });
-        fetchOrders();
+        setOrders((prev) =>
+          prev.map((o) => (o._id === orderId ? { ...o, status } : o))
+        );
+        await fetchOrders();
       } else {
         toast.error(data.message || 'Failed to update order status.', { id: toastId });
       }
     } catch (err) {
       toast.error('Network error updating order.', { id: toastId });
+    } finally {
+      inFlightRef.current.delete(orderId);
+      setUpdatingIds((prev) => {
+        const next = { ...prev };
+        delete next[orderId];
+        return next;
+      });
     }
   };
 
@@ -136,13 +152,13 @@ export default function VendorOrdersPage() {
               className="flex flex-col justify-between gap-5 rounded-3xl border border-stone-200/90 bg-white p-5 sm:p-6 shadow-sm transition-colors lg:flex-row lg:items-center"
             >
               {/* Order Info Left */}
-              <div className="flex min-w-0 items-start space-x-4">
+              <div className="flex min-w-0 flex-1 items-start space-x-4">
                 <img
                   src={order.itemId?.images?.[0] || '/images/cat-classic.jpg'}
                   alt={order.itemId?.itemName}
                   className="h-16 w-16 shrink-0 rounded-2xl border border-stone-200 bg-[#FAF7F2] object-cover"
                 />
-                <div className="min-w-0 space-y-1.5">
+                <div className="min-w-0 flex-1 space-y-1.5">
                   <div className="flex items-baseline space-x-3">
                     <h3 className="text-base font-extrabold text-[#18120E]">
                       {order.itemId?.itemName || 'Pizza order'}
@@ -154,8 +170,10 @@ export default function VendorOrdersPage() {
 
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#6E6259]">
                     <span className="flex items-center font-medium text-[#18120E]">
-                      <User className="mr-1.5 h-3.5 w-3.5 text-[#9A4A12]" />
-                      {order.customerId?.name} ({order.customerId?.email})
+                      <User className="mr-1.5 h-3.5 w-3.5 shrink-0 text-[#9A4A12]" />
+                      <span className="break-words [overflow-wrap:anywhere]">
+                        {order.customerId?.name} ({order.customerId?.email})
+                      </span>
                     </span>
                     <span className="flex items-center">
                       <Calendar className="mr-1.5 h-3.5 w-3.5 text-stone-400" />
@@ -168,13 +186,17 @@ export default function VendorOrdersPage() {
 
                   <p className="flex items-start text-xs text-[#6E6259]">
                     <MapPin className="mr-1.5 mt-0.5 h-3.5 w-3.5 shrink-0 text-[#D91E18]" />
-                    <span>{order.deliveryAddress}</span>
+                    <span className="min-w-0 flex-1 break-words [overflow-wrap:anywhere]">
+                      {order.deliveryAddress}
+                    </span>
                   </p>
 
                   {order.message && (
                     <div className="mt-1 flex items-start space-x-2 rounded-2xl border border-stone-200/80 bg-[#FAF7F2] p-3 text-xs text-[#6E6259]">
                       <MessageSquare className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9A4A12]" />
-                      <span>Note: &ldquo;{order.message}&rdquo;</span>
+                      <span className="min-w-0 flex-1 break-words [overflow-wrap:anywhere]">
+                        Note: &ldquo;{order.message}&rdquo;
+                      </span>
                     </div>
                   )}
                 </div>
@@ -182,45 +204,56 @@ export default function VendorOrdersPage() {
 
               {/* Status & Actions Right */}
               <div className="flex shrink-0 flex-col items-start justify-between gap-3 border-t border-stone-100 pt-3 sm:flex-row lg:flex-col lg:items-end lg:border-t-0 lg:pt-0">
-                <span
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold ${
-                    order.status === 'pending'
-                      ? 'border-amber-200 bg-amber-50 text-[#9A4A12]'
-                      : order.status === 'accepted'
-                      ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-                      : order.status === 'rejected'
-                      ? 'border-stone-200 bg-[#FAF7F2] text-[#6E6259]'
-                      : 'border-red-200 bg-red-50 text-[#D91E18]'
-                  }`}
-                >
+                <div className="flex flex-wrap items-center gap-2">
                   <span
-                    className={`h-1.5 w-1.5 rounded-full ${
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold ${
                       order.status === 'pending'
-                        ? 'bg-amber-500'
+                        ? 'border-amber-200 bg-amber-50 text-[#9A4A12]'
                         : order.status === 'accepted'
-                        ? 'bg-emerald-500'
-                        : order.status === 'cancelled'
-                        ? 'bg-[#D91E18]'
-                        : 'bg-stone-400'
+                        ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                        : order.status === 'rejected'
+                        ? 'border-stone-200 bg-[#FAF7F2] text-[#6E6259]'
+                        : 'border-red-200 bg-red-50 text-[#D91E18]'
                     }`}
-                  />
-                  <span className="capitalize">{order.status}</span>
-                </span>
+                  >
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${
+                        order.status === 'pending'
+                          ? 'bg-amber-500'
+                          : order.status === 'accepted'
+                          ? 'bg-emerald-500'
+                          : order.status === 'cancelled'
+                          ? 'bg-[#D91E18]'
+                          : 'bg-stone-400'
+                      }`}
+                    />
+                    <span className="capitalize">{order.status}</span>
+                  </span>
+
+                  {order.paymentStatus === 'paid' && (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-800">
+                      <CheckCircle2 className="h-3 w-3" />
+                      <span>Paid</span>
+                    </span>
+                  )}
+                </div>
 
                 {order.status === 'pending' ? (
                   <div className="flex w-full space-x-2 sm:w-auto">
                     <button
                       type="button"
+                      disabled={Boolean(updatingIds[order._id])}
                       onClick={() => handleUpdateStatus(order._id, 'accepted')}
-                      className="flex cursor-pointer items-center space-x-1.5 rounded-xl bg-[#18120E] px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-[#D91E18]"
+                      className="flex cursor-pointer items-center space-x-1.5 rounded-xl bg-[#18120E] px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-[#D91E18] disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       <span>Accept</span>
                     </button>
                     <button
                       type="button"
+                      disabled={Boolean(updatingIds[order._id])}
                       onClick={() => handleUpdateStatus(order._id, 'rejected')}
-                      className="flex cursor-pointer items-center space-x-1.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2 text-xs font-bold text-[#D91E18] transition-colors hover:bg-[#D91E18] hover:text-white"
+                      className="flex cursor-pointer items-center space-x-1.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2 text-xs font-bold text-[#D91E18] transition-colors hover:bg-[#D91E18] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <XCircle className="h-3.5 w-3.5" />
                       <span>Reject</span>

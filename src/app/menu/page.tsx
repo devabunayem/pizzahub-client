@@ -117,41 +117,41 @@ function BrowseMenuContent() {
   };
 
   return (
-    <section className="min-h-[85vh] bg-[#FAF7F2] py-10 md:py-14">
-      <div className="site-container space-y-8">
+    <section className="min-h-[82vh] bg-[#FAF7F2] py-7 md:py-10">
+      <div className="site-container space-y-6">
         {/* Editorial Page Header */}
-        <div className="flex flex-col justify-between gap-4 border-b border-stone-200 pb-6 sm:flex-row sm:items-end">
+        <div className="flex flex-col justify-between gap-4 border-b border-stone-200 pb-5 sm:flex-row sm:items-end">
           <div>
-            <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.22em] text-[#9A4A12]">
+            <div className="mb-1.5 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#9A4A12]">
               <span className="h-2 w-2 rounded-full bg-[#D91E18]" />
               <span>Wood-Fired Kitchens</span>
             </div>
             <h1 className="leading-[0.98] tracking-tight text-[#18120E]">
-              <span className="font-display text-[clamp(2.1rem,3.8vw,3.2rem)] uppercase">
+              <span className="font-display text-[clamp(1.75rem,3vw,2.4rem)] uppercase">
                 BROWSE{' '}
               </span>
               <BrushHighlight immediate color="#D91E18" secondaryColor="#9A4A12" delay={0.18}>
-                <span className="font-editorial italic font-normal lowercase text-[#9A4A12] text-[clamp(2.3rem,4.2vw,3.5rem)]">
+                <span className="font-editorial italic font-normal lowercase text-[#9A4A12] text-[clamp(1.85rem,3.2vw,2.6rem)]">
                   artisan
                 </span>
               </BrushHighlight>
-              <span className="font-display text-[clamp(2.1rem,3.8vw,3.2rem)] uppercase">
+              <span className="font-display text-[clamp(1.75rem,3vw,2.4rem)] uppercase">
                 {' '}
                 MENU
               </span>
             </h1>
-            <p className="mt-2 text-sm text-[#6E6259]">
+            <p className="mt-1.5 text-sm text-[#6E6259]">
               Explore wood-fired pizzas, gourmet specialties, sides, and handcrafted desserts.
             </p>
           </div>
 
-          <div className="inline-flex items-center self-start rounded-full border border-stone-200 bg-white px-4 py-2 text-xs font-bold text-[#18120E] tabular-nums shadow-sm sm:self-auto">
+          <div className="inline-flex items-center self-start rounded-full border border-stone-200 bg-white px-4 py-1.5 text-xs font-bold text-[#18120E] tabular-nums shadow-sm sm:self-auto">
             <span>{items.length} items available</span>
           </div>
         </div>
 
         {/* Search & Control Bar */}
-        <div className="space-y-4 rounded-3xl border border-stone-200/90 bg-white p-5 shadow-[0_14px_34px_-22px_rgba(24,18,14,0.14)]">
+        <div className="space-y-3 rounded-2xl border border-stone-200/90 bg-white p-4 shadow-[0_14px_34px_-22px_rgba(24,18,14,0.14)]">
           <form
             onSubmit={handleSearchSubmit}
             className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"

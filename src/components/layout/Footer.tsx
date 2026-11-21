@@ -22,51 +22,55 @@ export const Footer = () => {
     return null;
   }
 
+  const isAuthRoute = pathname === '/signin' || pathname === '/signup';
+
   return (
     <footer className="relative overflow-hidden bg-[#18120E] text-[#FAF7F2]">
       {/* Subtle top wood-ember hairline */}
       <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#E50916]/60 to-transparent" />
 
-      <div className="site-container py-16 md:py-20">
-        {/* Top Editorial Banner Row */}
-        <div className="flex flex-col justify-between gap-8 border-b border-white/10 pb-12 md:flex-row md:items-end">
-          <div>
-            <div className="mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#D97706]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#E50916]" />
-              <span>Wood-Fired Marketplace · 480°C Brick Ovens</span>
+      <div className="site-container py-10 md:py-12">
+        {/* Top Editorial Banner Row (hidden on auth pages to keep focus on forms) */}
+        {!isAuthRoute && (
+          <div className="flex flex-col justify-between gap-6 border-b border-white/10 pb-8 md:flex-row md:items-end">
+            <div>
+              <div className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#D97706]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#E50916]" />
+                <span>Wood-Fired Marketplace · 480°C Brick Ovens</span>
+              </div>
+              <h2 className="leading-[0.96] tracking-tight text-white">
+                <span className="font-display block text-[clamp(1.6rem,2.8vw,2.35rem)] uppercase">
+                  Craving An{' '}
+                  <BrushHighlight color="#E50916" secondaryColor="#D97706" delay={0.15}>
+                    <span className="font-editorial font-normal italic lowercase text-[#FAF7F2]">
+                      authentic
+                    </span>
+                  </BrushHighlight>{' '}
+                  Slice?
+                </span>
+              </h2>
             </div>
-            <h2 className="leading-[0.96] tracking-tight text-white">
-              <span className="font-display block text-[clamp(2.25rem,4.4vw,3.75rem)] uppercase">
-                Craving An{' '}
-                <BrushHighlight color="#E50916" secondaryColor="#D97706" delay={0.15}>
-                  <span className="font-editorial font-normal italic lowercase text-[#FAF7F2]">
-                    authentic
-                  </span>
-                </BrushHighlight>{' '}
-                Slice?
-              </span>
-            </h2>
-          </div>
 
-          <div className="flex flex-wrap items-center gap-4">
-            <Link
-              href="/menu"
-              className="group inline-flex items-center gap-2 rounded-full bg-[#E50916] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_12px_28px_-10px_rgba(229,9,22,0.65)] transition hover:bg-[#c80814]"
-            >
-              <span>Browse Full Menu</span>
-              <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </Link>
-            <Link
-              href="/signup?role=vendor"
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-semibold text-[#FAF7F2] transition hover:border-white/30 hover:bg-white/10"
-            >
-              <span>Partner Your Kitchen</span>
-            </Link>
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href="/menu"
+                className="group inline-flex items-center gap-2 rounded-full bg-[#E50916] px-5 py-2.5 text-xs font-semibold text-white shadow-[0_12px_28px_-10px_rgba(229,9,22,0.65)] transition hover:bg-[#c80814]"
+              >
+                <span>Browse Full Menu</span>
+                <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+              <Link
+                href="/signup?role=vendor"
+                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-xs font-semibold text-[#FAF7F2] transition hover:border-white/30 hover:bg-white/10"
+              >
+                <span>Partner Your Kitchen</span>
+              </Link>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Main 4-Column Directory */}
-        <div className="grid grid-cols-1 gap-10 py-14 sm:grid-cols-2 lg:grid-cols-12">
+        <div className={`grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-12 ${isAuthRoute ? 'pb-8' : 'py-8'}`}>
           {/* Brand Column */}
           <div className="lg:col-span-4">
             <Link href="/" className="inline-flex items-center gap-2.5 text-xl font-black tracking-tight text-white">

@@ -136,45 +136,45 @@ export function PremiumStatCard({
 
   const cardBody = (
     <div
-      className={`group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border p-6 transition-all duration-300 hover:-translate-y-0.5 ${
+      className={`group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border p-4 sm:p-5 transition-all duration-300 hover:-translate-y-0.5 ${
         styles.wrapper
       } ${highlight && tone !== 'dark' ? 'border-[#D91E18]/50 ring-2 ring-[#D91E18]/15' : ''}`}
     >
       {/* Subtle Ambient Corner Glow */}
       {tone === 'dark' ? (
-        <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#E50916]/20 blur-2xl" />
+        <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[#E50916]/20 blur-2xl" />
       ) : (
-        <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[#FAF7F2] opacity-80 blur-xl" />
+        <div className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-[#FAF7F2] opacity-80 blur-xl" />
       )}
 
       {/* Header: Live Dot + Label + Ringed Medallion */}
-      <div className="relative z-10 flex items-center justify-between gap-3">
+      <div className="relative z-10 flex items-center justify-between gap-2.5">
         <div className="flex items-center gap-2 min-w-0">
           <span className={`h-2 w-2 shrink-0 rounded-full ${styles.dot}`} />
           <span
-            className={`truncate text-[11px] font-bold uppercase tracking-[0.16em] ${styles.label}`}
+            className={`truncate text-[10px] font-bold uppercase tracking-[0.16em] ${styles.label}`}
           >
             {label}
           </span>
         </div>
 
         <div
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-105 ${styles.medallion}`}
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-105 ${styles.medallion}`}
         >
           <Icon className="h-4 w-4" />
         </div>
       </div>
 
       {/* Primary KPI Metric + Smooth Micro Sparkline */}
-      <div className="relative z-10 my-4 flex items-end justify-between gap-3">
-        <div className={`font-display text-[2.65rem] leading-none tracking-tight tabular-nums ${styles.value}`}>
+      <div className="relative z-10 my-2.5 flex items-end justify-between gap-3">
+        <div className={`font-display text-3xl leading-none tracking-tight tabular-nums ${styles.value}`}>
           {value}
         </div>
 
         <svg
           aria-hidden="true"
           viewBox="0 0 76 28"
-          className="h-7 w-[76px] shrink-0 overflow-visible opacity-75 transition-opacity group-hover:opacity-100"
+          className="h-6 w-[68px] shrink-0 overflow-visible opacity-75 transition-opacity group-hover:opacity-100"
           fill="none"
         >
           <path
@@ -189,7 +189,7 @@ export function PremiumStatCard({
 
       {/* Footer Meta + Pill Badge / Arrow */}
       <div
-        className={`relative z-10 flex items-center justify-between gap-2 border-t pt-3.5 text-xs ${styles.footerBorder}`}
+        className={`relative z-10 flex items-center justify-between gap-2 border-t pt-2.5 text-xs ${styles.footerBorder}`}
       >
         <span className={`truncate font-medium ${styles.subtitle}`}>{subtitle}</span>
 

@@ -172,29 +172,29 @@ export function ProfileSettingsPanel({ inDashboard = false }: ProfileSettingsPan
       )}
 
       {/* Bold Charred Espresso Identity Command Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-stone-800 bg-[#18120E] p-7 sm:p-9 text-[#FAF7F2] shadow-[0_24px_56px_-22px_rgba(24,18,14,0.38)]">
-        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[#E50916]/15 blur-3xl" />
+      <div className="relative overflow-hidden rounded-2xl border border-stone-800 bg-[#18120E] p-5 sm:p-6 text-[#FAF7F2] shadow-[0_20px_44px_-22px_rgba(24,18,14,0.34)]">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#E50916]/15 blur-3xl" />
 
-        <div className="relative z-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
-          <div className="flex items-center gap-5">
+        <div className="relative z-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+          <div className="flex items-center gap-4">
             <div className="relative shrink-0">
               {image ? (
                 <img
                   src={image}
                   alt={name || user.name}
-                  className="h-20 w-20 rounded-3xl border-2 border-white/15 bg-stone-900 object-cover shadow-lg"
+                  className="h-16 w-16 rounded-2xl border-2 border-white/15 bg-stone-900 object-cover shadow-lg"
                 />
               ) : (
-                <div className="font-display flex h-20 w-20 items-center justify-center rounded-3xl border-2 border-white/15 bg-[#D91E18] text-3xl uppercase text-white shadow-lg">
+                <div className="font-display flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-white/15 bg-[#D91E18] text-2xl uppercase text-white shadow-lg">
                   {(name || user.name).charAt(0) || 'P'}
                 </div>
               )}
 
               <label
                 title="Upload profile photo"
-                className="absolute -bottom-1.5 -right-1.5 flex h-8 w-8 cursor-pointer items-center justify-center rounded-xl border border-white/20 bg-[#18120E] text-white shadow-md transition hover:bg-[#E50916]"
+                className="absolute -bottom-1 -right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg border border-white/20 bg-[#18120E] text-white shadow-md transition hover:bg-[#E50916]"
               >
-                <Camera className="h-4 w-4" />
+                <Camera className="h-3.5 w-3.5" />
                 <input
                   type="file"
                   accept="image/*"
@@ -206,14 +206,14 @@ export function ProfileSettingsPanel({ inDashboard = false }: ProfileSettingsPan
             </div>
 
             <div className="min-w-0">
-              <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-0.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#D97706]">
+              <div className="mb-1 flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#D97706]">
                   <Shield className="h-3 w-3 text-[#E50916]" />
                   <span>{user.role} Account</span>
                 </span>
                 {user.role === 'vendor' && (
                   <span
-                    className={`inline-flex items-center gap-1 rounded-full px-3 py-0.5 text-[11px] font-bold uppercase tracking-wider ${
+                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
                       isPremiumVendor
                         ? 'bg-[#9A4A12] text-white'
                         : 'border border-white/15 bg-white/5 text-stone-300'
@@ -226,22 +226,22 @@ export function ProfileSettingsPanel({ inDashboard = false }: ProfileSettingsPan
               </div>
 
               <h1 className="leading-[0.98] tracking-tight text-white">
-                <span className="font-display text-2xl uppercase sm:text-3xl">
+                <span className="font-display text-xl uppercase sm:text-2xl">
                   PROFILE{' '}
                 </span>
                 <BrushHighlight immediate color="#E50916" secondaryColor="#D97706" delay={0.15}>
-                  <span className="font-editorial text-2xl italic font-normal lowercase text-[#FAF7F2] sm:text-3xl">
+                  <span className="font-editorial text-xl italic font-normal lowercase text-[#FAF7F2] sm:text-2xl">
                     identity
                   </span>
                 </BrushHighlight>
               </h1>
-              <p className="mt-1.5 truncate text-xs text-stone-300 sm:text-sm">
+              <p className="mt-1 truncate text-xs text-stone-300">
                 {name || user.name} • {user.email}
               </p>
             </div>
           </div>
 
-          <label className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 self-start rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#E50916] hover:border-[#E50916] sm:self-auto">
+          <label className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 self-start rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold text-white transition hover:bg-[#E50916] hover:border-[#E50916] sm:self-auto">
             <Camera className="h-3.5 w-3.5" />
             <span>{uploadingImage ? 'Uploading...' : 'Upload Photo'}</span>
             <input
