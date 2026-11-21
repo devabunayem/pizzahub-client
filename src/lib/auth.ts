@@ -9,25 +9,49 @@ if (!uri && process.env.NODE_ENV === 'production') {
 }
 
 let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
 
 declare global {
   // eslint-disable-next-line no-var
   var _mongoClient: MongoClient | undefined;
+  // eslint-disable-next-line no-var
+  var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
 if (!global._mongoClient) {
   global._mongoClient = new MongoClient(uri, {
     maxPoolSize: 5,
-    serverSelectionTimeoutMS: 8000,
-    connectTimeoutMS: 8000,
+    serverSelectionTimeoutMS: 10000,
+    connectTimeoutMS: 10000,
   });
 }
 client = global._mongoClient;
 
+if (!global._mongoClientPromise) {
+  global._mongoClientPromise = client.connect();
+}
+clientPromise = global._mongoClientPromise;
+
+export const ensureAuthDbConnected = async () => {
+  try {
+    await clientPromise;
+  } catch {
+    global._mongoClient = new MongoClient(uri, {
+      maxPoolSize: 5,
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
+    });
+    client = global._mongoClient;
+    global._mongoClientPromise = client.connect();
+    clientPromise = global._mongoClientPromise;
+    await clientPromise;
+  }
+};
+
 const db = client.db(process.env.DB_NAME || 'pizzahub');
 
 export const auth = betterAuth({
-  database: mongodbAdapter(db),
+  database: mongodbAdapter(db, { client, transaction: false }),
   secret: process.env.BETTER_AUTH_SECRET || 'dev_secret_only_for_local_development_placeholder_key',
   baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
   trustedOrigins: [
