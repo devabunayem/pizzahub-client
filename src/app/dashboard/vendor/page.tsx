@@ -147,7 +147,7 @@ export default function VendorOverviewPage() {
       </div>
 
       {/* Bento 5-Card KPI Row */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
         <PremiumStatCard
           tone="dark"
           label="Total Menu Items"

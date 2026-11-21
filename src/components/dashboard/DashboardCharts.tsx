@@ -29,6 +29,8 @@ export function StatusDonutChart({
   const circumference = 2 * Math.PI * radius;
 
   let cumulativeFraction = 0;
+  const activeSegmentCount = segments.filter((s) => Math.max(0, s.value) > 0).length;
+  const segmentGap = activeSegmentCount > 1 ? 2 : 0;
 
   return (
     <div className="flex h-full flex-col justify-between rounded-3xl border border-stone-200/90 bg-white p-6 shadow-sm">
@@ -65,7 +67,7 @@ export function StatusDonutChart({
                 const value = Math.max(0, seg.value);
                 if (value === 0) return null;
                 const fraction = value / total;
-                const dashLength = Math.max(0, fraction * circumference - 2);
+                const dashLength = Math.max(0, fraction * circumference - segmentGap);
                 const dashOffset = -cumulativeFraction * circumference;
                 cumulativeFraction += fraction;
 
@@ -80,9 +82,8 @@ export function StatusDonutChart({
                     strokeWidth={strokeWidth}
                     strokeLinecap="butt"
                     strokeDasharray={`${dashLength} ${circumference}`}
-                    strokeDashoffset={dashOffset}
-                    initial={{ opacity: 0, pathLength: 0 }}
-                    animate={{ opacity: 1, pathLength: 1 }}
+                    initial={{ opacity: 0, strokeDashoffset: dashOffset + 24 }}
+                    animate={{ opacity: 1, strokeDashoffset: dashOffset }}
                     transition={{ duration: 0.7, delay: idx * 0.1, ease: [0.22, 1, 0.36, 1] }}
                   />
                 );
