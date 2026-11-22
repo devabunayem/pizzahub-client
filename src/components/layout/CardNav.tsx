@@ -118,21 +118,21 @@ const PANEL =
 const RIM =
   'pointer-events-none absolute inset-0 z-[3] rounded-[inherit] [box-shadow:inset_0_0_0_1px_var(--cn-edge),inset_0_1px_0_var(--cn-highlight)]';
 const BAR =
-  'relative z-[2] box-border grid h-[var(--cn-bar)] grid-cols-[1fr_auto_1fr] items-center px-[var(--cn-inset)] max-sm:grid-cols-[auto_1fr_auto] group-data-[narrow]/cn:grid-cols-[auto_1fr_auto]';
+  'relative z-[2] box-border grid h-[var(--cn-bar)] grid-cols-[1fr_auto_1fr] items-center px-[var(--cn-inset)]';
 const MENU =
-  'inline-flex h-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] cursor-pointer items-center gap-[10px] justify-self-start rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] border-0 pl-[16px] pr-[14px] [background:none] [font-family:inherit] [font-size:inherit] font-medium [color:var(--cn-text)] outline-none transition-[background-color] duration-200 ease-[ease] hover:[background:var(--cn-hover)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)] data-[icon-only]:w-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] data-[icon-only]:justify-center data-[icon-only]:p-0 max-sm:col-[3] max-sm:row-[1] max-sm:justify-self-end group-data-[narrow]/cn:col-[3] group-data-[narrow]/cn:row-[1] group-data-[narrow]/cn:justify-self-end';
+  'inline-flex h-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] cursor-pointer items-center gap-[10px] justify-self-start rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] border-0 pl-[16px] pr-[14px] max-sm:w-10 max-sm:justify-center max-sm:px-0 [background:none] [font-family:inherit] [font-size:inherit] font-medium [color:var(--cn-text)] outline-none transition-[background-color] duration-200 ease-[ease] hover:[background:var(--cn-hover)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)] data-[icon-only]:w-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] data-[icon-only]:justify-center data-[icon-only]:p-0';
 const BURGER = 'relative h-[12px] w-[18px]';
 const LINE_TOP =
   'absolute left-0 top-[2.25px] h-[1.5px] w-full rounded-[2px] bg-current transition-[top,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[open]/cn:top-[5.25px] group-data-[open]/cn:rotate-45 motion-reduce:transition-none';
 const LINE_BOTTOM =
   'absolute left-0 top-[8.25px] h-[1.5px] w-full rounded-[2px] bg-current transition-[top,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[open]/cn:top-[5.25px] group-data-[open]/cn:-rotate-45 motion-reduce:transition-none';
-const MENU_LABEL = 'relative inline-grid overflow-hidden';
+const MENU_LABEL = 'relative inline-grid overflow-hidden max-sm:hidden';
 const WORD_OPEN =
   '[grid-area:1/1] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[open]/cn:-translate-y-[110%] motion-reduce:transition-none';
 const WORD_CLOSE =
   '[grid-area:1/1] translate-y-[110%] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[open]/cn:translate-y-0 motion-reduce:transition-none';
 const LOGO =
-  'inline-flex h-[var(--cn-logo)] items-center justify-self-center [color:var(--cn-text)] no-underline outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)] [&>img]:block [&>img]:h-full [&>img]:w-auto [&>svg]:block [&>svg]:h-full [&>svg]:w-auto max-sm:col-[1] max-sm:row-[1] max-sm:justify-self-start max-sm:pl-[14px] group-data-[narrow]/cn:col-[1] group-data-[narrow]/cn:row-[1] group-data-[narrow]/cn:justify-self-start group-data-[narrow]/cn:pl-[14px]';
+  'inline-flex h-[var(--cn-logo)] items-center justify-self-center [color:var(--cn-text)] no-underline outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)] [&>img]:block [&>img]:h-full [&>img]:w-auto [&>svg]:block [&>svg]:h-full [&>svg]:w-auto max-sm:h-[32px]';
 const CTA =
   'inline-flex h-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] justify-self-end max-sm:hidden cursor-pointer items-center justify-center whitespace-nowrap rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] border-0 px-[16px] [background:var(--cn-cta)] [box-shadow:var(--cn-cta-shadow)] [font-family:inherit] [font-size:inherit] font-semibold [color:var(--cn-cta-ink)] no-underline outline-none transition-[filter] duration-200 ease-[ease] hover:[filter:var(--cn-cta-hover)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)]';
 const CTA_WIDE =
@@ -568,9 +568,7 @@ const CardNav = ({
           )}
 
           {rightSlot ? (
-            <div className="justify-self-end max-sm:col-[2] max-sm:row-[1] max-sm:justify-self-end max-sm:mr-1.5 group-data-[narrow]/cn:col-[2] group-data-[narrow]/cn:row-[1] group-data-[narrow]/cn:justify-self-end group-data-[narrow]/cn:mr-1.5">
-              {rightSlot}
-            </div>
+            <div className="justify-self-end">{rightSlot}</div>
           ) : (
             cta && !narrow && ctaButton(cta, false)
           )}

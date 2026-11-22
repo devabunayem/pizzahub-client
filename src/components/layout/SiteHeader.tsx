@@ -73,7 +73,14 @@ export const SiteHeader = () => {
           { label: 'My Orders', href: '/dashboard/customer/orders' },
         ];
 
-  const pizzaHubLogo = <BrandLogo variant="horizontal" theme="light" size="sm" />;
+  const pizzaHubLogo = (
+    <BrandLogo
+      variant="horizontal"
+      theme="light"
+      size="sm"
+      className="max-sm:gap-1.5 max-sm:text-base max-sm:[&>span:first-child]:h-7 max-sm:[&>span:first-child]:w-7"
+    />
+  );
 
   const items: CardNavItem[] = [
     {
@@ -156,7 +163,7 @@ export const SiteHeader = () => {
   ) : (
     <Link
       href="/signup"
-      className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-xl bg-[#E50916] px-3 text-xs font-semibold text-white shadow-[0_6px_16px_-6px_rgba(229,9,22,0.55)] transition hover:bg-[#c80814] sm:h-[44px] sm:px-4 sm:text-sm"
+      className="inline-flex h-8 items-center justify-center whitespace-nowrap rounded-lg bg-[#E50916] px-2.5 text-[11px] font-semibold text-white shadow-[0_6px_16px_-6px_rgba(229,9,22,0.55)] transition hover:bg-[#c80814] sm:h-[44px] sm:rounded-xl sm:px-4 sm:text-sm"
     >
       Sign Up
     </Link>
