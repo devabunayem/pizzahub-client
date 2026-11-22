@@ -153,7 +153,14 @@ export const SiteHeader = () => {
         }`}
       />
     </button>
-  ) : undefined;
+  ) : (
+    <Link
+      href="/signup"
+      className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-xl bg-[#E50916] px-3 text-xs font-semibold text-white shadow-[0_6px_16px_-6px_rgba(229,9,22,0.55)] transition hover:bg-[#c80814] sm:h-[44px] sm:px-4 sm:text-sm"
+    >
+      Sign Up
+    </Link>
+  );
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white/85 pt-4 pb-2 backdrop-blur-sm">
@@ -163,7 +170,7 @@ export const SiteHeader = () => {
           logoAlt="PizzaHub"
           logoHref="/"
           items={items}
-          cta={user || isLoading ? undefined : { label: 'Sign Up', href: '/signup' }}
+          cta={undefined}
           rightSlot={navRightSlot}
           open={navOpen}
           onOpenChange={(next) => {
