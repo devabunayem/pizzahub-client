@@ -92,7 +92,7 @@ const THEMES: Record<string, Record<string, string>> = {
     '--cn-cta-hover': 'brightness(0.94)',
   },
   light: {
-    '--cn-panel': 'rgba(244, 244, 246, 0.84)',
+    '--cn-panel': 'rgba(248, 247, 245, 0.96)',
     '--cn-solid': '#f4f4f6',
     '--cn-edge': 'rgba(24, 24, 27, 0.07)',
     '--cn-highlight': 'rgba(255, 255, 255, 0.95)',

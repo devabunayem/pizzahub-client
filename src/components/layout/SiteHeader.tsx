@@ -154,7 +154,7 @@ export const SiteHeader = () => {
 
   const mobileAccountDrawerSlot =
     !isLoading && user ? (
-      <div className="w-full min-w-0 space-y-2.5 overflow-hidden rounded-[14px] border border-stone-200/90 bg-white p-3 shadow-sm">
+      <div className="w-full min-w-0 space-y-3 overflow-hidden rounded-[12px] border border-black/[0.06] bg-[#FAF7F2] px-[14px] py-[12px] shadow-[inset_0_1px_0_rgba(255,255,255,1),0_4px_10px_-5px_rgba(24,24,27,0.18)]">
         <div className="flex min-w-0 items-center gap-2.5">
           {user.image && !imgError ? (
             <img
@@ -170,7 +170,7 @@ export const SiteHeader = () => {
           )}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <p className="truncate text-xs font-bold text-[#18120E]">{user.name}</p>
+              <p className="truncate text-sm font-semibold text-[#18120E]">{user.name}</p>
               {isPremiumVendor && (
                 <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-[#9A4A12]">
                   <Crown className="h-2.5 w-2.5" />
@@ -178,29 +178,21 @@ export const SiteHeader = () => {
                 </span>
               )}
             </div>
-            <p className="truncate text-[11px] text-[#6E6259]">{user.email}</p>
+            <p className="truncate text-xs text-[#6E6259]">{user.email}</p>
           </div>
-          <span className="shrink-0 rounded-full bg-[#FAF7F2] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#9A4A12] ring-1 ring-stone-200/80">
+          <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#9A4A12] ring-1 ring-stone-200/80">
             {user.role}
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-1.5 pt-0.5">
-          <Link
-            href={dashboardPath}
-            onClick={() => setNavOpen(false)}
-            className="flex min-w-0 items-center justify-center gap-1.5 rounded-xl bg-[#18120E] px-2.5 py-2 text-[11px] font-bold text-white transition hover:bg-[#D91E18]"
-          >
-            <LayoutDashboard className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate">Dashboard</span>
-          </Link>
+        <div className="flex items-center justify-between gap-3 border-t border-stone-200/80 pt-2.5 text-[14px] font-medium">
           <Link
             href="/dashboard/profile"
             onClick={() => setNavOpen(false)}
-            className="flex min-w-0 items-center justify-center gap-1.5 rounded-xl border border-stone-200 bg-[#FAF7F2] px-2.5 py-2 text-[11px] font-bold text-[#18120E] transition hover:bg-stone-100"
+            className="inline-flex items-center gap-1.5 text-[#18120E]/85 transition-opacity hover:text-[#18120E] hover:opacity-100"
           >
-            <Settings className="h-3.5 w-3.5 shrink-0 text-[#9A4A12]" />
-            <span className="truncate">Profile</span>
+            <Settings className="h-3.5 w-3.5 text-[#9A4A12]" />
+            <span>Profile Settings</span>
           </Link>
           <button
             type="button"
@@ -208,9 +200,9 @@ export const SiteHeader = () => {
               setNavOpen(false);
               logout();
             }}
-            className="col-span-2 flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-2.5 py-2 text-[11px] font-bold text-[#D91E18] transition hover:bg-red-100 cursor-pointer"
+            className="inline-flex items-center gap-1.5 font-semibold text-[#D91E18] transition-opacity hover:opacity-80 cursor-pointer"
           >
-            <LogOut className="h-3.5 w-3.5 shrink-0" />
+            <LogOut className="h-3.5 w-3.5" />
             <span>Logout</span>
           </button>
         </div>
