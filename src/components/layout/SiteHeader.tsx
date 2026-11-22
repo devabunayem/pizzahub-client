@@ -18,12 +18,14 @@ export const SiteHeader = () => {
   const { user, logout, isLoading } = useAuth();
   const pathname = usePathname();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setImgError(false);
     setProfileOpen(false);
+    setNavOpen(false);
   }, [user?._id, user?.image, pathname]);
 
   useEffect(() => {
@@ -150,6 +152,71 @@ export const SiteHeader = () => {
     </button>
   ) : undefined;
 
+  const mobileAccountDrawerSlot =
+    !isLoading && user ? (
+      <div className="space-y-2.5 rounded-[14px] border border-stone-200/90 bg-white p-3 shadow-sm">
+        <div className="flex items-center gap-2.5">
+          {user.image && !imgError ? (
+            <img
+              src={user.image}
+              alt={user.name}
+              onError={() => setImgError(true)}
+              className="h-9 w-9 shrink-0 rounded-xl object-cover ring-1 ring-black/10"
+            />
+          ) : (
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D91E18] text-xs font-bold text-white">
+              {userInitial}
+            </span>
+          )}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <p className="truncate text-xs font-bold text-[#18120E]">{user.name}</p>
+              {isPremiumVendor && (
+                <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-[#9A4A12]">
+                  <Crown className="h-2.5 w-2.5" />
+                  PRO
+                </span>
+              )}
+            </div>
+            <p className="truncate text-[11px] text-[#6E6259]">{user.email}</p>
+          </div>
+          <span className="shrink-0 rounded-full bg-[#FAF7F2] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#9A4A12] ring-1 ring-stone-200/80">
+            {user.role}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-3 gap-1.5 pt-0.5">
+          <Link
+            href={dashboardPath}
+            onClick={() => setNavOpen(false)}
+            className="flex items-center justify-center gap-1 rounded-xl bg-[#18120E] px-2 py-2 text-[11px] font-bold text-white transition hover:bg-[#D91E18]"
+          >
+            <LayoutDashboard className="h-3.5 w-3.5" />
+            <span>Dashboard</span>
+          </Link>
+          <Link
+            href="/dashboard/profile"
+            onClick={() => setNavOpen(false)}
+            className="flex items-center justify-center gap-1 rounded-xl border border-stone-200 bg-[#FAF7F2] px-2 py-2 text-[11px] font-bold text-[#18120E] transition hover:bg-stone-100"
+          >
+            <Settings className="h-3.5 w-3.5 text-[#9A4A12]" />
+            <span>Profile</span>
+          </Link>
+          <button
+            type="button"
+            onClick={() => {
+              setNavOpen(false);
+              logout();
+            }}
+            className="flex items-center justify-center gap-1 rounded-xl border border-red-200 bg-red-50 px-2 py-2 text-[11px] font-bold text-[#D91E18] transition hover:bg-red-100 cursor-pointer"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+    ) : undefined;
+
   return (
     <header className="sticky top-0 z-50 w-full bg-white/85 pt-4 pb-2 backdrop-blur-sm">
       <div ref={dropdownRef} className="site-container relative">
@@ -160,6 +227,9 @@ export const SiteHeader = () => {
           items={items}
           cta={user || isLoading ? undefined : { label: 'Sign Up', href: '/signup' }}
           rightSlot={navRightSlot}
+          mobileFooterSlot={mobileAccountDrawerSlot}
+          open={navOpen}
+          onOpenChange={setNavOpen}
           theme="light"
           surface="glass"
           accentColor="#e50916"

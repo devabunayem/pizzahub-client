@@ -42,6 +42,7 @@ export interface CardNavProps {
   items?: CardNavItem[];
   cta?: CardNavCta;
   rightSlot?: ReactNode;
+  mobileFooterSlot?: ReactNode;
   theme?: 'dark' | 'light';
   surface?: 'glass' | 'solid';
   openOn?: 'click' | 'hover';
@@ -217,6 +218,7 @@ const CardNav = ({
   items = DEFAULT_ITEMS,
   cta,
   rightSlot,
+  mobileFooterSlot,
   theme = 'dark',
   surface = 'glass',
   openOn = 'click',
@@ -254,7 +256,7 @@ const CardNav = ({
   const [shown, setShown] = useState(defaultOpen);
 
   const controlled = openProp !== undefined;
-  const hasCta = Boolean(cta);
+  const hasCta = Boolean(cta || mobileFooterSlot);
   const open = controlled ? openProp : openState;
 
   const settings = {
@@ -566,9 +568,7 @@ const CardNav = ({
           )}
 
           {rightSlot ? (
-            <div className="justify-self-end group-data-[narrow]/cn:col-[2] group-data-[narrow]/cn:row-[1] group-data-[narrow]/cn:justify-self-end group-data-[narrow]/cn:mr-1.5">
-              {rightSlot}
-            </div>
+            !narrow && <div className="justify-self-end">{rightSlot}</div>
           ) : (
             cta && !narrow && ctaButton(cta, false)
           )}
@@ -619,13 +619,13 @@ const CardNav = ({
               </div>
             ))}
           </div>
-          {cta && narrow && (
+          {narrow && (mobileFooterSlot || cta) && (
             <div
               ref={(element) => {
                 cardRefs.current[items.length] = element;
               }}
             >
-              {ctaButton(cta, true)}
+              {mobileFooterSlot ? mobileFooterSlot : cta ? ctaButton(cta, true) : null}
             </div>
           )}
         </div>
