@@ -120,17 +120,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(161, 161, 170, 0.5);
 }
-
-/* Sileo Dynamic Island Toast Sizing & Stacking */
-:root {
-  --sileo-width: 390px;
-  --sileo-height: 46px;
-}
-
-[data-sileo-viewport] {
-  z-index: 100 !important;
-}
-
-[data-sileo-toast] {
-  filter: drop-shadow(0 18px 34px rgba(24, 18, 14, 0.24));
-}

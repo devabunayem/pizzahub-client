@@ -1,84 +1,98 @@
-import { sileo, type SileoOptions } from 'sileo';
+import React from 'react';
+import hotToast from 'react-hot-toast';
+import { BrandToast, type BrandToastVariant } from '@/components/ui/BrandToast';
 
-type ToastInput = string | SileoOptions;
+interface ToastObjectInput {
+  id?: string;
+  title?: string;
+  message?: string;
+  description?: string;
+  duration?: number | null;
+}
+
+type ToastInput = string | ToastObjectInput;
 type ExtraOptions = { id?: string; duration?: number; description?: string } | string;
 
-let toastSeq = 0;
+interface ParsedToastArgs {
+  id?: string;
+  title: string;
+  description?: string;
+  duration?: number;
+}
 
-function parseArgs(input: ToastInput, extra?: ExtraOptions): SileoOptions {
-  const id = `pizzahub-toast-${++toastSeq}`;
+function parseArgs(input: ToastInput, extra?: ExtraOptions): ParsedToastArgs {
   if (typeof input === 'string') {
     if (typeof extra === 'string') {
-      return { id, title: input, description: extra } as SileoOptions;
+      return { title: input, description: extra };
     }
     if (extra && typeof extra === 'object') {
-      const { description, duration } = extra;
       return {
-        id,
+        id: extra.id,
         title: input,
-        description,
-        duration,
-      } as SileoOptions;
+        description: extra.description,
+        duration: extra.duration,
+      };
     }
-    return { id, title: input } as SileoOptions;
+    return { title: input };
   }
-  return { id, ...input } as SileoOptions;
+
+  return {
+    id: input.id,
+    title: input.title || input.message || '',
+    description: input.description,
+    duration: input.duration === null ? Infinity : input.duration,
+  };
+}
+
+function showBrandToast(
+  variant: BrandToastVariant,
+  input: ToastInput,
+  extra?: ExtraOptions
+) {
+  const parsed = parseArgs(input, extra);
+  const duration =
+    parsed.duration !== undefined
+      ? parsed.duration
+      : variant === 'loading'
+      ? Infinity
+      : 4200;
+
+  return hotToast.custom(
+    (t) =>
+      React.createElement(BrandToast, {
+        t,
+        variant,
+        title: parsed.title,
+        description: parsed.description,
+      }),
+    {
+      id: parsed.id,
+      duration,
+    }
+  );
 }
 
 export const toast = {
-  success: (input: ToastInput, extra?: ExtraOptions) => {
-    if (extra && typeof extra === 'object' && extra.id) {
-      sileo.dismiss(extra.id);
-    }
-    const opts = parseArgs(input, extra);
-    return sileo.success(opts);
-  },
+  success: (input: ToastInput, extra?: ExtraOptions) =>
+    showBrandToast('success', input, extra),
 
-  error: (input: ToastInput, extra?: ExtraOptions) => {
-    if (extra && typeof extra === 'object' && extra.id) {
-      sileo.dismiss(extra.id);
-    }
-    const opts = parseArgs(input, extra);
-    return sileo.error(opts);
-  },
+  error: (input: ToastInput, extra?: ExtraOptions) =>
+    showBrandToast('error', input, extra),
 
-  info: (input: ToastInput, extra?: ExtraOptions) => {
-    if (extra && typeof extra === 'object' && extra.id) {
-      sileo.dismiss(extra.id);
-    }
-    const opts = parseArgs(input, extra);
-    return sileo.info(opts);
-  },
+  info: (input: ToastInput, extra?: ExtraOptions) =>
+    showBrandToast('info', input, extra),
 
-  warning: (input: ToastInput, extra?: ExtraOptions) => {
-    if (extra && typeof extra === 'object' && extra.id) {
-      sileo.dismiss(extra.id);
-    }
-    const opts = parseArgs(input, extra);
-    return sileo.warning(opts);
-  },
+  warning: (input: ToastInput, extra?: ExtraOptions) =>
+    showBrandToast('warning', input, extra),
 
-  loading: (input: ToastInput, extra?: ExtraOptions) => {
-    const opts = parseArgs(input, extra);
-    return sileo.show({
-      type: 'loading',
-      ...opts,
-      duration: null, // Keep loading until dismissed or resolved
-    });
-  },
+  loading: (input: ToastInput, extra?: ExtraOptions) =>
+    showBrandToast('loading', input, extra),
 
   dismiss: (id?: string) => {
-    if (id) {
-      sileo.dismiss(id);
-    } else {
-      sileo.clear();
-    }
+    hotToast.dismiss(id);
   },
 
-  promise: sileo.promise,
-  show: sileo.show,
-  raw: sileo,
+  promise: hotToast.promise,
 };
 
-export { sileo };
 export default toast;
