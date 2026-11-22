@@ -568,7 +568,9 @@ const CardNav = ({
           )}
 
           {rightSlot ? (
-            !narrow && <div className="justify-self-end">{rightSlot}</div>
+            <div className="justify-self-end group-data-[narrow]/cn:col-[2] group-data-[narrow]/cn:row-[1] group-data-[narrow]/cn:justify-self-end group-data-[narrow]/cn:mr-1.5">
+              {rightSlot}
+            </div>
           ) : (
             cta && !narrow && ctaButton(cta, false)
           )}

@@ -105,9 +105,9 @@ export const SiteHeader = () => {
   const navRightSlot = isLoading ? (
     <div
       aria-hidden="true"
-      className="flex h-[44px] items-center gap-2 rounded-[12px] px-2 pr-2.5"
+      className="flex h-10 items-center gap-2 rounded-full p-1 sm:h-[44px] sm:rounded-[12px] sm:px-2 sm:pr-2.5"
     >
-      <div className="skeleton-shimmer h-8 w-8 rounded-xl" />
+      <div className="skeleton-shimmer h-8 w-8 rounded-full" />
       <div className="hidden space-y-1.5 sm:block">
         <div className="skeleton-shimmer h-3 w-20 rounded" />
         <div className="skeleton-shimmer h-2.5 w-12 rounded" />
@@ -116,21 +116,24 @@ export const SiteHeader = () => {
   ) : user ? (
     <button
       type="button"
-      onClick={() => setProfileOpen((prev) => !prev)}
+      onClick={() => {
+        setNavOpen(false);
+        setProfileOpen((prev) => !prev);
+      }}
       aria-expanded={profileOpen}
       aria-haspopup="menu"
       aria-label="Open account menu"
-      className="flex h-[44px] items-center gap-2 rounded-[12px] px-2 pr-2.5 text-left text-stone-900 transition hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-700 cursor-pointer"
+      className="flex h-10 items-center gap-2 rounded-full p-1 text-left text-stone-900 transition hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-700 sm:h-[44px] sm:rounded-[12px] sm:px-2 sm:pr-2.5 cursor-pointer"
     >
       {user.image && !imgError ? (
         <img
           src={user.image}
           alt={user.name}
           onError={() => setImgError(true)}
-          className="h-8 w-8 rounded-xl object-cover ring-1 ring-black/10"
+          className="h-8 w-8 rounded-full object-cover ring-1 ring-black/15"
         />
       ) : (
-        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#D91E18] text-xs font-bold text-white shadow-sm">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#D91E18] text-xs font-bold text-white shadow-sm">
           {userInitial}
         </span>
       )}
@@ -145,69 +148,12 @@ export const SiteHeader = () => {
       </div>
 
       <ChevronDown
-        className={`h-4 w-4 text-stone-500 transition-transform duration-200 ${
+        className={`hidden sm:block h-4 w-4 text-stone-500 transition-transform duration-200 ${
           profileOpen ? 'rotate-180' : ''
         }`}
       />
     </button>
   ) : undefined;
-
-  const mobileAccountDrawerSlot =
-    !isLoading && user ? (
-      <div className="w-full min-w-0 space-y-3 overflow-hidden rounded-[12px] border border-black/[0.06] bg-[#FAF7F2] px-[14px] py-[12px] shadow-[inset_0_1px_0_rgba(255,255,255,1),0_4px_10px_-5px_rgba(24,24,27,0.18)]">
-        <div className="flex min-w-0 items-center gap-2.5">
-          {user.image && !imgError ? (
-            <img
-              src={user.image}
-              alt={user.name}
-              onError={() => setImgError(true)}
-              className="h-9 w-9 shrink-0 rounded-xl object-cover ring-1 ring-black/10"
-            />
-          ) : (
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D91E18] text-xs font-bold text-white">
-              {userInitial}
-            </span>
-          )}
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5">
-              <p className="truncate text-sm font-semibold text-[#18120E]">{user.name}</p>
-              {isPremiumVendor && (
-                <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-[#9A4A12]">
-                  <Crown className="h-2.5 w-2.5" />
-                  PRO
-                </span>
-              )}
-            </div>
-            <p className="truncate text-xs text-[#6E6259]">{user.email}</p>
-          </div>
-          <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#9A4A12] ring-1 ring-stone-200/80">
-            {user.role}
-          </span>
-        </div>
-
-        <div className="flex items-center justify-between gap-3 border-t border-stone-200/80 pt-2.5 text-[14px] font-medium">
-          <Link
-            href="/dashboard/profile"
-            onClick={() => setNavOpen(false)}
-            className="inline-flex items-center gap-1.5 text-[#18120E]/85 transition-opacity hover:text-[#18120E] hover:opacity-100"
-          >
-            <Settings className="h-3.5 w-3.5 text-[#9A4A12]" />
-            <span>Profile Settings</span>
-          </Link>
-          <button
-            type="button"
-            onClick={() => {
-              setNavOpen(false);
-              logout();
-            }}
-            className="inline-flex items-center gap-1.5 font-semibold text-[#D91E18] transition-opacity hover:opacity-80 cursor-pointer"
-          >
-            <LogOut className="h-3.5 w-3.5" />
-            <span>Logout</span>
-          </button>
-        </div>
-      </div>
-    ) : undefined;
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white/85 pt-4 pb-2 backdrop-blur-sm">
@@ -219,9 +165,11 @@ export const SiteHeader = () => {
           items={items}
           cta={user || isLoading ? undefined : { label: 'Sign Up', href: '/signup' }}
           rightSlot={navRightSlot}
-          mobileFooterSlot={mobileAccountDrawerSlot}
           open={navOpen}
-          onOpenChange={setNavOpen}
+          onOpenChange={(next) => {
+            setNavOpen(next);
+            if (next) setProfileOpen(false);
+          }}
           theme="light"
           surface="glass"
           accentColor="#e50916"
