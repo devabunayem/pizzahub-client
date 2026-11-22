@@ -116,9 +116,9 @@ function SignUpContent() {
   return (
     <section className="flex min-h-[calc(100vh-88px)] items-center bg-[#FAF7F2] py-8 md:py-12">
       <div className="site-container">
-        <div className="mx-auto grid w-full max-w-4xl grid-cols-1 overflow-hidden rounded-3xl border border-[#18120E]/[0.08] bg-white shadow-[0_12px_36px_-18px_rgba(24,18,14,0.14)] lg:min-h-[580px] lg:grid-cols-12">
+        <div className="mx-auto grid w-full max-w-lg grid-cols-1 overflow-hidden rounded-3xl border border-[#18120E]/[0.08] bg-white shadow-[0_12px_36px_-18px_rgba(24,18,14,0.14)] lg:min-h-[580px] lg:max-w-4xl lg:grid-cols-12">
           {/* Left Editorial Showcase Panel */}
-          <div className="relative flex flex-col justify-between overflow-hidden bg-[#18120E] p-8 text-[#FAF7F2] lg:col-span-5">
+          <div className="relative hidden flex-col justify-between overflow-hidden bg-[#18120E] p-8 text-[#FAF7F2] lg:col-span-5 lg:flex">
             <img
               src="/images/cat-gourmet.jpg"
               alt="Artisan wood-fired truffle burrata pizza"
