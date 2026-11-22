@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -24,7 +25,11 @@ import { formatPrice } from '@/lib/utils';
 import { MenuGridSkeleton } from '@/components/ui/Skeleton';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { BrushHighlight } from '@/components/ui/BrushHighlight';
-import { OvenEmberCanvas } from '@/components/home/OvenEmberCanvas';
+
+const OvenEmberCanvas = dynamic(
+  () => import('@/components/home/OvenEmberCanvas').then((m) => m.OvenEmberCanvas),
+  { ssr: false }
+);
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -265,13 +270,73 @@ export default function HomePage() {
     }
   };
 
+  const pizzaSelectorBlock = (
+    <div className="w-full">
+      <div className="mb-3 flex items-center justify-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#6E6259] md:justify-start">
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#D91E18]" />
+        <span>Tap a pizza to preview</span>
+      </div>
+      <div
+        role="group"
+        aria-label="Select pizza preview"
+        className="flex flex-wrap items-start justify-center gap-3.5 sm:gap-5 md:justify-start"
+      >
+        {PIZZAS.map((pizza, index) => {
+          const isActive = index === activeIndex;
+          return (
+            <button
+              key={pizza.id}
+              type="button"
+              onClick={() => handleSelectPizza(index)}
+              aria-label={pizza.name}
+              aria-pressed={isActive}
+              title={pizza.name}
+              className={`group relative flex cursor-pointer flex-col items-center transition-all duration-300 focus:outline-none ${
+                isActive
+                  ? '-translate-y-1.5 scale-105'
+                  : 'opacity-85 hover:opacity-100 hover:-translate-y-0.5'
+              }`}
+            >
+              <div
+                className={`relative h-16 w-16 rounded-full p-1.5 transition-all duration-300 sm:h-20 sm:w-20 lg:h-24 lg:w-24 ${
+                  isActive
+                    ? 'bg-[#FAF7F2] ring-2 ring-[#D91E18] shadow-[0_14px_24px_-10px_rgba(217,30,24,0.4)]'
+                    : 'bg-white ring-1 ring-stone-200/90 shadow-sm group-hover:ring-[#D91E18]/50 group-hover:shadow-md'
+                }`}
+              >
+                <img
+                  src={pizza.image}
+                  alt={pizza.name}
+                  draggable={false}
+                  className="h-full w-full object-contain transition-transform duration-500 group-hover:rotate-12"
+                />
+              </div>
+              <span
+                className={`mt-2 max-w-[96px] text-center text-xs font-bold leading-tight tracking-tight transition-colors duration-300 sm:max-w-[110px] sm:text-sm ${
+                  isActive ? 'text-[#D91E18]' : 'text-[#6E6259] group-hover:text-[#18120E]'
+                }`}
+              >
+                {pizza.shortName}
+              </span>
+              <span
+                className={`mt-1 h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                  isActive ? 'scale-100 bg-[#e50916]' : 'scale-0 bg-stone-300 group-hover:scale-75'
+                }`}
+              />
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+
   return (
     <main ref={mainRef} className="w-full overflow-x-clip bg-white">
       {/* =========================================================
           BAND 1 — HERO SECTION (Pure White #FFFFFF)
          ========================================================= */}
-      <section className="site-container py-10 md:py-14">
-        <div className="flex flex-col items-center gap-12 md:flex-row md:items-center md:justify-between md:gap-12">
+      <section className="site-container py-6 md:py-14">
+        <div className="flex flex-col items-center gap-7 md:flex-row md:items-center md:justify-between md:gap-12">
           {/* Left hero text column */}
           <div className="flex-1 min-w-0 w-full flex flex-col items-center text-center md:items-start md:text-left">
             {/* Eyebrow line */}
@@ -350,97 +415,54 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* 4 clickable mini circular pizza thumbnails */}
-            <div className="mt-9 w-full">
-              <div
-                role="group"
-                aria-label="Select pizza preview"
-                className="flex flex-wrap items-start justify-center md:justify-start gap-4 sm:gap-5"
-              >
-                {PIZZAS.map((pizza, index) => {
-                  const isActive = index === activeIndex;
-                  return (
-                    <button
-                      key={pizza.id}
-                      type="button"
-                      onClick={() => handleSelectPizza(index)}
-                      aria-label={pizza.name}
-                      aria-pressed={isActive}
-                      title={pizza.name}
-                      className={`group relative flex flex-col items-center transition-all duration-300 focus:outline-none ${
-                        isActive
-                          ? '-translate-y-2 scale-[1.15]'
-                          : 'opacity-75 hover:opacity-100 hover:scale-105'
-                      }`}
-                    >
-                      <div
-                        className={`relative h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 rounded-full p-1 transition-all duration-300 ${
-                          isActive
-                            ? 'drop-shadow-[0_14px_18px_rgba(38,20,8,0.28)]'
-                            : 'hover:drop-shadow-md'
-                        }`}
-                      >
-                        <img
-                          src={pizza.image}
-                          alt={pizza.name}
-                          draggable={false}
-                          className="h-full w-full object-contain transition-transform duration-500 group-hover:rotate-12"
-                        />
-                      </div>
-                      <span
-                        className={`mt-2.5 max-w-[110px] text-center text-xs sm:text-sm font-bold leading-tight tracking-tight transition-colors duration-300 ${
-                          isActive ? 'text-[#D91E18]' : 'text-[#6E6259] group-hover:text-[#18120E]'
-                        }`}
-                      >
-                        {pizza.shortName}
-                      </span>
-                      <span
-                        className={`mt-1.5 h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-                          isActive ? 'scale-100 bg-[#e50916]' : 'scale-0 bg-stone-300 group-hover:scale-75'
-                        }`}
-                      />
-                    </button>
-                  );
-                })}
-              </div>
+            {/* 4 clickable mini circular pizza thumbnails — Desktop position inside left column */}
+            <div className="mt-8 hidden w-full md:block">
+              {pizzaSelectorBlock}
             </div>
           </div>
 
           {/* Right hero plate column - bounded inside shared 1280px container */}
-          <div className="flex-1 w-full max-w-[560px] select-none">
-            <div ref={plateScrubRef} className="relative w-full -rotate-[12deg] will-change-transform">
-              <img
-                src="/images/wooden-pizza-plate.png"
-                alt="Handcrafted wooden pizza serving plate"
-                draggable={false}
-                className="block h-auto w-full object-contain drop-shadow-[0_24px_32px_rgba(48,30,15,0.2)]"
-              />
+          <div className="flex w-full flex-1 flex-col items-center md:max-w-[560px]">
+            <div className="w-full max-w-[440px] select-none md:max-w-[560px]">
+              <div ref={plateScrubRef} className="relative w-full -rotate-[12deg] will-change-transform">
+                <img
+                  src="/images/wooden-pizza-plate.png"
+                  alt="Handcrafted wooden pizza serving plate"
+                  draggable={false}
+                  className="block h-auto w-full object-contain drop-shadow-[0_24px_32px_rgba(48,30,15,0.2)]"
+                />
 
-              {/* Active pizza seated inside the wooden dish bowl */}
-              <div
-                data-pizza-slot="true"
-                className="pointer-events-none absolute left-1/2 top-[36.3%] aspect-square w-[89%] -translate-x-1/2 -translate-y-1/2 rounded-full"
-              >
+                {/* Active pizza seated inside the wooden dish bowl */}
                 <div
-                  className="relative h-full w-full transition-transform duration-700 ease-out"
-                  style={{ transform: `rotate(${spinDeg}deg)` }}
+                  data-pizza-slot="true"
+                  className="pointer-events-none absolute left-1/2 top-[36.3%] aspect-square w-[89%] -translate-x-1/2 -translate-y-1/2 rounded-full"
                 >
-                  {PIZZAS.map((pizza, index) => {
-                    const isActive = index === activeIndex;
-                    return (
-                      <img
-                        key={pizza.id}
-                        src={pizza.image}
-                        alt={pizza.name}
-                        draggable={false}
-                        className={`absolute inset-0 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(35,16,4,0.45)] transition-all duration-500 ${
-                          isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                        }`}
-                      />
-                    );
-                  })}
+                  <div
+                    className="relative h-full w-full transition-transform duration-700 ease-out"
+                    style={{ transform: `rotate(${spinDeg}deg)` }}
+                  >
+                    {PIZZAS.map((pizza, index) => {
+                      const isActive = index === activeIndex;
+                      return (
+                        <img
+                          key={pizza.id}
+                          src={pizza.image}
+                          alt={pizza.name}
+                          draggable={false}
+                          className={`absolute inset-0 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(35,16,4,0.45)] transition-all duration-500 ${
+                            isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
+            </div>
+
+            {/* 4 clickable pizza thumbnails — Mobile position directly below the wooden plate */}
+            <div className="mt-6 w-full md:hidden">
+              {pizzaSelectorBlock}
             </div>
           </div>
         </div>
@@ -530,6 +552,8 @@ export default function HomePage() {
                       <img
                         src={coverImage}
                         alt={item.itemName}
+                        loading="lazy"
+                        decoding="async"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).src = '/images/cat-classic.jpg';
                         }}
@@ -599,6 +623,8 @@ export default function HomePage() {
                               <img
                                 src={item.vendorId.image}
                                 alt={vendorName}
+                                loading="lazy"
+                                decoding="async"
                                 className="h-6 w-6 shrink-0 rounded-full object-cover ring-1 ring-stone-200"
                               />
                             ) : (
@@ -687,6 +713,8 @@ export default function HomePage() {
                     <img
                       src={cat.image}
                       alt={cat.name}
+                      loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <span className="font-display absolute left-3 top-3 rounded-lg bg-[#18120E]/85 px-2.5 py-1 text-xs tracking-widest text-[#FAF7F2]">
@@ -744,6 +772,8 @@ export default function HomePage() {
                   <img
                     src="/images/woodfire-craft.jpg"
                     alt="Artisan sliding fresh wood-fired pizza onto wooden peel inside 480°C brick oven"
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover"
                   />
                 </div>

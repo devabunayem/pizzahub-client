@@ -41,6 +41,7 @@ export interface CardNavProps {
   logoHref?: string;
   items?: CardNavItem[];
   cta?: CardNavCta;
+  rightSlot?: ReactNode;
   theme?: 'dark' | 'light';
   surface?: 'glass' | 'solid';
   openOn?: 'click' | 'hover';
@@ -215,6 +216,7 @@ const CardNav = ({
   logoHref = '#',
   items = DEFAULT_ITEMS,
   cta,
+  rightSlot,
   theme = 'dark',
   surface = 'glass',
   openOn = 'click',
@@ -563,7 +565,13 @@ const CardNav = ({
             </LinkComponent>
           )}
 
-          {cta && !narrow && ctaButton(cta, false)}
+          {rightSlot ? (
+            <div className="justify-self-end group-data-[narrow]/cn:col-[2] group-data-[narrow]/cn:row-[1] group-data-[narrow]/cn:justify-self-end group-data-[narrow]/cn:mr-1.5">
+              {rightSlot}
+            </div>
+          ) : (
+            cta && !narrow && ctaButton(cta, false)
+          )}
         </div>
 
         <div ref={contentRef} id={contentId} className={CONTENT} aria-hidden={!open}>

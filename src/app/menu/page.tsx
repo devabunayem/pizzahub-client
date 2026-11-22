@@ -281,6 +281,8 @@ function BrowseMenuContent() {
                     <img
                       src={coverImage}
                       alt={item.itemName}
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => {
                         (e.currentTarget as HTMLImageElement).src = '/images/cat-classic.jpg';
                       }}
@@ -347,6 +349,8 @@ function BrowseMenuContent() {
                             <img
                               src={item.vendorId.image}
                               alt={vendorName}
+                              loading="lazy"
+                              decoding="async"
                               className="h-6 w-6 shrink-0 rounded-full object-cover ring-1 ring-stone-200"
                             />
                           ) : (
