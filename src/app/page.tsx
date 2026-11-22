@@ -399,17 +399,17 @@ export default function HomePage() {
             </div>
 
             {/* Minimal Action Row */}
-            <div className="mt-7 flex flex-wrap items-center justify-center md:justify-start gap-5">
+            <div className="mt-7 flex flex-wrap items-center justify-center md:justify-start gap-3.5 sm:gap-4">
               <Link
                 href="/menu"
-                className="group inline-flex items-center gap-2.5 rounded-full bg-[#18120E] px-7 py-3.5 text-sm sm:text-base font-bold tracking-wide text-white shadow-[0_16px_32px_-10px_rgba(24,18,14,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#D91E18]"
+                className="group inline-flex items-center gap-2.5 rounded-full bg-[#E50916] px-7 py-3.5 text-sm sm:text-base font-bold tracking-wide text-white shadow-[0_16px_32px_-10px_rgba(229,9,22,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#c80814]"
               >
                 <span>Order Now</span>
                 <ArrowUpRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
               <Link
                 href="/menu"
-                className="text-sm sm:text-base font-semibold text-[#6E6259] underline decoration-stone-300 underline-offset-4 transition-colors hover:text-[#18120E] hover:decoration-[#18120E]"
+                className="inline-flex items-center justify-center rounded-full border border-[#18120E]/25 bg-white px-6 py-3.5 text-sm sm:text-base font-bold text-[#18120E] transition hover:border-[#18120E] hover:bg-[#FAF7F2]"
               >
                 Explore menu
               </Link>
