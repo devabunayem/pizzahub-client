@@ -132,7 +132,7 @@ Next.js handles sessions cleanly with **Better Auth** (including Google OAuth vi
 | **Framework & UI** | `next` (15.5 App Router), `react` (19), `typescript`, `tailwindcss`, `lucide-react`, `clsx`, `tailwind-merge` |
 | **Auth & Database** | `better-auth` (with MongoDB adapter & Google OAuth), `mongodb` |
 | **Animation & 3D** | `motion` (Framer Motion 12), `gsap`, `lenis`, `three`, `canvas-confetti` |
-| **UX & Feedback** | `sileo` (spring dynamic-island toasts), bespoke shimmer skeletons, `ConfirmModal` dialogs |
+| **UX & Feedback** | `react-hot-toast` (custom PizzaHub `BrandToast`), bespoke shimmer skeletons, `ConfirmModal` dialogs |
 | **Media & Deployment** | ImgBB REST API, Vercel |
 
 ---
